@@ -1,6 +1,6 @@
 name: ytmusicapi_dart
 description: Unofficial API client for YouTube Music. Inspired by sigma67's ytmusicapi for Python.
-version: 1.0.0
+version: 1.0.1
 repository: https://github.com/encrystudio/ytmusicapi_dart
 
 environment:
