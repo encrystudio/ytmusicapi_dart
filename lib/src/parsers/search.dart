@@ -344,7 +344,7 @@ Map<String, dynamic> parseSearchResult(
     );
   }
 
-  searchResult['thumbnail'] = nav(data, thumbnails, nullIfAbsent: true);
+  searchResult['thumbnails'] = nav(data, thumbnails, nullIfAbsent: true);
 
   return searchResult;
 }
