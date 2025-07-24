@@ -99,7 +99,7 @@ Map<String, dynamic> parseTopResult(
     searchResult['playlistId'] = nav(data, menuPlaylistId);
     searchResult['title'] = nav(data, titleText);
     searchResult['author'] = parseSongArtistsRuns(
-      nav(data, ['subtitle', 'runs']).sublist(2),
+      nav(data, ['subtitle', 'runs']).sublist(2).cast<Map<String, dynamic>>(),
     );
   }
 
