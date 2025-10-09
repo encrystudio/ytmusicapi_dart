@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="description" content="API docs for the parseAudioPlaylist function from the playlists library, for the Dart programming language.">
+  <title>parseAudioPlaylist function - playlists library - Dart API</title>
+
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../static-assets/github.css?v1">
+  <link rel="stylesheet" href="../static-assets/styles.css?v1">
+  <link rel="icon" href="../static-assets/favicon.png?v1">
+  
+</head>
+
+<body data-base-href="../" data-using-base-href="false" class="light-theme">
+<div id="overlay-under-drawer"></div>
+<header id="title">
+  <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li><a href="../index.html">ytmusicapi_dart</a></li>
+    <li><a href="../parsers_playlists/">parsers&#47;playlists.dart</a></li>
+    <li class="self-crumb">parseAudioPlaylist function</li>
+  </ol>
+  <div class="self-name">parseAudioPlaylist</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+  <button class="toggle" id="theme-button" title="Toggle between light and dark mode" aria-label="Light and dark mode toggle">
+    <span id="dark-theme-button" class="material-symbols-outlined" aria-hidden="true">
+      dark_mode
+    </span>
+    <span id="light-theme-button" class="material-symbols-outlined" aria-hidden="true">
+      light_mode
+    </span>
+  </button>
+</header>
+<main>
+  <div
+      id="dartdoc-main-content"
+      class="main-content"
+      data-above-sidebar="parsers_playlists&#47;parsers_playlists-library-sidebar.html"
+      data-below-sidebar="">
+      <div>
+<h1><span class="kind-function">parseAudioPlaylist</span> function 
+ 
+</h1></div>
+
+    <section class="multi-line-signature">
+        
+<span class="returntype"><a href="https://api.dart.dev/stable/3.9.4/dart-core/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../type_alias/JsonMap.html">JsonMap</a></span>&gt;</span></span>
+<span class="name ">parseAudioPlaylist</span>(<wbr><ol class="parameter-list single-line"> <li><span class="parameter" id="parseAudioPlaylist-param-response"><span class="type-annotation"><a href="../type_alias/JsonMap.html">JsonMap</a></span> <span class="parameter-name">response</span>, </span></li>
+<li><span class="parameter" id="parseAudioPlaylist-param-limit"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/int-class.html">int</a>?</span> <span class="parameter-name">limit</span>, </span></li>
+<li><span class="parameter" id="parseAudioPlaylist-param-requestFunc"><span class="type-annotation"><a href="../type_alias/RequestFuncBodyType.html">RequestFuncBodyType</a></span> <span class="parameter-name">requestFunc</span></span></li>
+</ol>)
+
+        
+
+    </section>
+    
+<section class="desc markdown">
+  <p>Parses audio playlist.</p>
+</section>
+
+
+    
+<section class="summary source-code" id="source">
+  <h2><span>Implementation</span></h2>
+  <pre class="language-dart"><code class="language-dart">Future&lt;JsonMap&gt; parseAudioPlaylist(
+  JsonMap response,
+  int? limit,
+  RequestFuncBodyType requestFunc,
+) async {
+  final playlist = &lt;String, dynamic&gt;{
+    &#39;owned&#39;: false,
+    &#39;privacy&#39;: &#39;PUBLIC&#39;,
+    &#39;description&#39;: null,
+    &#39;views&#39;: null,
+    &#39;duration&#39;: null,
+    &#39;tracks&#39;: &lt;JsonMap&gt;[],
+    &#39;thumbnails&#39;: &lt;dynamic&gt;[],
+    &#39;related&#39;: &lt;dynamic&gt;[],
+  };
+
+  final sectionList = nav(response, [
+    ...TWO_COLUMN_RENDERER,
+    &#39;secondaryContents&#39;,
+    ...SECTION,
+  ]);
+  final contentData = nav(sectionList, [
+    ...CONTENT,
+    &#39;musicPlaylistShelfRenderer&#39;,
+  ]);
+
+  playlist[&#39;id&#39;] = nav(contentData, [
+    ...CONTENT,
+    MRLIR,
+    ...PLAY_BUTTON,
+    &#39;playNavigationEndpoint&#39;,
+    ...WATCH_PLAYLIST_ID,
+  ]);
+  playlist[&#39;trackCount&#39;] = nav(contentData, [&#39;collapsedItemCount&#39;]);
+
+  playlist[&#39;tracks&#39;] = [];
+
+  if ((contentData as JsonMap).containsKey(&#39;contents&#39;)) {
+    playlist[&#39;tracks&#39;] = parsePlaylistItems(
+      contentData[&#39;contents&#39;] as List&lt;JsonMap&gt;,
+    );
+
+    List parseFunc(contents) =&gt; parsePlaylistItems(contents as List&lt;JsonMap&gt;);
+    (playlist[&#39;tracks&#39;] as List).addAll(
+      await getContinuations2025(contentData, limit, requestFunc, parseFunc),
+    );
+  }
+
+  playlist[&#39;title&#39;] =
+      (((playlist[&#39;tracks&#39;] as List)[0] as JsonMap)[&#39;album&#39;]
+          as JsonMap)[&#39;name&#39;];
+
+  playlist[&#39;duration_seconds&#39;] = sumTotalDuration(playlist);
+
+  return playlist;
+}</code></pre>
+</section>
+
+
+  </div> <!-- /.main-content -->
+  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+    <!-- The search input and breadcrumbs below are only responsively visible at low resolutions. -->
+<header id="header-search-sidebar" class="hidden-l">
+  <form class="search-sidebar" role="search">
+    <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+<ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+    <li><a href="../index.html">ytmusicapi_dart</a></li>
+    <li><a href="../parsers_playlists/">playlists</a></li>
+    <li class="self-crumb">parseAudioPlaylist function</li>
+</ol>
+
+    <h5>playlists library</h5>
+    <div id="dartdoc-sidebar-left-content"></div>
+  </div><!--/.sidebar-offcanvas-left-->
+  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+  </div><!--/.sidebar-offcanvas-->
+</main>
+<footer>
+  <span class="no-break">
+    ytmusicapi_dart
+      2.0.0
+  </span>
+  
+</footer>
+
+
+<script src="../static-assets/highlight.pack.js?v1"></script>
+<script src="../static-assets/docs.dart.js"></script>
+
+</body>
+</html>
+

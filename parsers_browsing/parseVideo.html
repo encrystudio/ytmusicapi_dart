@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="description" content="API docs for the parseVideo function from the browsing library, for the Dart programming language.">
+  <title>parseVideo function - browsing library - Dart API</title>
+
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../static-assets/github.css?v1">
+  <link rel="stylesheet" href="../static-assets/styles.css?v1">
+  <link rel="icon" href="../static-assets/favicon.png?v1">
+  
+</head>
+
+<body data-base-href="../" data-using-base-href="false" class="light-theme">
+<div id="overlay-under-drawer"></div>
+<header id="title">
+  <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li><a href="../index.html">ytmusicapi_dart</a></li>
+    <li><a href="../parsers_browsing/">parsers&#47;browsing.dart</a></li>
+    <li class="self-crumb">parseVideo function</li>
+  </ol>
+  <div class="self-name">parseVideo</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+  <button class="toggle" id="theme-button" title="Toggle between light and dark mode" aria-label="Light and dark mode toggle">
+    <span id="dark-theme-button" class="material-symbols-outlined" aria-hidden="true">
+      dark_mode
+    </span>
+    <span id="light-theme-button" class="material-symbols-outlined" aria-hidden="true">
+      light_mode
+    </span>
+  </button>
+</header>
+<main>
+  <div
+      id="dartdoc-main-content"
+      class="main-content"
+      data-above-sidebar="parsers_browsing&#47;parsers_browsing-library-sidebar.html"
+      data-below-sidebar="">
+      <div>
+<h1><span class="kind-function">parseVideo</span> function 
+ 
+</h1></div>
+
+    <section class="multi-line-signature">
+        
+<span class="returntype"><a href="../type_alias/JsonMap.html">JsonMap</a></span>
+<span class="name ">parseVideo</span>(<wbr><ol class="parameter-list single-line"> <li><span class="parameter" id="parseVideo-param-result"><span class="type-annotation"><a href="../type_alias/JsonMap.html">JsonMap</a></span> <span class="parameter-name">result</span></span></li>
+</ol>)
+
+        
+
+    </section>
+    
+<section class="desc markdown">
+  <p>Parses a video from <code>result</code>.</p>
+</section>
+
+
+    
+<section class="summary source-code" id="source">
+  <h2><span>Implementation</span></h2>
+  <pre class="language-dart"><code class="language-dart">JsonMap parseVideo(JsonMap result) {
+  final JsonMap realResult;
+  if (result.containsKey(MTRIR)) {
+    realResult = nav(result, [MTRIR]) as JsonMap;
+  } else {
+    realResult = result;
+  }
+  final runs = nav(realResult, SUBTITLE_RUNS);
+  final artistsLen = getDotSeparatorIndex(runs as List);
+  var videoId = nav(realResult, NAVIGATION_VIDEO_ID, nullIfAbsent: true);
+  if (videoId == null) {
+    for (final entry in nav(realResult, MENU_ITEMS) as Iterable) {
+      final candidate = nav(entry, [
+        ...MENU_SERVICE,
+        ...QUEUE_VIDEO_ID,
+      ], nullIfAbsent: true);
+      if (candidate != null) {
+        videoId = candidate;
+        break;
+      }
+    }
+  }
+  return {
+    &#39;title&#39;: nav(realResult, TITLE_TEXT),
+    &#39;videoId&#39;: videoId,
+    &#39;artists&#39;: parseSongArtistsRuns(runs.sublist(0, artistsLen)),
+    &#39;playlistId&#39;: nav(realResult, NAVIGATION_PLAYLIST_ID, nullIfAbsent: true),
+    &#39;thumbnails&#39;: nav(realResult, THUMBNAIL_RENDERER, nullIfAbsent: true),
+    &#39;views&#39;: (List&lt;JsonMap&gt;.from(runs).last[&#39;text&#39;] as String).split(&#39; &#39;)[0],
+  };
+}</code></pre>
+</section>
+
+
+  </div> <!-- /.main-content -->
+  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+    <!-- The search input and breadcrumbs below are only responsively visible at low resolutions. -->
+<header id="header-search-sidebar" class="hidden-l">
+  <form class="search-sidebar" role="search">
+    <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+<ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+    <li><a href="../index.html">ytmusicapi_dart</a></li>
+    <li><a href="../parsers_browsing/">browsing</a></li>
+    <li class="self-crumb">parseVideo function</li>
+</ol>
+
+    <h5>browsing library</h5>
+    <div id="dartdoc-sidebar-left-content"></div>
+  </div><!--/.sidebar-offcanvas-left-->
+  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+  </div><!--/.sidebar-offcanvas-->
+</main>
+<footer>
+  <span class="no-break">
+    ytmusicapi_dart
+      2.0.0
+  </span>
+  
+</footer>
+
+
+<script src="../static-assets/highlight.pack.js?v1"></script>
+<script src="../static-assets/docs.dart.js"></script>
+
+</body>
+</html>
+

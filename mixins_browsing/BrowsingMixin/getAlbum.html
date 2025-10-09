@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="description" content="API docs for the getAlbum method from the BrowsingMixin mixin, for the Dart programming language.">
+  <title>getAlbum method - BrowsingMixin mixin - browsing library - Dart API</title>
+
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../../static-assets/github.css?v1">
+  <link rel="stylesheet" href="../../static-assets/styles.css?v1">
+  <link rel="icon" href="../../static-assets/favicon.png?v1">
+  
+</head>
+
+<body data-base-href="../../" data-using-base-href="false" class="light-theme">
+<div id="overlay-under-drawer"></div>
+<header id="title">
+  <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li><a href="../../index.html">ytmusicapi_dart</a></li>
+    <li><a href="../../mixins_browsing/">mixins&#47;browsing.dart</a></li>
+    <li><a href="../../mixins_browsing/BrowsingMixin-mixin.html">BrowsingMixin</a></li>
+    <li class="self-crumb">getAlbum method</li>
+  </ol>
+  <div class="self-name">getAlbum</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+  <button class="toggle" id="theme-button" title="Toggle between light and dark mode" aria-label="Light and dark mode toggle">
+    <span id="dark-theme-button" class="material-symbols-outlined" aria-hidden="true">
+      dark_mode
+    </span>
+    <span id="light-theme-button" class="material-symbols-outlined" aria-hidden="true">
+      light_mode
+    </span>
+  </button>
+</header>
+<main>
+<div
+    id="dartdoc-main-content"
+    class="main-content"
+    data-above-sidebar="mixins_browsing&#47;BrowsingMixin-mixin-sidebar.html"
+    data-below-sidebar="">
+    <div>
+<h1><span class="kind-method">getAlbum</span> method 
+</h1></div>
+
+    <section class="multi-line-signature">
+      
+<span class="returntype"><a href="https://api.dart.dev/stable/3.9.4/dart-core/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../../type_alias/JsonMap.html">JsonMap</a></span>&gt;</span></span>
+<span class="name ">getAlbum</span>(<wbr><ol class="parameter-list"> <li><span class="parameter" id="getAlbum-param-browseId"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/String-class.html">String</a></span> <span class="parameter-name">browseId</span>, {</span></li>
+<li><span class="parameter" id="getAlbum-param-requestData"><span class="type-annotation"><a href="../../type_alias/JsonMap.html">JsonMap</a>?</span> <span class="parameter-name">requestData</span>, </span></li>
+</ol>})
+
+      
+
+    </section>
+    
+<section class="desc markdown">
+  <p>Get information and tracks of an album.</p>
+<ul>
+<li><code>browseId</code> <code>browseId</code> of the album, for example returned by <a href="../../mixins_search/SearchMixin/search.html">SearchMixin.search</a>.</li>
+</ul>
+<p>Returns Map with album and track metadata.</p>
+<p>The result is in the following format:</p>
+<pre class="language-json"><code class="language-json">{
+  "title": "Revival",
+  "type": "Album",
+  "thumbnails": [...],
+  "description": "Revival is the...",
+  "artists": [
+    {
+      "name": "Eminem",
+      "id": "UCedvOgsKFzcK3hA5taf3KoQ"
+    }
+  ],
+  "year": "2017",
+  "trackCount": 19,
+  "duration": "1 hour, 17 minutes",
+  "audioPlaylistId": "OLAK5uy_nMr9h2VlS-2PULNz3M3XVXQj_P3C2bqaY",
+  "tracks": [
+    {
+      "videoId": "iKLU7z_xdYQ",
+      "title": "Walk On Water (feat. Beyoncé)",
+      "artists": [
+        {
+          "name": "Eminem",
+          "id": "UCedvOgsKFzcK3hA5taf3KoQ"
+        }
+      ],
+      "album": "Revival",
+      "likeStatus": "INDIFFERENT",
+      "thumbnails": null,
+      "isAvailable": true,
+      "isExplicit": true,
+      "duration": "5:03",
+      "duration_seconds": 303,
+      "trackNumber": 0,
+      "feedbackTokens": {
+        "add": "AB9zfpK...",
+        "remove": "AB9zfpK..."
+      }
+    }
+  ],
+  "other_versions": [
+    {
+      "title": "Revival",
+      "year": "Eminem",
+      "browseId": "MPREb_fefKFOTEZSp",
+      "thumbnails": [...],
+      "isExplicit": false
+    }
+  ],
+  "duration_seconds": 4657
+}
+</code></pre>
+</section>
+
+
+    
+<section class="summary source-code" id="source">
+  <h2><span>Implementation</span></h2>
+  <pre class="language-dart"><code class="language-dart">Future&lt;JsonMap&gt; getAlbum(String browseId, {JsonMap? requestData}) async {
+  if (browseId.isEmpty || !browseId.startsWith(&#39;MPRE&#39;)) {
+    throw Exception(&#39;Invalid album browseId provided, must start with MPRE.&#39;);
+  }
+  final body = &lt;String, dynamic&gt;{&#39;browseId&#39;: browseId};
+  const endpoint = &#39;browse&#39;;
+  final response = requestData ?? await sendRequest(endpoint, body);
+
+  final album = parseAlbumHeader2024(response);
+
+  final results = JsonMap.from(
+    nav(response, [
+          ...TWO_COLUMN_RENDERER,
+          &#39;secondaryContents&#39;,
+          ...SECTION_LIST_ITEM,
+          ...MUSIC_SHELF,
+        ])
+        as Map,
+  );
+  album[&#39;tracks&#39;] = parsePlaylistItems(
+    List&lt;JsonMap&gt;.from(results[&#39;contents&#39;] as List),
+    isAlbum: true,
+  );
+
+  final secondaryCarousels =
+      nav(response, [
+            ...TWO_COLUMN_RENDERER,
+            &#39;secondaryContents&#39;,
+            ...SECTION_LIST,
+          ], nullIfAbsent: true)
+          as List? ??
+      [];
+  for (final section in secondaryCarousels.skip(1)) {
+    final carousel = nav(section, CAROUSEL) as JsonMap;
+    final key =
+        {
+          &#39;COLLECTION_STYLE_ITEM_SIZE_SMALL&#39;: &#39;related_recommendations&#39;,
+          &#39;COLLECTION_STYLE_ITEM_SIZE_MEDIUM&#39;: &#39;other_versions&#39;,
+        }[carousel[&#39;itemSize&#39;]]!;
+    album[key] = await parseContentList(
+      List&lt;JsonMap&gt;.from(carousel[&#39;contents&#39;] as List),
+      parseAlbum,
+    );
+  }
+
+  album[&#39;duration_seconds&#39;] = sumTotalDuration(album);
+  for (var i = 0; i &lt; (album[&#39;tracks&#39;] as List).length; i++) {
+    (album[&#39;tracks&#39;] as List&lt;JsonMap&gt;)[i][&#39;album&#39;] = album[&#39;title&#39;];
+    (album[&#39;tracks&#39;] as List&lt;JsonMap&gt;)[i][&#39;artists&#39;] =
+        ((album[&#39;tracks&#39;] as List&lt;JsonMap&gt;)[i][&#39;artists&#39;] != null &amp;&amp;
+                ((album[&#39;tracks&#39;] as List&lt;JsonMap&gt;)[i][&#39;artists&#39;] as List)
+                    .isNotEmpty)
+            ? (album[&#39;tracks&#39;] as List&lt;JsonMap&gt;)[i][&#39;artists&#39;]
+            : album[&#39;artists&#39;];
+  }
+  return album;
+}</code></pre>
+</section>
+
+
+  </div> <!-- /.main-content -->
+  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+    <!-- The search input and breadcrumbs below are only responsively visible at low resolutions. -->
+<header id="header-search-sidebar" class="hidden-l">
+  <form class="search-sidebar" role="search">
+    <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+<ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+    <li><a href="../../index.html">ytmusicapi_dart</a></li>
+    <li><a href="../../mixins_browsing/">browsing</a></li>
+    <li><a href="../../mixins_browsing/BrowsingMixin-mixin.html">BrowsingMixin</a></li>
+    <li class="self-crumb">getAlbum method</li>
+</ol>
+
+    <h5>BrowsingMixin mixin</h5>
+    <div id="dartdoc-sidebar-left-content"></div>
+  </div><!--/.sidebar-offcanvas-->
+  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+</div><!--/.sidebar-offcanvas-->
+</main>
+<footer>
+  <span class="no-break">
+    ytmusicapi_dart
+      2.0.0
+  </span>
+  
+</footer>
+
+
+<script src="../../static-assets/highlight.pack.js?v1"></script>
+<script src="../../static-assets/docs.dart.js"></script>
+
+</body>
+</html>
+

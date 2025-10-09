@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="description" content="search library API docs, for the Dart programming language.">
+  <title>search library - Dart API</title>
+
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../static-assets/github.css?v1">
+  <link rel="stylesheet" href="../static-assets/styles.css?v1">
+  <link rel="icon" href="../static-assets/favicon.png?v1">
+  
+</head>
+
+<body data-base-href="../" data-using-base-href="false" class="light-theme">
+<div id="overlay-under-drawer"></div>
+<header id="title">
+  <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li><a href="../index.html">ytmusicapi_dart</a></li>
+    <li class="self-crumb">parsers/search.dart</li>
+  </ol>
+  <div class="self-name">search</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+  <button class="toggle" id="theme-button" title="Toggle between light and dark mode" aria-label="Light and dark mode toggle">
+    <span id="dark-theme-button" class="material-symbols-outlined" aria-hidden="true">
+      dark_mode
+    </span>
+    <span id="light-theme-button" class="material-symbols-outlined" aria-hidden="true">
+      light_mode
+    </span>
+  </button>
+</header>
+<main>
+<div
+    id="dartdoc-main-content"
+    class="main-content"
+    data-above-sidebar=""
+    data-below-sidebar="parsers_search&#47;parsers_search-library-sidebar.html">
+  
+    <div>
+      
+
+      <h1>
+        <span class="kind-library">parsers/search</span>
+        library 
+ 
+
+      </h1>
+    </div>
+
+    
+
+
+
+
+
+
+
+    <section class="summary offset-anchor" id="constants">
+      <h2>Constants</h2>
+      <dl class="properties">
+          <dt id="ALL_RESULT_TYPES" class="constant">
+    <span class="name "><a href="../parsers_search/ALL_RESULT_TYPES-constant.html">ALL_RESULT_TYPES</a></span>
+  <span class="signature">&#8594; const <a href="https://api.dart.dev/stable/3.9.4/dart-core/List-class.html">List</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.dart.dev/stable/3.9.4/dart-core/String-class.html">String</a></span>&gt;</span></span>
+  
+
+</dt>
+<dd>
+  
+  
+
+</dd>
+
+          <dt id="API_RESULT_TYPES" class="constant">
+    <span class="name "><a href="../parsers_search/API_RESULT_TYPES-constant.html">API_RESULT_TYPES</a></span>
+  <span class="signature">&#8594; const <a href="https://api.dart.dev/stable/3.9.4/dart-core/List-class.html">List</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.dart.dev/stable/3.9.4/dart-core/String-class.html">String</a></span>&gt;</span></span>
+  
+
+</dt>
+<dd>
+  
+  
+
+</dd>
+
+      </dl>
+    </section>
+
+
+    <section class="summary offset-anchor" id="functions">
+      <h2>Functions</h2>
+      <dl class="callables">
+          <dt id="getSearchParams" class="callable">
+  <span class="name"><a href="../parsers_search/getSearchParams.html">getSearchParams</a></span><span class="signature">(<wbr><span class="parameter" id="getSearchParams-param-filter"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">filter</span>, </span><span class="parameter" id="getSearchParams-param-scope"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">scope</span>, </span><span class="parameter" id="getSearchParams-param-ignoreSpelling"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">ignoreSpelling</span></span>)
+    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/3.9.4/dart-core/String-class.html">String</a>?</span>
+  </span>
+  
+
+</dt>
+<dd>
+  Get search params for given <code>filter</code>, <code>scope</code> and <code>ignoreSpelling</code>.
+  
+
+</dd>
+
+          <dt id="getSearchResultType" class="callable">
+  <span class="name"><a href="../parsers_search/getSearchResultType.html">getSearchResultType</a></span><span class="signature">(<wbr><span class="parameter" id="getSearchResultType-param-resultTypeLocal"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">resultTypeLocal</span>, </span><span class="parameter" id="getSearchResultType-param-resultTypesLocal"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/List-class.html">List</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.dart.dev/stable/3.9.4/dart-core/String-class.html">String</a></span>&gt;</span></span> <span class="parameter-name">resultTypesLocal</span></span>)
+    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/3.9.4/dart-core/String-class.html">String</a>?</span>
+  </span>
+  
+
+</dt>
+<dd>
+  Get type of the search result.
+  
+
+</dd>
+
+          <dt id="parseSearchResult" class="callable">
+  <span class="name"><a href="../parsers_search/parseSearchResult.html">parseSearchResult</a></span><span class="signature">(<wbr><span class="parameter" id="parseSearchResult-param-data"><span class="type-annotation"><a href="../type_alias/JsonMap.html">JsonMap</a></span> <span class="parameter-name">data</span>, </span><span class="parameter" id="parseSearchResult-param-resultType"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">resultType</span>, </span><span class="parameter" id="parseSearchResult-param-category"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">category</span></span>)
+    <span class="returntype parameter">&#8594; <a href="../type_alias/JsonMap.html">JsonMap</a></span>
+  </span>
+  
+
+</dt>
+<dd>
+  Parses a search result from <code>data</code>.
+  
+
+</dd>
+
+          <dt id="parseSearchResults" class="callable">
+  <span class="name"><a href="../parsers_search/parseSearchResults.html">parseSearchResults</a></span><span class="signature">(<wbr><span class="parameter" id="parseSearchResults-param-results"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/List-class.html">List</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../type_alias/JsonMap.html">JsonMap</a></span>&gt;</span></span> <span class="parameter-name">results</span>, {</span><span class="parameter" id="parseSearchResults-param-resultType"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">resultType</span>, </span><span class="parameter" id="parseSearchResults-param-category"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">category</span></span>})
+    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/3.9.4/dart-core/List-class.html">List</a></span>
+  </span>
+  
+
+</dt>
+<dd>
+  Parses search <code>results</code>.
+  
+
+</dd>
+
+          <dt id="parseSearchSuggestions" class="callable">
+  <span class="name"><a href="../parsers_search/parseSearchSuggestions.html">parseSearchSuggestions</a></span><span class="signature">(<wbr><span class="parameter" id="parseSearchSuggestions-param-results"><span class="type-annotation"><a href="../type_alias/JsonMap.html">JsonMap</a></span> <span class="parameter-name">results</span>, </span><span class="parameter" id="parseSearchSuggestions-param-detailedRuns"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">detailedRuns</span></span>)
+    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/3.9.4/dart-core/List-class.html">List</a></span>
+  </span>
+  
+
+</dt>
+<dd>
+  Parses search suggestions.
+  
+
+</dd>
+
+          <dt id="parseTopResult" class="callable">
+  <span class="name"><a href="../parsers_search/parseTopResult.html">parseTopResult</a></span><span class="signature">(<wbr><span class="parameter" id="parseTopResult-param-data"><span class="type-annotation"><a href="../type_alias/JsonMap.html">JsonMap</a></span> <span class="parameter-name">data</span>, </span><span class="parameter" id="parseTopResult-param-searchResultTypes"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/List-class.html">List</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.dart.dev/stable/3.9.4/dart-core/String-class.html">String</a></span>&gt;</span></span> <span class="parameter-name">searchResultTypes</span></span>)
+    <span class="returntype parameter">&#8594; <a href="../type_alias/JsonMap.html">JsonMap</a></span>
+  </span>
+  
+
+</dt>
+<dd>
+  Parses the top result from <code>data</code>.
+  
+
+</dd>
+
+      </dl>
+    </section>
+
+
+  </div> <!-- /.main-content -->
+  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+    <!-- The search input and breadcrumbs below are only responsively visible at low resolutions. -->
+<header id="header-search-sidebar" class="hidden-l">
+  <form class="search-sidebar" role="search">
+    <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+<ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+    <li><a href="../index.html">ytmusicapi_dart</a></li>
+    <li class="self-crumb">parsers/search.dart</li>
+</ol>
+
+    <h5><span class="package-name">ytmusicapi_dart</span> <span class="package-kind">package</span></h5>
+    <ol>
+      <li class="section-title">Libraries</li>
+      <li><a href="../auth_auth_parse/">auth/auth_parse</a></li>
+      <li><a href="../auth_browser/">auth/browser</a></li>
+      <li><a href="../auth_oauth_credentials/">auth/oauth/credentials</a></li>
+      <li><a href="../auth_oauth_exceptions/">auth/oauth/exceptions</a></li>
+      <li><a href="../auth_oauth_models/">auth/oauth/models</a></li>
+      <li><a href="../auth_oauth_token/">auth/oauth/token</a></li>
+      <li><a href="../auth_types/">auth/types</a></li>
+      <li><a href="../constants/">constants</a></li>
+      <li><a href="../continuations/">continuations</a></li>
+      <li><a href="../enums/">enums</a></li>
+      <li><a href="../exceptions/">exceptions</a></li>
+      <li><a href="../helpers/">helpers</a></li>
+      <li><a href="../mixins_browsing/">mixins/browsing</a></li>
+      <li><a href="../mixins_charts/">mixins/charts</a></li>
+      <li><a href="../mixins_explore/">mixins/explore</a></li>
+      <li><a href="../mixins_library/">mixins/library</a></li>
+      <li><a href="../mixins_playlists/">mixins/playlists</a></li>
+      <li><a href="../mixins_podcasts/">mixins/podcasts</a></li>
+      <li><a href="../mixins_protocol/">mixins/protocol</a></li>
+      <li><a href="../mixins_search/">mixins/search</a></li>
+      <li><a href="../mixins_uploads/">mixins/uploads</a></li>
+      <li><a href="../mixins_utils/">mixins/utils</a></li>
+      <li><a href="../mixins_watch/">mixins/watch</a></li>
+      <li><a href="../models_content_enums/">models/content/enums</a></li>
+      <li><a href="../models_lyrics/">models/lyrics</a></li>
+      <li><a href="../navigation/">navigation</a></li>
+      <li><a href="../parsers_albums/">parsers/albums</a></li>
+      <li><a href="../parsers_browsing/">parsers/browsing</a></li>
+      <li><a href="../parsers_constants/">parsers/constants</a></li>
+      <li><a href="../parsers_explore/">parsers/explore</a></li>
+      <li><a href="../parsers_i18n/">parsers/i18n</a></li>
+      <li><a href="../parsers_library/">parsers/library</a></li>
+      <li><a href="../parsers_playlists/">parsers/playlists</a></li>
+      <li><a href="../parsers_podcasts/">parsers/podcasts</a></li>
+      <li><a href="../parsers_search/">parsers/search</a></li>
+      <li><a href="../parsers_songs/">parsers/songs</a></li>
+      <li><a href="../parsers_uploads/">parsers/uploads</a></li>
+      <li><a href="../parsers_utils/">parsers/utils</a></li>
+      <li><a href="../parsers_watch/">parsers/watch</a></li>
+      <li><a href="../type_alias/">type_alias</a></li>
+      <li><a href="../utils/">utils</a></li>
+      <li><a href="../ytmusicapi_dart/">ytmusicapi_dart</a></li>
+</ol>
+
+  </div>
+  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+    <h5>search library</h5>
+  </div><!--/sidebar-offcanvas-right-->
+</main>
+<footer>
+  <span class="no-break">
+    ytmusicapi_dart
+      2.0.0
+  </span>
+  
+</footer>
+
+
+<script src="../static-assets/highlight.pack.js?v1"></script>
+<script src="../static-assets/docs.dart.js"></script>
+
+</body>
+</html>
+

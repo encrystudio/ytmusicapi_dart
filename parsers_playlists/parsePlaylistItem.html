@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="description" content="API docs for the parsePlaylistItem function from the playlists library, for the Dart programming language.">
+  <title>parsePlaylistItem function - playlists library - Dart API</title>
+
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../static-assets/github.css?v1">
+  <link rel="stylesheet" href="../static-assets/styles.css?v1">
+  <link rel="icon" href="../static-assets/favicon.png?v1">
+  
+</head>
+
+<body data-base-href="../" data-using-base-href="false" class="light-theme">
+<div id="overlay-under-drawer"></div>
+<header id="title">
+  <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li><a href="../index.html">ytmusicapi_dart</a></li>
+    <li><a href="../parsers_playlists/">parsers&#47;playlists.dart</a></li>
+    <li class="self-crumb">parsePlaylistItem function</li>
+  </ol>
+  <div class="self-name">parsePlaylistItem</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+  <button class="toggle" id="theme-button" title="Toggle between light and dark mode" aria-label="Light and dark mode toggle">
+    <span id="dark-theme-button" class="material-symbols-outlined" aria-hidden="true">
+      dark_mode
+    </span>
+    <span id="light-theme-button" class="material-symbols-outlined" aria-hidden="true">
+      light_mode
+    </span>
+  </button>
+</header>
+<main>
+  <div
+      id="dartdoc-main-content"
+      class="main-content"
+      data-above-sidebar="parsers_playlists&#47;parsers_playlists-library-sidebar.html"
+      data-below-sidebar="">
+      <div>
+<h1><span class="kind-function">parsePlaylistItem</span> function 
+ 
+</h1></div>
+
+    <section class="multi-line-signature">
+        
+<span class="returntype"><a href="../type_alias/JsonMap.html">JsonMap</a>?</span>
+<span class="name ">parsePlaylistItem</span>(<wbr><ol class="parameter-list"> <li><span class="parameter" id="parsePlaylistItem-param-data"><span class="type-annotation"><a href="../type_alias/JsonMap.html">JsonMap</a></span> <span class="parameter-name">data</span>, {</span></li>
+<li><span class="parameter" id="parsePlaylistItem-param-menuEntries"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/List-class.html">List</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.dart.dev/stable/3.9.4/dart-core/List-class.html">List</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.dart.dev/stable/3.9.4/dart-core/String-class.html">String</a></span>&gt;</span></span>&gt;</span>?</span> <span class="parameter-name">menuEntries</span>, </span></li>
+<li><span class="parameter" id="parsePlaylistItem-param-isAlbum"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">isAlbum</span> = <span class="default-value">false</span>, </span></li>
+</ol>})
+
+        
+
+    </section>
+    
+<section class="desc markdown">
+  <p>Parses item from playlist.</p>
+</section>
+
+
+    
+<section class="summary source-code" id="source">
+  <h2><span>Implementation</span></h2>
+  <pre class="language-dart"><code class="language-dart">JsonMap? parsePlaylistItem(
+  JsonMap data, {
+  List&lt;List&lt;String&gt;&gt;? menuEntries,
+  bool isAlbum = false,
+}) {
+  String? videoId;
+  String? setVideoId;
+  dynamic like;
+  dynamic feedbackTokens;
+  dynamic libraryStatus;
+
+  if (data.containsKey(&#39;menu&#39;)) {
+    for (final item in List&lt;JsonMap&gt;.from(nav(data, MENU_ITEMS) as List)) {
+      if (item.containsKey(&#39;menuServiceItemRenderer&#39;)) {
+        final menuService = nav(item, MENU_SERVICE) as JsonMap;
+        if (menuService.containsKey(&#39;playlistEditEndpoint&#39;)) {
+          setVideoId =
+              nav(menuService, [
+                    &#39;playlistEditEndpoint&#39;,
+                    &#39;actions&#39;,
+                    0,
+                    &#39;setVideoId&#39;,
+                  ], nullIfAbsent: true)
+                  as String?;
+          videoId =
+              nav(menuService, [
+                    &#39;playlistEditEndpoint&#39;,
+                    &#39;actions&#39;,
+                    0,
+                    &#39;removedVideoId&#39;,
+                  ], nullIfAbsent: true)
+                  as String?;
+        }
+      }
+      if (item.containsKey(TOGGLE_MENU)) {
+        feedbackTokens = parseSongMenuTokens(item);
+        libraryStatus = parseSongLibraryStatus(item);
+      }
+    }
+  }
+
+  if (nav(data, PLAY_BUTTON, nullIfAbsent: true) != null) {
+    final playBtn = nav(data, PLAY_BUTTON) as JsonMap;
+    if (playBtn.containsKey(&#39;playNavigationEndpoint&#39;)) {
+      videoId =
+          ((playBtn[&#39;playNavigationEndpoint&#39;] as JsonMap)[&#39;watchEndpoint&#39;]
+                  as JsonMap)[&#39;videoId&#39;]
+              as String?;
+      if (data.containsKey(&#39;menu&#39;)) {
+        like = nav(data, MENU_LIKE_STATUS, nullIfAbsent: true);
+      }
+    }
+  }
+
+  final isAvailable =
+      !(data[&#39;musicItemRendererDisplayPolicy&#39;] ==
+          &#39;MUSIC_ITEM_RENDERER_DISPLAY_POLICY_GREY_OUT&#39;);
+
+  final usePresetColumns = !isAvailable || isAlbum ? true : null;
+
+  int? titleIndex = usePresetColumns == true ? 0 : null;
+  int? artistIndex = usePresetColumns == true ? 1 : null;
+  int? albumIndex = usePresetColumns == true ? 2 : null;
+  final userChannelIndexes = &lt;int&gt;[];
+  int? unrecognizedIndex;
+
+  for (var index = 0; index &lt; (data[&#39;flexColumns&#39;] as List).length; index++) {
+    final flexColumnItem = getFlexColumnItem(data, index);
+    final navigationEndpoint = nav(flexColumnItem, [
+      ...TEXT_RUN,
+      &#39;navigationEndpoint&#39;,
+    ], nullIfAbsent: true);
+
+    if (navigationEndpoint == null) {
+      if (nav(flexColumnItem, TEXT_RUN_TEXT, nullIfAbsent: true) != null) {
+        unrecognizedIndex ??= index;
+      }
+      continue;
+    }
+
+    if ((navigationEndpoint as Map).containsKey(&#39;watchEndpoint&#39;)) {
+      titleIndex = index;
+    } else if (navigationEndpoint.containsKey(&#39;browseEndpoint&#39;)) {
+      final pageType = nav(navigationEndpoint, [
+        &#39;browseEndpoint&#39;,
+        &#39;browseEndpointContextSupportedConfigs&#39;,
+        &#39;browseEndpointContextMusicConfig&#39;,
+        &#39;pageType&#39;,
+      ]);
+
+      if (pageType == &#39;MUSIC_PAGE_TYPE_ARTIST&#39; ||
+          pageType == &#39;MUSIC_PAGE_TYPE_UNKNOWN&#39;) {
+        artistIndex = index;
+      } else if (pageType == &#39;MUSIC_PAGE_TYPE_ALBUM&#39;) {
+        albumIndex = index;
+      } else if (pageType == &#39;MUSIC_PAGE_TYPE_USER_CHANNEL&#39;) {
+        userChannelIndexes.add(index);
+      } else if (pageType == &#39;MUSIC_PAGE_TYPE_NON_MUSIC_AUDIO_TRACK_PAGE&#39;) {
+        titleIndex = index;
+      }
+    }
+  }
+
+  artistIndex ??= unrecognizedIndex;
+  if (artistIndex == null &amp;&amp; userChannelIndexes.isNotEmpty) {
+    artistIndex = userChannelIndexes.last;
+  }
+
+  final title = titleIndex != null ? getItemText(data, titleIndex) : null;
+  if (title == &#39;Song deleted&#39;) return null;
+
+  final artists =
+      artistIndex != null ? parseSongArtists(data, artistIndex) : null;
+  final album = albumIndex != null ? parseSongAlbum(data, albumIndex) : null;
+  final views = isAlbum ? getItemText(data, 2) : null;
+
+  String? duration;
+  if (data.containsKey(&#39;fixedColumns&#39;)) {
+    final firstColumn = getFixedColumnItem(data, 0);
+    duration =
+        ((firstColumn?[&#39;text&#39;] as JsonMap?)?[&#39;simpleText&#39;] ??
+                nav(firstColumn, [&#39;text&#39;, &#39;simpleText&#39;]) ??
+                nav(firstColumn, TEXT_RUN_TEXT))
+            as String?;
+  }
+
+  final thumbnails = nav(data, THUMBNAILS, nullIfAbsent: true);
+  final isExplicit = nav(data, BADGE_LABEL, nullIfAbsent: true) != null;
+  final videoType = nav(data, [
+    ...MENU_ITEMS,
+    0,
+    MNIR,
+    &#39;navigationEndpoint&#39;,
+    ...NAVIGATION_VIDEO_TYPE,
+  ], nullIfAbsent: true);
+
+  final song = &lt;String, dynamic&gt;{
+    &#39;videoId&#39;: videoId,
+    &#39;title&#39;: title,
+    &#39;artists&#39;: artists,
+    &#39;album&#39;: album,
+    &#39;likeStatus&#39;: like,
+    &#39;inLibrary&#39;: libraryStatus,
+    &#39;thumbnails&#39;: thumbnails,
+    &#39;isAvailable&#39;: isAvailable,
+    &#39;isExplicit&#39;: isExplicit,
+    &#39;videoType&#39;: videoType,
+    &#39;views&#39;: views,
+  };
+
+  if (isAlbum) {
+    song[&#39;trackNumber&#39;] =
+        isAvailable
+            ? int.parse(nav(data, [&#39;index&#39;, &#39;runs&#39;, 0, &#39;text&#39;]) as String)
+            : null;
+  }
+  if (duration != null) {
+    song[&#39;duration&#39;] = duration;
+    song[&#39;duration_seconds&#39;] = parseDuration(duration);
+  }
+  if (setVideoId != null) song[&#39;setVideoId&#39;] = setVideoId;
+  if (feedbackTokens != null) song[&#39;feedbackTokens&#39;] = feedbackTokens;
+
+  if (menuEntries != null) {
+    final menuItems = nav(data, MENU_ITEMS);
+    for (final menuEntry in menuEntries) {
+      final items = findObjectsByKey(menuItems as List, menuEntry[0]);
+      song[menuEntry.last] = items
+          .map((itm) =&gt; nav(itm, menuEntry, nullIfAbsent: true))
+          .firstWhere((x) =&gt; x != null, orElse: () =&gt; null);
+    }
+  }
+
+  return song;
+}</code></pre>
+</section>
+
+
+  </div> <!-- /.main-content -->
+  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+    <!-- The search input and breadcrumbs below are only responsively visible at low resolutions. -->
+<header id="header-search-sidebar" class="hidden-l">
+  <form class="search-sidebar" role="search">
+    <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+<ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+    <li><a href="../index.html">ytmusicapi_dart</a></li>
+    <li><a href="../parsers_playlists/">playlists</a></li>
+    <li class="self-crumb">parsePlaylistItem function</li>
+</ol>
+
+    <h5>playlists library</h5>
+    <div id="dartdoc-sidebar-left-content"></div>
+  </div><!--/.sidebar-offcanvas-left-->
+  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+  </div><!--/.sidebar-offcanvas-->
+</main>
+<footer>
+  <span class="no-break">
+    ytmusicapi_dart
+      2.0.0
+  </span>
+  
+</footer>
+
+
+<script src="../static-assets/highlight.pack.js?v1"></script>
+<script src="../static-assets/docs.dart.js"></script>
+
+</body>
+</html>
+

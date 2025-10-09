@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="description" content="API docs for the setupBrowser function from the browser library, for the Dart programming language.">
+  <title>setupBrowser function - browser library - Dart API</title>
+
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../static-assets/github.css?v1">
+  <link rel="stylesheet" href="../static-assets/styles.css?v1">
+  <link rel="icon" href="../static-assets/favicon.png?v1">
+  
+</head>
+
+<body data-base-href="../" data-using-base-href="false" class="light-theme">
+<div id="overlay-under-drawer"></div>
+<header id="title">
+  <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li><a href="../index.html">ytmusicapi_dart</a></li>
+    <li><a href="../auth_browser/">auth&#47;browser.dart</a></li>
+    <li class="self-crumb">setupBrowser function</li>
+  </ol>
+  <div class="self-name">setupBrowser</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+  <button class="toggle" id="theme-button" title="Toggle between light and dark mode" aria-label="Light and dark mode toggle">
+    <span id="dark-theme-button" class="material-symbols-outlined" aria-hidden="true">
+      dark_mode
+    </span>
+    <span id="light-theme-button" class="material-symbols-outlined" aria-hidden="true">
+      light_mode
+    </span>
+  </button>
+</header>
+<main>
+  <div
+      id="dartdoc-main-content"
+      class="main-content"
+      data-above-sidebar="auth_browser&#47;auth_browser-library-sidebar.html"
+      data-below-sidebar="">
+      <div>
+<h1><span class="kind-function">setupBrowser</span> function 
+ 
+</h1></div>
+
+    <section class="multi-line-signature">
+        
+<span class="returntype"><a href="https://api.dart.dev/stable/3.9.4/dart-core/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.dart.dev/stable/3.9.4/dart-core/String-class.html">String</a></span>&gt;</span></span>
+<span class="name ">setupBrowser</span>(<wbr>{<ol class="parameter-list"> <li><span class="parameter" id="setupBrowser-param-filepath"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">filepath</span>, </span></li>
+<li><span class="parameter" id="setupBrowser-param-headersRaw"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">headersRaw</span>, </span></li>
+</ol>})
+
+        
+
+    </section>
+    
+<section class="desc markdown">
+  <p>Set up Browser authentication.</p>
+</section>
+
+
+    
+<section class="summary source-code" id="source">
+  <h2><span>Implementation</span></h2>
+  <pre class="language-dart"><code class="language-dart">Future&lt;String&gt; setupBrowser({String? filepath, String? headersRaw}) async {
+  List&lt;String&gt; contents = [];
+
+  if (headersRaw == null) {
+    final eof = io.Platform.isWindows ? &quot;&#39;Enter, Ctrl-Z, Enter&#39;&quot; : &#39;Ctrl-D&#39;;
+    &#47;&#47; ignore: avoid_print
+    print(
+      &#39;Please paste the request headers from your browser and press $eof to continue:&#39;,
+    );
+
+    while (true) {
+      try {
+        final line = stdin.readLineSync();
+        if (line == null) break;
+        contents.add(line);
+      } catch (_) {
+        break;
+      }
+    }
+  } else {
+    contents = headersRaw.split(&#39;\n&#39;);
+  }
+
+  final Map&lt;String, String&gt; userHeaders = {};
+  String chromeRememberedKey = &#39;&#39;;
+
+  try {
+    for (final content in contents) {
+      final header = content.split(&#39;: &#39;);
+      if (header[0].startsWith(&#39;:&#39;)) {
+        &#47;&#47; nothing was split or chromium headers
+        continue;
+      }
+      if (header[0].endsWith(&#39;:&#39;)) {
+        &#47;&#47; weird new chrome &quot;copy-paste in separate lines&quot; format
+        chromeRememberedKey = content.replaceAll(&#39;:&#39;, &#39;&#39;);
+      }
+      if (header.length == 1) {
+        if (chromeRememberedKey.isNotEmpty) {
+          userHeaders[chromeRememberedKey] = header[0];
+        }
+        continue;
+      }
+      userHeaders[header[0].toLowerCase()] = header.sublist(1).join(&#39;: &#39;);
+    }
+  } catch (e) {
+    throw YTMusicError(
+      &#39;Error parsing your input, please try again. Full error: $e&#39;,
+    );
+  }
+
+  final missingHeaders = {
+    &#39;cookie&#39;,
+    &#39;x-goog-authuser&#39;,
+  }.difference(userHeaders.keys.map((k) =&gt; k.toLowerCase()).toSet());
+  if (missingHeaders.isNotEmpty) {
+    throw YTMusicUserError(
+      &#39;The following entries are missing in your headers: ${missingHeaders.join(&#39;, &#39;)}. &#39;
+      &#39;Please try a different request (such as &#47;browse) and make sure you are logged in.&#39;,
+    );
+  }
+
+  final ignoreHeaders = {&#39;host&#39;, &#39;content-length&#39;, &#39;accept-encoding&#39;};
+  for (final key in List&lt;String&gt;.from(userHeaders.keys)) {
+    if (key.startsWith(&#39;sec&#39;) || ignoreHeaders.contains(key)) {
+      userHeaders.remove(key);
+    }
+  }
+
+  final initHeaders = initializeHeaders();
+  userHeaders.addAll(initHeaders);
+  final headers = userHeaders;
+
+  if (filepath != null) {
+    final file = File(filepath);
+    await file.writeAsString(
+      const JsonEncoder.withIndent(&#39;    &#39;).convert(headers),
+    );
+  }
+
+  return jsonEncode(headers);
+}</code></pre>
+</section>
+
+
+  </div> <!-- /.main-content -->
+  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+    <!-- The search input and breadcrumbs below are only responsively visible at low resolutions. -->
+<header id="header-search-sidebar" class="hidden-l">
+  <form class="search-sidebar" role="search">
+    <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+<ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+    <li><a href="../index.html">ytmusicapi_dart</a></li>
+    <li><a href="../auth_browser/">browser</a></li>
+    <li class="self-crumb">setupBrowser function</li>
+</ol>
+
+    <h5>browser library</h5>
+    <div id="dartdoc-sidebar-left-content"></div>
+  </div><!--/.sidebar-offcanvas-left-->
+  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+  </div><!--/.sidebar-offcanvas-->
+</main>
+<footer>
+  <span class="no-break">
+    ytmusicapi_dart
+      2.0.0
+  </span>
+  
+</footer>
+
+
+<script src="../static-assets/highlight.pack.js?v1"></script>
+<script src="../static-assets/docs.dart.js"></script>
+
+</body>
+</html>
+

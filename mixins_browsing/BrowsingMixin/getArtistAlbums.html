@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="description" content="API docs for the getArtistAlbums method from the BrowsingMixin mixin, for the Dart programming language.">
+  <title>getArtistAlbums method - BrowsingMixin mixin - browsing library - Dart API</title>
+
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../../static-assets/github.css?v1">
+  <link rel="stylesheet" href="../../static-assets/styles.css?v1">
+  <link rel="icon" href="../../static-assets/favicon.png?v1">
+  
+</head>
+
+<body data-base-href="../../" data-using-base-href="false" class="light-theme">
+<div id="overlay-under-drawer"></div>
+<header id="title">
+  <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li><a href="../../index.html">ytmusicapi_dart</a></li>
+    <li><a href="../../mixins_browsing/">mixins&#47;browsing.dart</a></li>
+    <li><a href="../../mixins_browsing/BrowsingMixin-mixin.html">BrowsingMixin</a></li>
+    <li class="self-crumb">getArtistAlbums method</li>
+  </ol>
+  <div class="self-name">getArtistAlbums</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+  <button class="toggle" id="theme-button" title="Toggle between light and dark mode" aria-label="Light and dark mode toggle">
+    <span id="dark-theme-button" class="material-symbols-outlined" aria-hidden="true">
+      dark_mode
+    </span>
+    <span id="light-theme-button" class="material-symbols-outlined" aria-hidden="true">
+      light_mode
+    </span>
+  </button>
+</header>
+<main>
+<div
+    id="dartdoc-main-content"
+    class="main-content"
+    data-above-sidebar="mixins_browsing&#47;BrowsingMixin-mixin-sidebar.html"
+    data-below-sidebar="">
+    <div>
+<h1><span class="kind-method">getArtistAlbums</span> method 
+</h1></div>
+
+    <section class="multi-line-signature">
+      
+<span class="returntype"><a href="https://api.dart.dev/stable/3.9.4/dart-core/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.dart.dev/stable/3.9.4/dart-core/List-class.html">List</a></span>&gt;</span></span>
+<span class="name ">getArtistAlbums</span>(<wbr><ol class="parameter-list"> <li><span class="parameter" id="getArtistAlbums-param-channelId"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/String-class.html">String</a></span> <span class="parameter-name">channelId</span>, </span></li>
+<li><span class="parameter" id="getArtistAlbums-param-params"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/String-class.html">String</a></span> <span class="parameter-name">params</span>, {</span></li>
+<li><span class="parameter" id="getArtistAlbums-param-limit"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/int-class.html">int</a>?</span> <span class="parameter-name">limit</span> = <span class="default-value">100</span>, </span></li>
+<li><span class="parameter" id="getArtistAlbums-param-order"><span class="type-annotation"><a href="../../enums/ArtistOrderType.html">ArtistOrderType</a>?</span> <span class="parameter-name">order</span>, </span></li>
+</ol>})
+
+      
+
+    </section>
+    
+<section class="desc markdown">
+  <p>Get the full list of an artist's albums, singles or shows.</p>
+<ul>
+<li><code>channelId</code> <code>browseId</code> of the artist as returned by <a href="../../mixins_browsing/BrowsingMixin/getArtist.html">getArtist</a>.</li>
+<li><code>params</code> Params obtained by <a href="../../mixins_browsing/BrowsingMixin/getArtist.html">getArtist</a>.</li>
+<li><code>limit</code> Number of albums to return. <code>null</code> retrieves them all. (Default: <code>100</code>).</li>
+<li><code>order</code> Order of albums to return. (Default: default order).</li>
+</ul>
+<p>Returns List of albums in the format of <code>getLibraryAlbums</code>, except <code>artists</code> key is missing. // TODO getLibraryAlbums is currently missing</p>
+</section>
+
+
+    
+<section class="summary source-code" id="source">
+  <h2><span>Implementation</span></h2>
+  <pre class="language-dart"><code class="language-dart">Future&lt;List&gt; getArtistAlbums(
+  String channelId,
+  String params, {
+  int? limit = 100,
+  ArtistOrderType? order,
+}) async {
+  const endpoint = &#39;browse&#39;;
+  final body = &lt;String, dynamic&gt;{&#39;browseId&#39;: channelId, &#39;params&#39;: params};
+  var response = await sendRequest(endpoint, body);
+
+  Future&lt;JsonMap&gt; requestFunc(String additionalParams) =&gt;
+      sendRequest(endpoint, body, additionalParams: additionalParams);
+
+  List parseFunc(List&lt;JsonMap&gt; contents) =&gt; parseAlbums(contents);
+
+  JsonMap results;
+  if (order != null) {
+    &#47;&#47; pick the correct continuation from response depending on the order chosen
+    final sortOptions =
+        nav(response, [
+              ...SINGLE_COLUMN_TAB,
+              ...SECTION,
+              ...HEADER_SIDE,
+              &#39;endItems&#39;,
+              0,
+              &#39;musicSortFilterButtonRenderer&#39;,
+              &#39;menu&#39;,
+              &#39;musicMultiSelectMenuRenderer&#39;,
+              &#39;options&#39;,
+            ])
+            as List;
+    final continuation =
+        sortOptions
+                .where(
+                  (option) =&gt;
+                      (nav(option, [...MULTI_SELECT, ...TITLE_TEXT])
+                              as String)
+                          .toLowerCase() ==
+                      order.value.toLowerCase(),
+                )
+                .map(
+                  (option) =&gt; nav(option, [
+                    ...MULTI_SELECT,
+                    &#39;selectedCommand&#39;,
+                    &#39;commandExecutorCommand&#39;,
+                    &#39;commands&#39;,
+                    -1,
+                    &#39;browseSectionListReloadEndpoint&#39;,
+                  ]),
+                )
+                .cast&lt;dynamic&gt;()
+                .firstWhere((result) =&gt; result != null, orElse: () =&gt; null)
+            as JsonMap?;
+    &#47;&#47; if a valid order was provided, request continuation and replace original response
+    if (continuation != null) {
+      final additionalParams = getReloadableContinuationParams({
+        &#39;continuations&#39;: [continuation[&#39;continuation&#39;]],
+      });
+      response = await requestFunc(additionalParams);
+
+      results =
+          nav(response, [...SECTION_LIST_CONTINUATION, ...CONTENT])
+              as JsonMap;
+    } else {
+      throw Exception(&#39;Invalid order parameter $order&#39;);
+    }
+  } else {
+    &#47;&#47; just use the results from the first request
+    results =
+        nav(response, [...SINGLE_COLUMN_TAB, ...SECTION_LIST_ITEM])
+            as JsonMap;
+  }
+
+  final contents =
+      nav(results, GRID_ITEMS, nullIfAbsent: true) ??
+      nav(results, CAROUSEL_CONTENTS);
+  final albums = parseAlbums(List&lt;JsonMap&gt;.from(contents as List));
+
+  final remainingResults = nav(results, GRID, nullIfAbsent: true) as JsonMap;
+  if (remainingResults.containsKey(&#39;continuations&#39;)) {
+    final remainingLimit = limit == null ? null : limit - albums.length;
+    albums.addAll(
+      await getContinuations(
+        remainingResults,
+        &#39;gridContinuation&#39;,
+        remainingLimit,
+        requestFunc,
+        parseFunc,
+      ),
+    );
+  }
+
+  return albums;
+}</code></pre>
+</section>
+
+
+  </div> <!-- /.main-content -->
+  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+    <!-- The search input and breadcrumbs below are only responsively visible at low resolutions. -->
+<header id="header-search-sidebar" class="hidden-l">
+  <form class="search-sidebar" role="search">
+    <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+<ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+    <li><a href="../../index.html">ytmusicapi_dart</a></li>
+    <li><a href="../../mixins_browsing/">browsing</a></li>
+    <li><a href="../../mixins_browsing/BrowsingMixin-mixin.html">BrowsingMixin</a></li>
+    <li class="self-crumb">getArtistAlbums method</li>
+</ol>
+
+    <h5>BrowsingMixin mixin</h5>
+    <div id="dartdoc-sidebar-left-content"></div>
+  </div><!--/.sidebar-offcanvas-->
+  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+</div><!--/.sidebar-offcanvas-->
+</main>
+<footer>
+  <span class="no-break">
+    ytmusicapi_dart
+      2.0.0
+  </span>
+  
+</footer>
+
+
+<script src="../../static-assets/highlight.pack.js?v1"></script>
+<script src="../../static-assets/docs.dart.js"></script>
+
+</body>
+</html>
+

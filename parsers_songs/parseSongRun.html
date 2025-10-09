@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="description" content="API docs for the parseSongRun function from the songs library, for the Dart programming language.">
+  <title>parseSongRun function - songs library - Dart API</title>
+
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../static-assets/github.css?v1">
+  <link rel="stylesheet" href="../static-assets/styles.css?v1">
+  <link rel="icon" href="../static-assets/favicon.png?v1">
+  
+</head>
+
+<body data-base-href="../" data-using-base-href="false" class="light-theme">
+<div id="overlay-under-drawer"></div>
+<header id="title">
+  <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li><a href="../index.html">ytmusicapi_dart</a></li>
+    <li><a href="../parsers_songs/">parsers&#47;songs.dart</a></li>
+    <li class="self-crumb">parseSongRun function</li>
+  </ol>
+  <div class="self-name">parseSongRun</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+  <button class="toggle" id="theme-button" title="Toggle between light and dark mode" aria-label="Light and dark mode toggle">
+    <span id="dark-theme-button" class="material-symbols-outlined" aria-hidden="true">
+      dark_mode
+    </span>
+    <span id="light-theme-button" class="material-symbols-outlined" aria-hidden="true">
+      light_mode
+    </span>
+  </button>
+</header>
+<main>
+  <div
+      id="dartdoc-main-content"
+      class="main-content"
+      data-above-sidebar="parsers_songs&#47;parsers_songs-library-sidebar.html"
+      data-below-sidebar="">
+      <div>
+<h1><span class="kind-function">parseSongRun</span> function 
+ 
+</h1></div>
+
+    <section class="multi-line-signature">
+        
+<span class="returntype"><a href="../type_alias/JsonMap.html">JsonMap</a></span>
+<span class="name ">parseSongRun</span>(<wbr><ol class="parameter-list single-line"> <li><span class="parameter" id="parseSongRun-param-run"><span class="type-annotation"><a href="../type_alias/JsonMap.html">JsonMap</a></span> <span class="parameter-name">run</span></span></li>
+</ol>)
+
+        
+
+    </section>
+    
+<section class="desc markdown">
+  <p>Parses song <code>run</code>.</p>
+</section>
+
+
+    
+<section class="summary source-code" id="source">
+  <h2><span>Implementation</span></h2>
+  <pre class="language-dart"><code class="language-dart">JsonMap parseSongRun(JsonMap run) {
+  final text = run[&#39;text&#39;];
+  if (run.containsKey(&#39;navigationEndpoint&#39;)) {
+    final item = {
+      &#39;name&#39;: text,
+      &#39;id&#39;: nav(run, NAVIGATION_BROWSE_ID, nullIfAbsent: true),
+    };
+    final id = item[&#39;id&#39;] as String?;
+    if (id != null &amp;&amp;
+        (id.startsWith(&#39;MPRE&#39;) || id.contains(&#39;release_detail&#39;))) {
+      return {&#39;type&#39;: &#39;album&#39;, &#39;data&#39;: item};
+    } else {
+      return {&#39;type&#39;: &#39;artist&#39;, &#39;data&#39;: item};
+    }
+  } else {
+    &#47;&#47; note: YT uses non-breaking space \xa0 to separate number and magnitude
+    final viewsReg = RegExp(r&#39;^\d([^ ])* [^ ]*$&#39;);
+    final durationReg = RegExp(r&#39;^(\d+:)*\d+:\d+$&#39;);
+    final yearReg = RegExp(r&#39;^\d{4}$&#39;);
+
+    if (viewsReg.hasMatch(text as String)) {
+      return {&#39;type&#39;: &#39;views&#39;, &#39;data&#39;: text.split(&#39; &#39;)[0]};
+    } else if (durationReg.hasMatch(text)) {
+      return {&#39;type&#39;: &#39;duration&#39;, &#39;data&#39;: text};
+    } else if (yearReg.hasMatch(text)) {
+      return {&#39;type&#39;: &#39;year&#39;, &#39;data&#39;: text};
+    } else if (!API_RESULT_TYPES.contains(text.toLowerCase())) {
+      return {
+        &#39;type&#39;: &#39;artist&#39;,
+        &#39;data&#39;: {&#39;name&#39;: text, &#39;id&#39;: null},
+      };
+    } else {
+      return {&#39;type&#39;: &#39;other&#39;, &#39;data&#39;: null};
+    }
+  }
+}</code></pre>
+</section>
+
+
+  </div> <!-- /.main-content -->
+  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+    <!-- The search input and breadcrumbs below are only responsively visible at low resolutions. -->
+<header id="header-search-sidebar" class="hidden-l">
+  <form class="search-sidebar" role="search">
+    <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+<ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+    <li><a href="../index.html">ytmusicapi_dart</a></li>
+    <li><a href="../parsers_songs/">songs</a></li>
+    <li class="self-crumb">parseSongRun function</li>
+</ol>
+
+    <h5>songs library</h5>
+    <div id="dartdoc-sidebar-left-content"></div>
+  </div><!--/.sidebar-offcanvas-left-->
+  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+  </div><!--/.sidebar-offcanvas-->
+</main>
+<footer>
+  <span class="no-break">
+    ytmusicapi_dart
+      2.0.0
+  </span>
+  
+</footer>
+
+
+<script src="../static-assets/highlight.pack.js?v1"></script>
+<script src="../static-assets/docs.dart.js"></script>
+
+</body>
+</html>
+

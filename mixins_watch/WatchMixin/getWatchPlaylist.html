@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="description" content="API docs for the getWatchPlaylist method from the WatchMixin mixin, for the Dart programming language.">
+  <title>getWatchPlaylist method - WatchMixin mixin - watch library - Dart API</title>
+
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../../static-assets/github.css?v1">
+  <link rel="stylesheet" href="../../static-assets/styles.css?v1">
+  <link rel="icon" href="../../static-assets/favicon.png?v1">
+  
+</head>
+
+<body data-base-href="../../" data-using-base-href="false" class="light-theme">
+<div id="overlay-under-drawer"></div>
+<header id="title">
+  <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li><a href="../../index.html">ytmusicapi_dart</a></li>
+    <li><a href="../../mixins_watch/">mixins&#47;watch.dart</a></li>
+    <li><a href="../../mixins_watch/WatchMixin-mixin.html">WatchMixin</a></li>
+    <li class="self-crumb">getWatchPlaylist method</li>
+  </ol>
+  <div class="self-name">getWatchPlaylist</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+  <button class="toggle" id="theme-button" title="Toggle between light and dark mode" aria-label="Light and dark mode toggle">
+    <span id="dark-theme-button" class="material-symbols-outlined" aria-hidden="true">
+      dark_mode
+    </span>
+    <span id="light-theme-button" class="material-symbols-outlined" aria-hidden="true">
+      light_mode
+    </span>
+  </button>
+</header>
+<main>
+<div
+    id="dartdoc-main-content"
+    class="main-content"
+    data-above-sidebar="mixins_watch&#47;WatchMixin-mixin-sidebar.html"
+    data-below-sidebar="">
+    <div>
+<h1><span class="kind-method">getWatchPlaylist</span> method 
+</h1></div>
+
+    <section class="multi-line-signature">
+      
+<span class="returntype"><a href="https://api.dart.dev/stable/3.9.4/dart-core/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../../type_alias/JsonMap.html">JsonMap</a></span>&gt;</span></span>
+<span class="name ">getWatchPlaylist</span>(<wbr>{<ol class="parameter-list"> <li><span class="parameter" id="getWatchPlaylist-param-videoId"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">videoId</span>, </span></li>
+<li><span class="parameter" id="getWatchPlaylist-param-playlistId"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">playlistId</span>, </span></li>
+<li><span class="parameter" id="getWatchPlaylist-param-limit"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/int-class.html">int</a></span> <span class="parameter-name">limit</span> = <span class="default-value">25</span>, </span></li>
+<li><span class="parameter" id="getWatchPlaylist-param-radio"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">radio</span> = <span class="default-value">false</span>, </span></li>
+<li><span class="parameter" id="getWatchPlaylist-param-shuffle"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">shuffle</span> = <span class="default-value">false</span>, </span></li>
+</ol>})
+
+      
+
+    </section>
+    
+<section class="desc markdown">
+  <p>Get a watch list of tracks. This watch playlist appears when you press
+play on a track in YouTube Music.</p>
+<p>Please note that the <code>INDIFFERENT</code> <code>likeStatus</code> of tracks returned by this
+endpoint may be either <code>INDIFFERENT</code> or <code>DISLIKE</code>, due to ambiguous data
+returned by YouTube Music.</p>
+<ul>
+<li><code>videoId</code> <code>videoId</code> of the played video.</li>
+<li><code>playlistId</code> <code>playlistId</code> of the played playlist or album.</li>
+<li><code>limit</code> Minimum number of watch playlist items to return.</li>
+<li><code>radio</code> Get a radio playlist (changes each time).</li>
+<li><code>shuffle</code> Shuffle the input playlist. Only works when the <code>playlistId</code>
+          parameter is set at the same time. Does not work if <code>radio</code>=<code>true</code>.</li>
+</ul>
+<p>Returns List of watch playlist items. The counterpart key is optional and
+only appears if a song has a corresponding video counterpart (UI song/video switcher).</p>
+<p>Example:</p>
+<pre class="language-json"><code class="language-json">{
+  "tracks": [
+    {
+      "videoId": "9mWr4c_ig54",
+      "title": "Foolish Of Me (feat. Jonathan Mendelsohn)",
+      "length": "3:07",
+      "thumbnail": [
+        {
+          "url": "https://lh3.googleusercontent.com/ulK2YaLtOW0PzcN7ufltG6e4ae3WZ9Bvg8CCwhe6LOccu1lCKxJy2r5AsYrsHeMBSLrGJCNpJqXgwczk=w60-h60-l90-rj",
+          "width": 60,
+          "height": 60
+        }...
+      ],
+      "feedbackTokens": {
+        "add": "AB9zfpIGg9XN4u2iJ...",
+        "remove": "AB9zfpJdzWLcdZtC..."
+      },
+      "likeStatus": "INDIFFERENT",
+      "videoType": "MUSIC_VIDEO_TYPE_ATV",
+      "artists": [
+        {
+          "name": "Seven Lions",
+          "id": "UCYd2yzYRx7b9FYnBSlbnknA"
+        },
+        {
+          "name": "Jason Ross",
+          "id": "UCVCD9Iwnqn2ipN9JIF6B-nA"
+        },
+        {
+          "name": "Crystal Skies",
+          "id": "UCTJZESxeZ0J_M7JXyFUVmvA"
+        }
+      ],
+      "album": {
+        "name": "Foolish Of Me",
+        "id": "MPREb_C8aRK1qmsDJ"
+      },
+      "year": "2020",
+      "counterpart": {
+        "videoId": "E0S4W34zFMA",
+        "title": "Foolish Of Me [ABGT404] (feat. Jonathan Mendelsohn)",
+        "length": "3:07",
+        "thumbnail": [...],
+        "feedbackTokens": null,
+        "likeStatus": "LIKE",
+        "artists": [
+          {
+            "name": "Jason Ross",
+            "id": null
+          },
+          {
+            "name": "Seven Lions",
+            "id": null
+          },
+          {
+            "name": "Crystal Skies",
+            "id": null
+          }
+        ],
+        "views": "6.6K"
+      }
+    }
+  ],...
+  "playlistId": "RDAMVM4y33h81phKU",
+  "lyrics": "MPLYt_HNNclO0Ddoc-17"
+}
+</code></pre>
+</section>
+
+
+    
+<section class="summary source-code" id="source">
+  <h2><span>Implementation</span></h2>
+  <pre class="language-dart"><code class="language-dart">Future&lt;JsonMap&gt; getWatchPlaylist({
+  String? videoId,
+  String? playlistId,
+  int limit = 25,
+  bool radio = false,
+  bool shuffle = false,
+}) async {
+  final body = &lt;String, dynamic&gt;{
+    &#39;enablePersistentPlaylistPanel&#39;: true,
+    &#39;isAudioOnly&#39;: true,
+    &#39;tunerSettingValue&#39;: &#39;AUTOMIX_SETTING_NORMAL&#39;,
+  };
+
+  if (videoId == null &amp;&amp; playlistId == null) {
+    throw YTMusicUserError(
+      &#39;You must provide either a video id, a playlist id, or both&#39;,
+    );
+  }
+
+  if (videoId != null) {
+    body[&#39;videoId&#39;] = videoId;
+    playlistId ??= &#39;RDAMVM$videoId&#39;;
+
+    if (!radio &amp;&amp; !shuffle) {
+      body[&#39;watchEndpointMusicSupportedConfigs&#39;] = {
+        &#39;watchEndpointMusicConfig&#39;: {
+          &#39;hasPersistentPlaylistPanel&#39;: true,
+          &#39;musicVideoType&#39;: &#39;MUSIC_VIDEO_TYPE_ATV&#39;,
+        },
+      };
+    }
+  }
+
+  var isPlaylist = false;
+  if (playlistId != null) {
+    final playlistIdValidated = validatePlaylistId(playlistId);
+    isPlaylist =
+        playlistIdValidated.startsWith(&#39;PL&#39;) ||
+        playlistIdValidated.startsWith(&#39;OLA&#39;);
+    body[&#39;playlistId&#39;] = playlistIdValidated;
+  }
+
+  if (shuffle &amp;&amp; playlistId != null) {
+    body[&#39;params&#39;] = &#39;wAEB8gECKAE%3D&#39;;
+  }
+  if (radio) {
+    body[&#39;params&#39;] = &#39;wAEB&#39;;
+  }
+
+  const endpoint = &#39;next&#39;;
+  final response = await sendRequest(endpoint, body);
+
+  final watchNextRenderer = nav(response, [
+    &#39;contents&#39;,
+    &#39;singleColumnMusicWatchNextResultsRenderer&#39;,
+    &#39;tabbedRenderer&#39;,
+    &#39;watchNextTabbedResultsRenderer&#39;,
+  ]);
+
+  final lyricsBrowseId = getTabBrowseId(watchNextRenderer as JsonMap, 1);
+  final relatedBrowseId = getTabBrowseId(watchNextRenderer, 2);
+
+  final results =
+      nav(watchNextRenderer, [
+            ...TAB_CONTENT,
+            &#39;musicQueueRenderer&#39;,
+            &#39;content&#39;,
+            &#39;playlistPanelRenderer&#39;,
+          ], nullIfAbsent: true)
+          as JsonMap?;
+
+  if (results == null) {
+    var msg = &#39;No content returned by the server.&#39;;
+    if (playlistId != null) {
+      msg +=
+          &#39;\nEnsure you have access to $playlistId - a private playlist may cause this.&#39;;
+    }
+    throw YTMusicServerError(msg);
+  }
+
+  final playlistIterable = (results[&#39;contents&#39;] as List)
+      .map(
+        (x) =&gt; nav(x, [
+          &#39;playlistPanelVideoRenderer&#39;,
+          ...NAVIGATION_PLAYLIST_ID,
+        ], nullIfAbsent: true),
+      )
+      .where((x) =&gt; x != null &amp;&amp; x != false);
+
+  final playlist = playlistIterable.isEmpty ? null : playlistIterable.first;
+
+  final tracks = parseWatchPlaylist(
+    List&lt;JsonMap&gt;.from(results[&#39;contents&#39;] as List),
+  );
+
+  if (results.containsKey(&#39;continuations&#39;)) {
+    Future&lt;JsonMap&gt; requestFunc(dynamic additionalParams) =&gt; sendRequest(
+      endpoint,
+      body,
+      additionalParams: additionalParams as String,
+    );
+    List parseFunc(dynamic contents) =&gt;
+        parseWatchPlaylist(List&lt;JsonMap&gt;.from(contents as List));
+
+    tracks.addAll(
+      await getContinuations(
+        results,
+        &#39;playlistPanelContinuation&#39;,
+        limit - tracks.length,
+        requestFunc,
+        parseFunc,
+        additionalParams: isPlaylist ? &#39;&#39; : &#39;Radio&#39;,
+      ),
+    );
+  }
+
+  return {
+    &#39;tracks&#39;: tracks,
+    &#39;playlistId&#39;: playlist,
+    &#39;lyrics&#39;: lyricsBrowseId,
+    &#39;related&#39;: relatedBrowseId,
+  };
+}</code></pre>
+</section>
+
+
+  </div> <!-- /.main-content -->
+  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+    <!-- The search input and breadcrumbs below are only responsively visible at low resolutions. -->
+<header id="header-search-sidebar" class="hidden-l">
+  <form class="search-sidebar" role="search">
+    <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+<ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+    <li><a href="../../index.html">ytmusicapi_dart</a></li>
+    <li><a href="../../mixins_watch/">watch</a></li>
+    <li><a href="../../mixins_watch/WatchMixin-mixin.html">WatchMixin</a></li>
+    <li class="self-crumb">getWatchPlaylist method</li>
+</ol>
+
+    <h5>WatchMixin mixin</h5>
+    <div id="dartdoc-sidebar-left-content"></div>
+  </div><!--/.sidebar-offcanvas-->
+  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+</div><!--/.sidebar-offcanvas-->
+</main>
+<footer>
+  <span class="no-break">
+    ytmusicapi_dart
+      2.0.0
+  </span>
+  
+</footer>
+
+
+<script src="../../static-assets/highlight.pack.js?v1"></script>
+<script src="../../static-assets/docs.dart.js"></script>
+
+</body>
+</html>
+

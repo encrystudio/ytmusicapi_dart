@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="description" content="API docs for the YTMusic class from the ytmusicapi_dart library, for the Dart programming language.">
+  <title>YTMusic class - ytmusicapi_dart library - Dart API</title>
+
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../static-assets/github.css?v1">
+  <link rel="stylesheet" href="../static-assets/styles.css?v1">
+  <link rel="icon" href="../static-assets/favicon.png?v1">
+  
+</head>
+
+<body data-base-href="../" data-using-base-href="false" class="light-theme">
+<div id="overlay-under-drawer"></div>
+<header id="title">
+  <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li><a href="../index.html">ytmusicapi_dart</a></li>
+    <li><a href="../ytmusicapi_dart/">ytmusicapi_dart.dart</a></li>
+    <li class="self-crumb">YTMusic class</li>
+  </ol>
+  <div class="self-name">YTMusic</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+  <button class="toggle" id="theme-button" title="Toggle between light and dark mode" aria-label="Light and dark mode toggle">
+    <span id="dark-theme-button" class="material-symbols-outlined" aria-hidden="true">
+      dark_mode
+    </span>
+    <span id="light-theme-button" class="material-symbols-outlined" aria-hidden="true">
+      light_mode
+    </span>
+  </button>
+</header>
+<main>
+<div
+    id="dartdoc-main-content"
+    class="main-content"
+    data-above-sidebar="ytmusicapi_dart&#47;ytmusicapi_dart-library-sidebar.html"
+    data-below-sidebar="ytmusicapi_dart&#47;YTMusic-class-sidebar.html">
+    <div>
+<h1><span class="kind-class">YTMusic</span> class 
+ 
+</h1></div>
+
+    
+<section class="desc markdown">
+  <p>Allows automated interactions with YouTube Music by emulating the YouTube web client's requests.</p>
+<p>Permits both authenticated and non-authenticated requests.
+Authentication header data must be provided on initialization.</p>
+</section>
+
+
+    <section>
+      <dl class="dl-horizontal">
+        
+  <dt>Inheritance</dt>
+  <dd>
+    <ul class="gt-separated dark clazz-relationships">
+      <li><a href="https://api.dart.dev/stable/3.9.4/dart-core/Object-class.html">Object</a></li>
+        <li><a href="../ytmusicapi_dart/YTMusicBase-class.html">YTMusicBase</a></li>
+      <li>YTMusic</li>
+    </ul>
+  </dd>
+
+        
+        
+  <dt>Mixed-in types</dt>
+  <dd>
+    <ul class="comma-separated clazz-relationships">
+        <li><a href="../mixins_browsing/BrowsingMixin-mixin.html">BrowsingMixin</a></li>
+        <li><a href="../mixins_search/SearchMixin-mixin.html">SearchMixin</a></li>
+        <li><a href="../mixins_watch/WatchMixin-mixin.html">WatchMixin</a></li>
+        <li><a href="../mixins_charts/ChartsMixin-mixin.html">ChartsMixin</a></li>
+        <li><a href="../mixins_explore/ExploreMixin-mixin.html">ExploreMixin</a></li>
+        <li><a href="../mixins_playlists/PlaylistsMixin-mixin.html">PlaylistsMixin</a></li>
+        <li><a href="../mixins_podcasts/PodcastsMixin-mixin.html">PodcastsMixin</a></li>
+    </ul>
+  </dd>
+
+
+        
+        
+
+
+      </dl>
+    </section>
+
+    
+    
+  <section
+      class="summary offset-anchor inherited"
+      id="instance-properties">
+    <h2>Properties</h2>
+    <dl class="properties">
+        <dt id="authType" class="property inherited">
+  <span class="name"><a href="../ytmusicapi_dart/YTMusicBase/authType.html">authType</a></span>
+  <span class="signature">&#8596; <a href="../auth_types/AuthType.html">AuthType</a></span>
+  
+
+</dt>
+<dd class="inherited">
+  Get the authentication type.
+  <div class="features"><span class="feature">getter/setter pair</span><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="hashCode" class="property inherited">
+  <span class="name"><a href="https://api.dart.dev/stable/3.9.4/dart-core/Object/hashCode.html">hashCode</a></span>
+  <span class="signature">&#8594; <a href="https://api.dart.dev/stable/3.9.4/dart-core/int-class.html">int</a></span>
+  
+
+</dt>
+<dd class="inherited">
+  The hash code for this object.
+  <div class="features"><span class="feature">no setter</span><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="headers" class="property inherited">
+  <span class="name"><a href="../ytmusicapi_dart/YTMusicBase/headers.html">headers</a></span>
+  <span class="signature">&#8594; <a href="https://api.dart.dev/stable/3.9.4/dart-core/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.dart.dev/stable/3.9.4/dart-core/Map-class.html">Map</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.dart.dev/stable/3.9.4/dart-core/String-class.html">String</a></span>, <span class="type-parameter"><a href="https://api.dart.dev/stable/3.9.4/dart-core/String-class.html">String</a></span>&gt;</span></span>&gt;</span></span>
+  
+
+</dt>
+<dd class="inherited">
+  Headers property for requests.
+  <div class="features"><span class="feature">no setter</span><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="parser" class="property inherited">
+  <span class="name"><a href="../ytmusicapi_dart/YTMusicBase/parser.html">parser</a></span>
+  <span class="signature">&#8596; <a href="../parsers_i18n/Parser-class.html">Parser</a></span>
+  
+
+</dt>
+<dd class="inherited">
+  Get the i18n parser.
+  <div class="features"><span class="feature">getter/setter pair</span><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="proxy" class="property inherited">
+  <span class="name"><a href="../ytmusicapi_dart/YTMusicBase/proxy.html">proxy</a></span>
+  <span class="signature">&#8596; <a href="https://api.dart.dev/stable/3.9.4/dart-core/Uri-class.html">Uri</a>?</span>
+  
+
+</dt>
+<dd class="inherited">
+  Get the proxy configuration.
+  <div class="features"><span class="feature">getter/setter pair</span><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="runtimeType" class="property inherited">
+  <span class="name"><a href="https://api.dart.dev/stable/3.9.4/dart-core/Object/runtimeType.html">runtimeType</a></span>
+  <span class="signature">&#8594; <a href="https://api.dart.dev/stable/3.9.4/dart-core/Type-class.html">Type</a></span>
+  
+
+</dt>
+<dd class="inherited">
+  A representation of the runtime type of the object.
+  <div class="features"><span class="feature">no setter</span><span class="feature">inherited</span></div>
+
+</dd>
+
+    </dl>
+  </section>
+
+    
+  <section
+      class="summary offset-anchor inherited"
+      id="instance-methods">
+    <h2>Methods</h2>
+    <dl class="callables">
+        <dt id="addPlaylistItems" class="callable inherited">
+  <span class="name"><a href="../mixins_playlists/PlaylistsMixin/addPlaylistItems.html">addPlaylistItems</a></span><span class="signature">(<wbr><span class="parameter" id="addPlaylistItems-param-playlistId"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/String-class.html">String</a></span> <span class="parameter-name">playlistId</span>, {</span><span class="parameter" id="addPlaylistItems-param-videoIds"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/List-class.html">List</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.dart.dev/stable/3.9.4/dart-core/String-class.html">String</a></span>&gt;</span>?</span> <span class="parameter-name">videoIds</span>, </span><span class="parameter" id="addPlaylistItems-param-sourcePlaylist"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">sourcePlaylist</span>, </span><span class="parameter" id="addPlaylistItems-param-duplicates"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">duplicates</span> = <span class="default-value">false</span></span>})
+    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/3.9.4/dart-core/Future-class.html">Future</a></span>
+  </span>
+  
+
+</dt>
+<dd class="inherited">
+  Add songs to an existing playlist.
+  <div class="features"><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="asMobile" class="callable inherited">
+  <span class="name"><a href="../ytmusicapi_dart/YTMusicBase/asMobile.html">asMobile</a></span><span class="signature">&lt;<wbr><span class="type-parameter">T</span>&gt;</span><span class="signature">(<wbr><span class="parameter" id="asMobile-param-callback"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter">T</span>&gt;</span></span> <span class="parameter-name">callback</span>()</span>)
+    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/3.9.4/dart-core/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter">T</span>&gt;</span></span>
+  </span>
+  
+
+</dt>
+<dd class="inherited">
+  Set client temporary as YouTube Music Mobile app for sending request.
+  <div class="features"><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="checkAuth" class="callable inherited">
+  <span class="name"><a href="../ytmusicapi_dart/YTMusicBase/checkAuth.html">checkAuth</a></span><span class="signature">(<wbr>)
+    <span class="returntype parameter">&#8594; void</span>
+  </span>
+  
+
+</dt>
+<dd class="inherited">
+  Checks if the user has provided authorization credentials.
+  <div class="features"><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="close" class="callable inherited">
+  <span class="name"><a href="../ytmusicapi_dart/YTMusicBase/close.html">close</a></span><span class="signature">(<wbr>{<span class="parameter" id="close-param-force"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">force</span> = <span class="default-value">true</span></span>})
+    <span class="returntype parameter">&#8594; void</span>
+  </span>
+  
+
+</dt>
+<dd class="inherited">
+  Closes the session.
+  <div class="features"><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="createPlaylist" class="callable inherited">
+  <span class="name"><a href="../mixins_playlists/PlaylistsMixin/createPlaylist.html">createPlaylist</a></span><span class="signature">(<wbr><span class="parameter" id="createPlaylist-param-title"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/String-class.html">String</a></span> <span class="parameter-name">title</span>, </span><span class="parameter" id="createPlaylist-param-description"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/String-class.html">String</a></span> <span class="parameter-name">description</span>, {</span><span class="parameter" id="createPlaylist-param-privacyStatus"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/String-class.html">String</a></span> <span class="parameter-name">privacyStatus</span> = <span class="default-value">&#39;PRIVATE&#39;</span>, </span><span class="parameter" id="createPlaylist-param-videoIds"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/List-class.html">List</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.dart.dev/stable/3.9.4/dart-core/String-class.html">String</a></span>&gt;</span>?</span> <span class="parameter-name">videoIds</span>, </span><span class="parameter" id="createPlaylist-param-sourcePlaylist"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">sourcePlaylist</span></span>})
+    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/3.9.4/dart-core/Future-class.html">Future</a></span>
+  </span>
+  
+
+</dt>
+<dd class="inherited">
+  Creates a new empty playlist and returns its id.
+  <div class="features"><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="deletePlaylist" class="callable inherited">
+  <span class="name"><a href="../mixins_playlists/PlaylistsMixin/deletePlaylist.html">deletePlaylist</a></span><span class="signature">(<wbr><span class="parameter" id="deletePlaylist-param-playlistId"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/String-class.html">String</a></span> <span class="parameter-name">playlistId</span></span>)
+    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/3.9.4/dart-core/Future-class.html">Future</a></span>
+  </span>
+  
+
+</dt>
+<dd class="inherited">
+  Delete a playlist.
+  <div class="features"><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="editPlaylist" class="callable inherited">
+  <span class="name"><a href="../mixins_playlists/PlaylistsMixin/editPlaylist.html">editPlaylist</a></span><span class="signature">(<wbr><span class="parameter" id="editPlaylist-param-playlistId"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/String-class.html">String</a></span> <span class="parameter-name">playlistId</span>, {</span><span class="parameter" id="editPlaylist-param-title"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">title</span>, </span><span class="parameter" id="editPlaylist-param-description"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">description</span>, </span><span class="parameter" id="editPlaylist-param-privacyStatus"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">privacyStatus</span>, </span><span class="parameter" id="editPlaylist-param-moveItem"><span class="type-annotation">dynamic</span> <span class="parameter-name">moveItem</span>, </span><span class="parameter" id="editPlaylist-param-addPlaylistId"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">addPlaylistId</span>, </span><span class="parameter" id="editPlaylist-param-addToTop"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/bool-class.html">bool</a>?</span> <span class="parameter-name">addToTop</span></span>})
+    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/3.9.4/dart-core/Future-class.html">Future</a></span>
+  </span>
+  
+
+</dt>
+<dd class="inherited">
+  Edit <code>title</code>, <code>description</code> or <code>privacyStatus</code> of a playlist.
+  <div class="features"><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="getAlbum" class="callable inherited">
+  <span class="name"><a href="../mixins_browsing/BrowsingMixin/getAlbum.html">getAlbum</a></span><span class="signature">(<wbr><span class="parameter" id="getAlbum-param-browseId"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/String-class.html">String</a></span> <span class="parameter-name">browseId</span>, {</span><span class="parameter" id="getAlbum-param-requestData"><span class="type-annotation"><a href="../type_alias/JsonMap.html">JsonMap</a>?</span> <span class="parameter-name">requestData</span></span>})
+    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/3.9.4/dart-core/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../type_alias/JsonMap.html">JsonMap</a></span>&gt;</span></span>
+  </span>
+  
+
+</dt>
+<dd class="inherited">
+  Get information and tracks of an album.
+  <div class="features"><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="getAlbumBrowseId" class="callable inherited">
+  <span class="name"><a href="../mixins_browsing/BrowsingMixin/getAlbumBrowseId.html">getAlbumBrowseId</a></span><span class="signature">(<wbr><span class="parameter" id="getAlbumBrowseId-param-audioPlaylistId"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/String-class.html">String</a></span> <span class="parameter-name">audioPlaylistId</span></span>)
+    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/3.9.4/dart-core/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.dart.dev/stable/3.9.4/dart-core/String-class.html">String</a>?</span>&gt;</span></span>
+  </span>
+  
+
+</dt>
+<dd class="inherited">
+  Get an album's <code>browseId</code> based on its <code>audioPlaylistId</code>.
+  <div class="features"><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="getArtist" class="callable inherited">
+  <span class="name"><a href="../mixins_browsing/BrowsingMixin/getArtist.html">getArtist</a></span><span class="signature">(<wbr><span class="parameter" id="getArtist-param-channelId"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/String-class.html">String</a></span> <span class="parameter-name">channelId</span></span>)
+    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/3.9.4/dart-core/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../type_alias/JsonMap.html">JsonMap</a></span>&gt;</span></span>
+  </span>
+  
+
+</dt>
+<dd class="inherited">
+  Get information about an artist and their top releases (songs,
+albums, singles, videos, and related artists).
+  <div class="features"><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="getArtistAlbums" class="callable inherited">
+  <span class="name"><a href="../mixins_browsing/BrowsingMixin/getArtistAlbums.html">getArtistAlbums</a></span><span class="signature">(<wbr><span class="parameter" id="getArtistAlbums-param-channelId"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/String-class.html">String</a></span> <span class="parameter-name">channelId</span>, </span><span class="parameter" id="getArtistAlbums-param-params"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/String-class.html">String</a></span> <span class="parameter-name">params</span>, {</span><span class="parameter" id="getArtistAlbums-param-limit"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/int-class.html">int</a>?</span> <span class="parameter-name">limit</span> = <span class="default-value">100</span>, </span><span class="parameter" id="getArtistAlbums-param-order"><span class="type-annotation"><a href="../enums/ArtistOrderType.html">ArtistOrderType</a>?</span> <span class="parameter-name">order</span></span>})
+    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/3.9.4/dart-core/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.dart.dev/stable/3.9.4/dart-core/List-class.html">List</a></span>&gt;</span></span>
+  </span>
+  
+
+</dt>
+<dd class="inherited">
+  Get the full list of an artist's albums, singles or shows.
+  <div class="features"><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="getBaseJsUrl" class="callable inherited">
+  <span class="name"><a href="../mixins_browsing/BrowsingMixin/getBaseJsUrl.html">getBaseJsUrl</a></span><span class="signature">(<wbr>)
+    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/3.9.4/dart-core/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.dart.dev/stable/3.9.4/dart-core/String-class.html">String</a></span>&gt;</span></span>
+  </span>
+  
+
+</dt>
+<dd class="inherited">
+  Extract the URL for the <code>base.js</code> script from YouTube Music.
+  <div class="features"><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="getChannel" class="callable inherited">
+  <span class="name"><a href="../mixins_podcasts/PodcastsMixin/getChannel.html">getChannel</a></span><span class="signature">(<wbr><span class="parameter" id="getChannel-param-channelId"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/String-class.html">String</a></span> <span class="parameter-name">channelId</span></span>)
+    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/3.9.4/dart-core/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../type_alias/JsonMap.html">JsonMap</a></span>&gt;</span></span>
+  </span>
+  
+
+</dt>
+<dd class="inherited">
+  Get information about a podcast channel (episodes, podcasts).
+  <div class="features"><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="getChannelEpisodes" class="callable inherited">
+  <span class="name"><a href="../mixins_podcasts/PodcastsMixin/getChannelEpisodes.html">getChannelEpisodes</a></span><span class="signature">(<wbr><span class="parameter" id="getChannelEpisodes-param-channelId"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/String-class.html">String</a></span> <span class="parameter-name">channelId</span>, </span><span class="parameter" id="getChannelEpisodes-param-params"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/String-class.html">String</a></span> <span class="parameter-name">params</span></span>)
+    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/3.9.4/dart-core/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.dart.dev/stable/3.9.4/dart-core/List-class.html">List</a></span>&gt;</span></span>
+  </span>
+  
+
+</dt>
+<dd class="inherited">
+  Get all channel episodes. This endpoint is currently unlimited.
+  <div class="features"><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="getCharts" class="callable inherited">
+  <span class="name"><a href="../mixins_charts/ChartsMixin/getCharts.html">getCharts</a></span><span class="signature">(<wbr>{<span class="parameter" id="getCharts-param-country"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/String-class.html">String</a></span> <span class="parameter-name">country</span> = <span class="default-value">&#39;ZZ&#39;</span></span>})
+    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/3.9.4/dart-core/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../type_alias/JsonMap.html">JsonMap</a></span>&gt;</span></span>
+  </span>
+  
+
+</dt>
+<dd class="inherited">
+  Get latest charts data from YouTube Music: Artists and playlists of top videos.
+  <div class="features"><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="getEpisode" class="callable inherited">
+  <span class="name"><a href="../mixins_podcasts/PodcastsMixin/getEpisode.html">getEpisode</a></span><span class="signature">(<wbr><span class="parameter" id="getEpisode-param-videoId"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/String-class.html">String</a></span> <span class="parameter-name">videoId</span></span>)
+    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/3.9.4/dart-core/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../type_alias/JsonMap.html">JsonMap</a></span>&gt;</span></span>
+  </span>
+  
+
+</dt>
+<dd class="inherited">
+  Retrieve episode data for a single episode.
+  <div class="features"><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="getEpisodesPlaylist" class="callable inherited">
+  <span class="name"><a href="../mixins_podcasts/PodcastsMixin/getEpisodesPlaylist.html">getEpisodesPlaylist</a></span><span class="signature">(<wbr>{<span class="parameter" id="getEpisodesPlaylist-param-playlistId"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/String-class.html">String</a></span> <span class="parameter-name">playlistId</span> = <span class="default-value">&#39;RDPN&#39;</span></span>})
+    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/3.9.4/dart-core/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../type_alias/JsonMap.html">JsonMap</a></span>&gt;</span></span>
+  </span>
+  
+
+</dt>
+<dd class="inherited">
+  Get all episodes in an episodes playlist.
+  <div class="features"><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="getExplore" class="callable inherited">
+  <span class="name"><a href="../mixins_explore/ExploreMixin/getExplore.html">getExplore</a></span><span class="signature">(<wbr>)
+    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/3.9.4/dart-core/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../type_alias/JsonMap.html">JsonMap</a></span>&gt;</span></span>
+  </span>
+  
+
+</dt>
+<dd class="inherited">
+  Get latest explore data from YouTube Music.
+  <div class="features"><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="getHome" class="callable inherited">
+  <span class="name"><a href="../mixins_browsing/BrowsingMixin/getHome.html">getHome</a></span><span class="signature">(<wbr>{<span class="parameter" id="getHome-param-limit"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/int-class.html">int</a></span> <span class="parameter-name">limit</span> = <span class="default-value">3</span></span>})
+    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/3.9.4/dart-core/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.dart.dev/stable/3.9.4/dart-core/List-class.html">List</a></span>&gt;</span></span>
+  </span>
+  
+
+</dt>
+<dd class="inherited">
+  Get the home page.
+  <div class="features"><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="getLikedSongs" class="callable inherited">
+  <span class="name"><a href="../mixins_playlists/PlaylistsMixin/getLikedSongs.html">getLikedSongs</a></span><span class="signature">(<wbr>{<span class="parameter" id="getLikedSongs-param-limit"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/int-class.html">int</a></span> <span class="parameter-name">limit</span> = <span class="default-value">100</span></span>})
+    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/3.9.4/dart-core/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../type_alias/JsonMap.html">JsonMap</a></span>&gt;</span></span>
+  </span>
+  
+
+</dt>
+<dd class="inherited">
+  Gets playlist items for the 'Liked Songs' playlist.
+  <div class="features"><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="getLyrics" class="callable inherited">
+  <span class="name"><a href="../mixins_browsing/BrowsingMixin/getLyrics.html">getLyrics</a></span><span class="signature">(<wbr><span class="parameter" id="getLyrics-param-browseId"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/String-class.html">String</a></span> <span class="parameter-name">browseId</span>, {</span><span class="parameter" id="getLyrics-param-timestamps"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">timestamps</span> = <span class="default-value">false</span></span>})
+    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/3.9.4/dart-core/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../type_alias/JsonMap.html">JsonMap</a>?</span>&gt;</span></span>
+  </span>
+  
+
+</dt>
+<dd class="inherited">
+  Returns lyrics of a song or video. When <code>timestamps</code> is set, lyrics are returned with timestamps, if available.
+  <div class="features"><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="getMoodCategories" class="callable inherited">
+  <span class="name"><a href="../mixins_explore/ExploreMixin/getMoodCategories.html">getMoodCategories</a></span><span class="signature">(<wbr>)
+    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/3.9.4/dart-core/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../type_alias/JsonMap.html">JsonMap</a></span>&gt;</span></span>
+  </span>
+  
+
+</dt>
+<dd class="inherited">
+  Fetch "Moods &amp; Genres" categories from YouTube Music.
+  <div class="features"><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="getMoodPlaylists" class="callable inherited">
+  <span class="name"><a href="../mixins_explore/ExploreMixin/getMoodPlaylists.html">getMoodPlaylists</a></span><span class="signature">(<wbr><span class="parameter" id="getMoodPlaylists-param-params"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/String-class.html">String</a></span> <span class="parameter-name">params</span></span>)
+    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/3.9.4/dart-core/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.dart.dev/stable/3.9.4/dart-core/List-class.html">List</a></span>&gt;</span></span>
+  </span>
+  
+
+</dt>
+<dd class="inherited">
+  Retrieve a list of playlists for a given "Moods &amp; Genres" category.
+  <div class="features"><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="getPlaylist" class="callable inherited">
+  <span class="name"><a href="../mixins_playlists/PlaylistsMixin/getPlaylist.html">getPlaylist</a></span><span class="signature">(<wbr><span class="parameter" id="getPlaylist-param-playlistId"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/String-class.html">String</a></span> <span class="parameter-name">playlistId</span>, {</span><span class="parameter" id="getPlaylist-param-limit"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/int-class.html">int</a>?</span> <span class="parameter-name">limit</span> = <span class="default-value">100</span>, </span><span class="parameter" id="getPlaylist-param-related"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">related</span> = <span class="default-value">false</span>, </span><span class="parameter" id="getPlaylist-param-suggestionsLimit"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/int-class.html">int</a></span> <span class="parameter-name">suggestionsLimit</span> = <span class="default-value">0</span></span>})
+    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/3.9.4/dart-core/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../type_alias/JsonMap.html">JsonMap</a></span>&gt;</span></span>
+  </span>
+  
+
+</dt>
+<dd class="inherited">
+  Returns a list of playlist items.
+  <div class="features"><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="getPodcast" class="callable inherited">
+  <span class="name"><a href="../mixins_podcasts/PodcastsMixin/getPodcast.html">getPodcast</a></span><span class="signature">(<wbr><span class="parameter" id="getPodcast-param-playlistId"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/String-class.html">String</a></span> <span class="parameter-name">playlistId</span>, {</span><span class="parameter" id="getPodcast-param-limit"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/int-class.html">int</a>?</span> <span class="parameter-name">limit</span> = <span class="default-value">100</span></span>})
+    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/3.9.4/dart-core/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../type_alias/JsonMap.html">JsonMap</a></span>&gt;</span></span>
+  </span>
+  
+
+</dt>
+<dd class="inherited">
+  Returns podcast metadata and episodes.
+  <div class="features"><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="getSavedEpisodes" class="callable inherited">
+  <span class="name"><a href="../mixins_playlists/PlaylistsMixin/getSavedEpisodes.html">getSavedEpisodes</a></span><span class="signature">(<wbr>{<span class="parameter" id="getSavedEpisodes-param-limit"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/int-class.html">int</a></span> <span class="parameter-name">limit</span> = <span class="default-value">100</span></span>})
+    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/3.9.4/dart-core/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../type_alias/JsonMap.html">JsonMap</a></span>&gt;</span></span>
+  </span>
+  
+
+</dt>
+<dd class="inherited">
+  Gets playlist items for the 'Liked Songs' playlist.
+  <div class="features"><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="getSearchSuggestions" class="callable inherited">
+  <span class="name"><a href="../mixins_search/SearchMixin/getSearchSuggestions.html">getSearchSuggestions</a></span><span class="signature">(<wbr><span class="parameter" id="getSearchSuggestions-param-query"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/String-class.html">String</a></span> <span class="parameter-name">query</span>, {</span><span class="parameter" id="getSearchSuggestions-param-detailedRuns"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">detailedRuns</span> = <span class="default-value">false</span></span>})
+    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/3.9.4/dart-core/Future-class.html">Future</a></span>
+  </span>
+  
+
+</dt>
+<dd class="inherited">
+  Get search suggestions.
+  <div class="features"><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="getSignatureTimestamp" class="callable inherited">
+  <span class="name"><a href="../mixins_browsing/BrowsingMixin/getSignatureTimestamp.html">getSignatureTimestamp</a></span><span class="signature">(<wbr>{<span class="parameter" id="getSignatureTimestamp-param-url"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">url</span></span>})
+    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/3.9.4/dart-core/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.dart.dev/stable/3.9.4/dart-core/int-class.html">int</a></span>&gt;</span></span>
+  </span>
+  
+
+</dt>
+<dd class="inherited">
+  Fetch the <code>base.js</code> script from YouTube Music and parse out the
+<code>signatureTimestamp</code> for use with <a href="../mixins_browsing/BrowsingMixin/getSong.html">getSong</a>.
+  <div class="features"><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="getSong" class="callable inherited">
+  <span class="name"><a href="../mixins_browsing/BrowsingMixin/getSong.html">getSong</a></span><span class="signature">(<wbr><span class="parameter" id="getSong-param-videoId"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/String-class.html">String</a></span> <span class="parameter-name">videoId</span>, {</span><span class="parameter" id="getSong-param-signatureTimestamp"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/int-class.html">int</a>?</span> <span class="parameter-name">signatureTimestamp</span></span>})
+    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/3.9.4/dart-core/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../type_alias/JsonMap.html">JsonMap</a></span>&gt;</span></span>
+  </span>
+  
+
+</dt>
+<dd class="inherited">
+  Returns metadata and streaming information about a song or video.
+  <div class="features"><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="getSongRelated" class="callable inherited">
+  <span class="name"><a href="../mixins_browsing/BrowsingMixin/getSongRelated.html">getSongRelated</a></span><span class="signature">(<wbr><span class="parameter" id="getSongRelated-param-browseId"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/String-class.html">String</a></span> <span class="parameter-name">browseId</span></span>)
+    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/3.9.4/dart-core/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.dart.dev/stable/3.9.4/dart-core/List-class.html">List</a></span>&gt;</span></span>
+  </span>
+  
+
+</dt>
+<dd class="inherited">
+  Gets related content for a song. Equivalent to the content
+shown in the "Related" tab of the watch panel.
+  <div class="features"><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="getTasteProfile" class="callable inherited">
+  <span class="name"><a href="../mixins_browsing/BrowsingMixin/getTasteProfile.html">getTasteProfile</a></span><span class="signature">(<wbr>)
+    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/3.9.4/dart-core/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../type_alias/JsonMap.html">JsonMap</a></span>&gt;</span></span>
+  </span>
+  
+
+</dt>
+<dd class="inherited">
+  Fetches suggested artists from taste profile (music.youtube.com/tasteprofile). Must be authenticated.
+  <div class="features"><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="getUser" class="callable inherited">
+  <span class="name"><a href="../mixins_browsing/BrowsingMixin/getUser.html">getUser</a></span><span class="signature">(<wbr><span class="parameter" id="getUser-param-channelId"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/String-class.html">String</a></span> <span class="parameter-name">channelId</span></span>)
+    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/3.9.4/dart-core/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../type_alias/JsonMap.html">JsonMap</a></span>&gt;</span></span>
+  </span>
+  
+
+</dt>
+<dd class="inherited">
+  Retrieve a user's page. A user may own videos or playlists.
+  <div class="features"><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="getUserPlaylists" class="callable inherited">
+  <span class="name"><a href="../mixins_browsing/BrowsingMixin/getUserPlaylists.html">getUserPlaylists</a></span><span class="signature">(<wbr><span class="parameter" id="getUserPlaylists-param-channelId"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/String-class.html">String</a></span> <span class="parameter-name">channelId</span>, </span><span class="parameter" id="getUserPlaylists-param-params"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/String-class.html">String</a></span> <span class="parameter-name">params</span></span>)
+    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/3.9.4/dart-core/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.dart.dev/stable/3.9.4/dart-core/List-class.html">List</a></span>&gt;</span></span>
+  </span>
+  
+
+</dt>
+<dd class="inherited">
+  Retrieve a list of playlists for a given user.
+  <div class="features"><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="getUserVideos" class="callable inherited">
+  <span class="name"><a href="../mixins_browsing/BrowsingMixin/getUserVideos.html">getUserVideos</a></span><span class="signature">(<wbr><span class="parameter" id="getUserVideos-param-channelId"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/String-class.html">String</a></span> <span class="parameter-name">channelId</span>, </span><span class="parameter" id="getUserVideos-param-params"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/String-class.html">String</a></span> <span class="parameter-name">params</span></span>)
+    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/3.9.4/dart-core/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.dart.dev/stable/3.9.4/dart-core/List-class.html">List</a></span>&gt;</span></span>
+  </span>
+  
+
+</dt>
+<dd class="inherited">
+  Retrieve a list of videos for a given user.
+  <div class="features"><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="getWatchPlaylist" class="callable inherited">
+  <span class="name"><a href="../mixins_watch/WatchMixin/getWatchPlaylist.html">getWatchPlaylist</a></span><span class="signature">(<wbr>{<span class="parameter" id="getWatchPlaylist-param-videoId"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">videoId</span>, </span><span class="parameter" id="getWatchPlaylist-param-playlistId"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">playlistId</span>, </span><span class="parameter" id="getWatchPlaylist-param-limit"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/int-class.html">int</a></span> <span class="parameter-name">limit</span> = <span class="default-value">25</span>, </span><span class="parameter" id="getWatchPlaylist-param-radio"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">radio</span> = <span class="default-value">false</span>, </span><span class="parameter" id="getWatchPlaylist-param-shuffle"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">shuffle</span> = <span class="default-value">false</span></span>})
+    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/3.9.4/dart-core/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../type_alias/JsonMap.html">JsonMap</a></span>&gt;</span></span>
+  </span>
+  
+
+</dt>
+<dd class="inherited">
+  Get a watch list of tracks. This watch playlist appears when you press
+play on a track in YouTube Music.
+  <div class="features"><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="noSuchMethod" class="callable inherited">
+  <span class="name"><a href="https://api.dart.dev/stable/3.9.4/dart-core/Object/noSuchMethod.html">noSuchMethod</a></span><span class="signature">(<wbr><span class="parameter" id="noSuchMethod-param-invocation"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/Invocation-class.html">Invocation</a></span> <span class="parameter-name">invocation</span></span>)
+    <span class="returntype parameter">&#8594; dynamic</span>
+  </span>
+  
+
+</dt>
+<dd class="inherited">
+  Invoked when a nonexistent method or property is accessed.
+  <div class="features"><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="removePlaylistItems" class="callable inherited">
+  <span class="name"><a href="../mixins_playlists/PlaylistsMixin/removePlaylistItems.html">removePlaylistItems</a></span><span class="signature">(<wbr><span class="parameter" id="removePlaylistItems-param-playlistId"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/String-class.html">String</a></span> <span class="parameter-name">playlistId</span>, </span><span class="parameter" id="removePlaylistItems-param-videos"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/List-class.html">List</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../type_alias/JsonMap.html">JsonMap</a></span>&gt;</span></span> <span class="parameter-name">videos</span></span>)
+    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/3.9.4/dart-core/Future-class.html">Future</a></span>
+  </span>
+  
+
+</dt>
+<dd class="inherited">
+  Remove songs from an existing playlist.
+  <div class="features"><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="removeSearchSuggestions" class="callable inherited">
+  <span class="name"><a href="../mixins_search/SearchMixin/removeSearchSuggestions.html">removeSearchSuggestions</a></span><span class="signature">(<wbr><span class="parameter" id="removeSearchSuggestions-param-suggestions"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/List-class.html">List</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../type_alias/JsonMap.html">JsonMap</a></span>&gt;</span></span> <span class="parameter-name">suggestions</span>, {</span><span class="parameter" id="removeSearchSuggestions-param-indices"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/List-class.html">List</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.dart.dev/stable/3.9.4/dart-core/int-class.html">int</a></span>&gt;</span>?</span> <span class="parameter-name">indices</span></span>})
+    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/3.9.4/dart-core/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.dart.dev/stable/3.9.4/dart-core/bool-class.html">bool</a></span>&gt;</span></span>
+  </span>
+  
+
+</dt>
+<dd class="inherited">
+  Remove search suggestion from the user search history.
+  <div class="features"><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="search" class="callable inherited">
+  <span class="name"><a href="../mixins_search/SearchMixin/search.html">search</a></span><span class="signature">(<wbr><span class="parameter" id="search-param-query"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/String-class.html">String</a></span> <span class="parameter-name">query</span>, {</span><span class="parameter" id="search-param-filter"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">filter</span>, </span><span class="parameter" id="search-param-scope"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">scope</span>, </span><span class="parameter" id="search-param-limit"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/int-class.html">int</a></span> <span class="parameter-name">limit</span> = <span class="default-value">20</span>, </span><span class="parameter" id="search-param-ignoreSpelling"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">ignoreSpelling</span> = <span class="default-value">false</span></span>})
+    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/3.9.4/dart-core/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.dart.dev/stable/3.9.4/dart-core/List-class.html">List</a></span>&gt;</span></span>
+  </span>
+  
+
+</dt>
+<dd class="inherited">
+  Search YouTube music.
+  <div class="features"><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="sendGetRequest" class="callable inherited">
+  <span class="name"><a href="../ytmusicapi_dart/YTMusicBase/sendGetRequest.html">sendGetRequest</a></span><span class="signature">(<wbr><span class="parameter" id="sendGetRequest-param-url"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/String-class.html">String</a></span> <span class="parameter-name">url</span>, {</span><span class="parameter" id="sendGetRequest-param-params"><span class="type-annotation"><a href="../type_alias/JsonMap.html">JsonMap</a>?</span> <span class="parameter-name">params</span>, </span><span class="parameter" id="sendGetRequest-param-useBaseHeaders"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">useBaseHeaders</span> = <span class="default-value">false</span></span>})
+    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/3.9.4/dart-core/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://pub.dev/documentation/dio/5.9.0/dio/Response-class.html">Response</a></span>&gt;</span></span>
+  </span>
+  
+
+</dt>
+<dd class="inherited">
+  Send a GET request to YouTube Music.
+  <div class="features"><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="sendRequest" class="callable inherited">
+  <span class="name"><a href="../ytmusicapi_dart/YTMusicBase/sendRequest.html">sendRequest</a></span><span class="signature">(<wbr><span class="parameter" id="sendRequest-param-endpoint"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/String-class.html">String</a></span> <span class="parameter-name">endpoint</span>, </span><span class="parameter" id="sendRequest-param-body"><span class="type-annotation"><a href="../type_alias/JsonMap.html">JsonMap</a></span> <span class="parameter-name">body</span>, {</span><span class="parameter" id="sendRequest-param-additionalParams"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/String-class.html">String</a></span> <span class="parameter-name">additionalParams</span> = <span class="default-value">&#39;&#39;</span></span>})
+    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/3.9.4/dart-core/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../type_alias/JsonMap.html">JsonMap</a></span>&gt;</span></span>
+  </span>
+  
+
+</dt>
+<dd class="inherited">
+  Send a POST request to YouTube Music.
+  <div class="features"><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="setTasteProfile" class="callable inherited">
+  <span class="name"><a href="../mixins_browsing/BrowsingMixin/setTasteProfile.html">setTasteProfile</a></span><span class="signature">(<wbr><span class="parameter" id="setTasteProfile-param-artists"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/List-class.html">List</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.dart.dev/stable/3.9.4/dart-core/String-class.html">String</a></span>&gt;</span></span> <span class="parameter-name">artists</span>, {</span><span class="parameter" id="setTasteProfile-param-tasteProfile"><span class="type-annotation"><a href="../type_alias/JsonMap.html">JsonMap</a>?</span> <span class="parameter-name">tasteProfile</span></span>})
+    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/3.9.4/dart-core/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter">void</span>&gt;</span></span>
+  </span>
+  
+
+</dt>
+<dd class="inherited">
+  Favorites artists to see more recommendations from the artist.
+  <div class="features"><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="toString" class="callable inherited">
+  <span class="name"><a href="https://api.dart.dev/stable/3.9.4/dart-core/Object/toString.html">toString</a></span><span class="signature">(<wbr>)
+    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/3.9.4/dart-core/String-class.html">String</a></span>
+  </span>
+  
+
+</dt>
+<dd class="inherited">
+  A string representation of this object.
+  <div class="features"><span class="feature">inherited</span></div>
+
+</dd>
+
+    </dl>
+  </section>
+    
+  <section
+      class="summary offset-anchor inherited"
+      id="operators">
+    <h2>Operators</h2>
+    <dl class="callables">
+        <dt id="operator ==" class="callable inherited">
+  <span class="name"><a href="https://api.dart.dev/stable/3.9.4/dart-core/Object/operator_equals.html">operator ==</a></span><span class="signature">(<wbr><span class="parameter" id="==-param-other"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/Object-class.html">Object</a></span> <span class="parameter-name">other</span></span>)
+    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/3.9.4/dart-core/bool-class.html">bool</a></span>
+  </span>
+  
+
+</dt>
+<dd class="inherited">
+  The equality operator.
+  <div class="features"><span class="feature">inherited</span></div>
+
+</dd>
+
+    </dl>
+  </section>
+    
+    
+  <section class="summary offset-anchor" id="static-methods">
+    <h2>Static Methods</h2>
+    <dl class="callables">
+        <dt id="create" class="callable">
+  <span class="name"><a href="../ytmusicapi_dart/YTMusic/create.html">create</a></span><span class="signature">(<wbr>{<span class="parameter" id="create-param-auth"><span class="type-annotation">dynamic</span> <span class="parameter-name">auth</span>, </span><span class="parameter" id="create-param-user"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">user</span>, </span><span class="parameter" id="create-param-requestsSession"><span class="type-annotation"><a href="https://pub.dev/documentation/dio/5.9.0/dio/Dio-class.html">Dio</a>?</span> <span class="parameter-name">requestsSession</span>, </span><span class="parameter" id="create-param-proxy"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/Uri-class.html">Uri</a>?</span> <span class="parameter-name">proxy</span>, </span><span class="parameter" id="create-param-language"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/String-class.html">String</a></span> <span class="parameter-name">language</span> = <span class="default-value">&#39;en&#39;</span>, </span><span class="parameter" id="create-param-location"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/String-class.html">String</a></span> <span class="parameter-name">location</span> = <span class="default-value">&#39;&#39;</span>, </span><span class="parameter" id="create-param-oauthCredentials"><span class="type-annotation"><a href="../auth_oauth_credentials/OAuthCredentials-class.html">OAuthCredentials</a>?</span> <span class="parameter-name">oauthCredentials</span></span>})
+    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/3.9.4/dart-core/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../ytmusicapi_dart/YTMusic-class.html">YTMusic</a></span>&gt;</span></span>
+  </span>
+  
+
+</dt>
+<dd>
+  Create a new instance to interact with YouTube Music.
+  
+
+</dd>
+
+    </dl>
+  </section>
+    
+
+  </div> <!-- /.main-content -->
+  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+    <!-- The search input and breadcrumbs below are only responsively visible at low resolutions. -->
+<header id="header-search-sidebar" class="hidden-l">
+  <form class="search-sidebar" role="search">
+    <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+<ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+    <li><a href="../index.html">ytmusicapi_dart</a></li>
+    <li><a href="../ytmusicapi_dart/">ytmusicapi_dart</a></li>
+    <li class="self-crumb">YTMusic class</li>
+</ol>
+
+    <h5>ytmusicapi_dart library</h5>
+    <div id="dartdoc-sidebar-left-content"></div>
+  </div>
+  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+  </div><!--/.sidebar-offcanvas-->
+</main>
+<footer>
+  <span class="no-break">
+    ytmusicapi_dart
+      2.0.0
+  </span>
+  
+</footer>
+
+
+<script src="../static-assets/highlight.pack.js?v1"></script>
+<script src="../static-assets/docs.dart.js"></script>
+
+</body>
+</html>
+

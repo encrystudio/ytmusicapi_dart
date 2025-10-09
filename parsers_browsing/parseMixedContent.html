@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="description" content="API docs for the parseMixedContent function from the browsing library, for the Dart programming language.">
+  <title>parseMixedContent function - browsing library - Dart API</title>
+
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../static-assets/github.css?v1">
+  <link rel="stylesheet" href="../static-assets/styles.css?v1">
+  <link rel="icon" href="../static-assets/favicon.png?v1">
+  
+</head>
+
+<body data-base-href="../" data-using-base-href="false" class="light-theme">
+<div id="overlay-under-drawer"></div>
+<header id="title">
+  <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li><a href="../index.html">ytmusicapi_dart</a></li>
+    <li><a href="../parsers_browsing/">parsers&#47;browsing.dart</a></li>
+    <li class="self-crumb">parseMixedContent function</li>
+  </ol>
+  <div class="self-name">parseMixedContent</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+  <button class="toggle" id="theme-button" title="Toggle between light and dark mode" aria-label="Light and dark mode toggle">
+    <span id="dark-theme-button" class="material-symbols-outlined" aria-hidden="true">
+      dark_mode
+    </span>
+    <span id="light-theme-button" class="material-symbols-outlined" aria-hidden="true">
+      light_mode
+    </span>
+  </button>
+</header>
+<main>
+  <div
+      id="dartdoc-main-content"
+      class="main-content"
+      data-above-sidebar="parsers_browsing&#47;parsers_browsing-library-sidebar.html"
+      data-below-sidebar="">
+      <div>
+<h1><span class="kind-function">parseMixedContent</span> function 
+ 
+</h1></div>
+
+    <section class="multi-line-signature">
+        
+<span class="returntype"><a href="https://api.dart.dev/stable/3.9.4/dart-core/List-class.html">List</a></span>
+<span class="name ">parseMixedContent</span>(<wbr><ol class="parameter-list single-line"> <li><span class="parameter" id="parseMixedContent-param-rows"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/List-class.html">List</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../type_alias/JsonMap.html">JsonMap</a></span>&gt;</span></span> <span class="parameter-name">rows</span></span></li>
+</ol>)
+
+        
+
+    </section>
+    
+<section class="desc markdown">
+  <p>Parse various contents from <code>rows</code>.</p>
+</section>
+
+
+    
+<section class="summary source-code" id="source">
+  <h2><span>Implementation</span></h2>
+  <pre class="language-dart"><code class="language-dart">List parseMixedContent(List&lt;JsonMap&gt; rows) {
+  final items = &lt;dynamic&gt;[];
+
+  for (final row in rows) {
+    List contents;
+    dynamic title;
+
+    if (row.containsKey(DESCRIPTION_SHELF[0])) {
+      final results = nav(row, DESCRIPTION_SHELF);
+      title = nav(results, [&#39;header&#39;, ...RUN_TEXT]);
+      contents = nav(results, DESCRIPTION) as List;
+    } else {
+      final results = row.values.first;
+      if (!(results as JsonMap).containsKey(&#39;contents&#39;)) {
+        continue;
+      }
+      title = nav(results, [...CAROUSEL_TITLE, &#39;text&#39;]);
+      contents = [];
+
+      for (final result in results[&#39;contents&#39;] as Iterable) {
+        final data = nav(result, [MTRIR], nullIfAbsent: true);
+        JsonMap? content;
+
+        if (data != null) {
+          final pageType = nav(data, [
+            ...TITLE,
+            ...NAVIGATION_BROWSE,
+            ...PAGE_TYPE,
+          ], nullIfAbsent: true);
+          if (pageType == null) {
+            if (nav(data, NAVIGATION_WATCH_PLAYLIST_ID, nullIfAbsent: true) !=
+                null) {
+              content = parseWatchPlaylist(data as JsonMap);
+            } else {
+              content = parseSong(data as JsonMap);
+            }
+          } else if (pageType == &#39;MUSIC_PAGE_TYPE_ALBUM&#39;) {
+            content = parseAlbum(data as JsonMap);
+          } else if (pageType == &#39;MUSIC_PAGE_TYPE_ARTIST&#39; ||
+              pageType == &#39;MUSIC_PAGE_TYPE_USER_CHANNEL&#39;) {
+            content = parseRelatedArtist(data as JsonMap);
+          } else if (pageType == &#39;MUSIC_PAGE_TYPE_PLAYLIST&#39;) {
+            content = parsePlaylist(data as JsonMap);
+          } else if (pageType == &#39;MUSIC_PAGE_TYPE_PODCAST_SHOW_DETAIL_PAGE&#39;) {
+            content = parsePodcast(data as JsonMap);
+          }
+        } else if ((nav(result, [MRLIR], nullIfAbsent: true)) != null) {
+          content = parseSongFlat(
+            nav(result, [MRLIR], nullIfAbsent: true) as JsonMap,
+          );
+        } else if ((nav(result, [MMRIR], nullIfAbsent: true)) != null) {
+          content = parseEpisode(
+            nav(result, [MMRIR], nullIfAbsent: true) as JsonMap,
+          );
+        } else {
+          continue;
+        }
+
+        if (content != null) {
+          contents.add(content);
+        }
+      }
+    }
+
+    items.add({&#39;title&#39;: title, &#39;contents&#39;: contents});
+  }
+
+  return items;
+}</code></pre>
+</section>
+
+
+  </div> <!-- /.main-content -->
+  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+    <!-- The search input and breadcrumbs below are only responsively visible at low resolutions. -->
+<header id="header-search-sidebar" class="hidden-l">
+  <form class="search-sidebar" role="search">
+    <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+<ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+    <li><a href="../index.html">ytmusicapi_dart</a></li>
+    <li><a href="../parsers_browsing/">browsing</a></li>
+    <li class="self-crumb">parseMixedContent function</li>
+</ol>
+
+    <h5>browsing library</h5>
+    <div id="dartdoc-sidebar-left-content"></div>
+  </div><!--/.sidebar-offcanvas-left-->
+  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+  </div><!--/.sidebar-offcanvas-->
+</main>
+<footer>
+  <span class="no-break">
+    ytmusicapi_dart
+      2.0.0
+  </span>
+  
+</footer>
+
+
+<script src="../static-assets/highlight.pack.js?v1"></script>
+<script src="../static-assets/docs.dart.js"></script>
+
+</body>
+</html>
+

@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="description" content="API docs for the getExplore method from the ExploreMixin mixin, for the Dart programming language.">
+  <title>getExplore method - ExploreMixin mixin - explore library - Dart API</title>
+
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../../static-assets/github.css?v1">
+  <link rel="stylesheet" href="../../static-assets/styles.css?v1">
+  <link rel="icon" href="../../static-assets/favicon.png?v1">
+  
+</head>
+
+<body data-base-href="../../" data-using-base-href="false" class="light-theme">
+<div id="overlay-under-drawer"></div>
+<header id="title">
+  <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li><a href="../../index.html">ytmusicapi_dart</a></li>
+    <li><a href="../../mixins_explore/">mixins&#47;explore.dart</a></li>
+    <li><a href="../../mixins_explore/ExploreMixin-mixin.html">ExploreMixin</a></li>
+    <li class="self-crumb">getExplore method</li>
+  </ol>
+  <div class="self-name">getExplore</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+  <button class="toggle" id="theme-button" title="Toggle between light and dark mode" aria-label="Light and dark mode toggle">
+    <span id="dark-theme-button" class="material-symbols-outlined" aria-hidden="true">
+      dark_mode
+    </span>
+    <span id="light-theme-button" class="material-symbols-outlined" aria-hidden="true">
+      light_mode
+    </span>
+  </button>
+</header>
+<main>
+<div
+    id="dartdoc-main-content"
+    class="main-content"
+    data-above-sidebar="mixins_explore&#47;ExploreMixin-mixin-sidebar.html"
+    data-below-sidebar="">
+    <div>
+<h1><span class="kind-method">getExplore</span> method 
+</h1></div>
+
+    <section class="multi-line-signature">
+      
+<span class="returntype"><a href="https://api.dart.dev/stable/3.9.4/dart-core/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../../type_alias/JsonMap.html">JsonMap</a></span>&gt;</span></span>
+<span class="name ">getExplore</span>(<wbr>)
+
+      
+
+    </section>
+    
+<section class="desc markdown">
+  <p>Get latest explore data from YouTube Music.</p>
+<p>The Top Songs chart is only returned when authenticated with a premium account.</p>
+<p>Returns Map containing new album releases, top songs (if authenticated with a premium account), moods &amp; genres, popular episodes, trending tracks, and new music videos.</p>
+<p>Example:</p>
+<pre class="language-json"><code class="language-json">{
+  "new_releases": [
+    {
+      "title": "Hangang",
+      "type": "Album",
+      "artists": [
+        {
+          "id": "UCpo4SbqmPXpCVA5RFj-Gq5Q",
+          "name": "Dept"
+        }
+      ],
+      "browseId": "MPREb_rGl39ZNEl95",
+      "audioPlaylistId": "OLAK5uy_mTZAp8a-agh1at-cVUGrwPhTJoM5GnKTk",
+      "thumbnails": [...],
+      "isExplicit": false
+    }
+  ],
+  "top_songs": {
+    "playlist": "VLPL4fGSI1pDJn6O1LS0XSdF3RyO0Rq_LDeI",
+    "items": [
+      {
+        "title": "Outside (Better Days)",
+        "videoId": "oT79YlRtXDg",
+        "artists": [
+          {
+            "name": "MO3",
+            "id": "UCdFt4Cvhr7Okaxo6hZg5K8g"
+          },
+          {
+            "name": "OG Bobby Billions",
+            "id": "UCLusb4T2tW3gOpJS1fJ-A9g"
+          }
+        ],
+        "thumbnails": [...],
+        "isExplicit": true,
+        "album": {
+          "name": "Outside (Better Days)",
+          "id": "MPREb_fX4Yv8frUNv"
+        },
+        "rank": "1",
+        "trend": "up"
+      }
+    ]
+  },
+  "moods_and_genres": [
+    {
+      "title": "Chill",
+      "params": "ggMPOg1uXzVuc0dnZlhpV3Ba"
+    }
+  ],
+  "top_episodes": [
+    {
+      "title": "132. Lean Into Failure: How to Make Mistakes That Work | Think Fast, Talk Smart: Communication...",
+      "description": "...",
+      "duration": "25 min",
+      "videoId": "xAEGaW2my7E",
+      "browseId": "MPEDxAEGaW2my7E",
+      "videoType": "MUSIC_VIDEO_TYPE_PODCAST_EPISODE",
+      "date": "Mar 5, 2024",
+      "thumbnails": [...],
+      "podcast": {
+        "id": "UCGwuxdEeCf0TIA2RbPOj-8g",
+        "name": "Stanford Graduate School of Business"
+      }
+    }
+  ],
+  "trending": {
+    "playlist": "VLOLAK5uy_kNWGJvgWVqlt5LsFDL9Sdluly4M8TvGkM",
+    "items": [
+      {
+        "title": "Permission to Dance",
+        "videoId": "CuklIb9d3fI",
+        "playlistId": "OLAK5uy_kNWGJvgWVqlt5LsFDL9Sdluly4M8TvGkM",
+        "artists": [
+          {
+            "name": "BTS",
+            "id": "UC9vrvNSL3xcWGSkV86REBSg"
+          }
+        ],
+        "thumbnails": [...],
+        "isExplicit": false,
+        "views": "108M"
+      }
+    ]
+  },
+  "new_videos": [
+    {
+      "title": "EVERY CHANCE I GET (Official Music Video) (feat. Lil Baby &amp; Lil Durk)",
+      "videoId": "BTivsHlVcGU",
+      "artists": [
+        {
+          "name": "DJ Khaled",
+          "id": "UC0Kgvj5t_c9EMWpEDWJuR1Q"
+        }
+      ],
+      "playlistId": null,
+      "thumbnails": [...],
+      "views": "46M"
+    }
+  ]
+}
+</code></pre>
+</section>
+
+
+    
+<section class="summary source-code" id="source">
+  <h2><span>Implementation</span></h2>
+  <pre class="language-dart"><code class="language-dart">Future&lt;JsonMap&gt; getExplore() async {
+  final body = {&#39;browseId&#39;: &#39;FEmusic_explore&#39;};
+  final response = await sendRequest(&#39;browse&#39;, body);
+  final results = nav(response, [...SINGLE_COLUMN_TAB, ...SECTION_LIST]);
+
+  final explore = &lt;String, dynamic&gt;{};
+
+  for (final result in results as Iterable) {
+    final browseId =
+        nav(result, [
+              ...CAROUSEL,
+              ...CAROUSEL_TITLE,
+              ...NAVIGATION_BROWSE_ID,
+            ], nullIfAbsent: true)
+            as String?;
+    if (browseId == null) continue;
+
+    final contents = nav(result, CAROUSEL_CONTENTS);
+
+    switch (browseId) {
+      case &#39;FEmusic_new_releases_albums&#39;:
+        explore[&#39;new_releases&#39;] = parseContentList(
+          contents as List&lt;JsonMap&gt;,
+          parseAlbum,
+        );
+
+      case &#39;FEmusic_moods_and_genres&#39;:
+        explore[&#39;moods_and_genres&#39;] = [
+          for (final genre in nav(result, CAROUSEL_CONTENTS) as Iterable)
+            {
+              &#39;title&#39;: nav(genre, CATEGORY_TITLE),
+              &#39;params&#39;: nav(genre, CATEGORY_PARAMS),
+            },
+        ];
+
+      case &#39;FEmusic_top_non_music_audio_episodes&#39;:
+        explore[&#39;top_episodes&#39;] = parseContentList(
+          contents as List&lt;JsonMap&gt;,
+          parseChartEpisode,
+          key: MMRIR,
+        );
+
+      case &#39;FEmusic_new_releases_videos&#39;:
+        explore[&#39;new_videos&#39;] = parseContentList(
+          contents as List&lt;JsonMap&gt;,
+          parseVideo,
+        );
+
+      default:
+        if (browseId.startsWith(&#39;VLPL&#39;)) {
+          explore[&#39;top_songs&#39;] = {
+            &#39;playlist&#39;: browseId,
+            &#39;items&#39;: parseContentList(
+              contents as List&lt;JsonMap&gt;,
+              parseChartSong,
+              key: MRLIR,
+            ),
+          };
+        } else if (browseId.startsWith(&#39;VLOLA&#39;)) {
+          explore[&#39;trending&#39;] = {
+            &#39;playlist&#39;: browseId,
+            &#39;items&#39;: parseContentList(
+              contents as List&lt;JsonMap&gt;,
+              parseSongFlat,
+              key: MRLIR,
+            ),
+          };
+        }
+    }
+  }
+
+  return explore;
+}</code></pre>
+</section>
+
+
+  </div> <!-- /.main-content -->
+  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+    <!-- The search input and breadcrumbs below are only responsively visible at low resolutions. -->
+<header id="header-search-sidebar" class="hidden-l">
+  <form class="search-sidebar" role="search">
+    <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+<ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+    <li><a href="../../index.html">ytmusicapi_dart</a></li>
+    <li><a href="../../mixins_explore/">explore</a></li>
+    <li><a href="../../mixins_explore/ExploreMixin-mixin.html">ExploreMixin</a></li>
+    <li class="self-crumb">getExplore method</li>
+</ol>
+
+    <h5>ExploreMixin mixin</h5>
+    <div id="dartdoc-sidebar-left-content"></div>
+  </div><!--/.sidebar-offcanvas-->
+  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+</div><!--/.sidebar-offcanvas-->
+</main>
+<footer>
+  <span class="no-break">
+    ytmusicapi_dart
+      2.0.0
+  </span>
+  
+</footer>
+
+
+<script src="../../static-assets/highlight.pack.js?v1"></script>
+<script src="../../static-assets/docs.dart.js"></script>
+
+</body>
+</html>
+
