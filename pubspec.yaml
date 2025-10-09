@@ -27,3 +27,6 @@ topics:
   - client
   - youtube-api
   - youtube
+
+false_secrets: 
+  - /lib/constants.dart
