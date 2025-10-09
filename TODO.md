@@ -1,4 +1,8 @@
 # TODO
 
-- `year` value is not parsed correctly
-- `duration` value is not parsed correctly for videos
+- port more tests from [ytmusicapi](https://github.com/sigma67/ytmusicapi)
+- test functionalities
+- inline // TODOs
+- library.dart
+- uploads.dart
+- the whole i18n system
