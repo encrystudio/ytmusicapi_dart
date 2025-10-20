@@ -56,7 +56,7 @@
       
 <span class="returntype"><a href="https://api.dart.dev/stable/3.9.4/dart-core/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.dart.dev/stable/3.9.4/dart-core/List-class.html">List</a></span>&gt;</span></span>
 <span class="name ">search</span>(<wbr><ol class="parameter-list"> <li><span class="parameter" id="search-param-query"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/String-class.html">String</a></span> <span class="parameter-name">query</span>, {</span></li>
-<li><span class="parameter" id="search-param-filter"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">filter</span>, </span></li>
+<li><span class="parameter" id="search-param-filter"><span class="type-annotation"><a href="../../enums/SearchFilter.html">SearchFilter</a>?</span> <span class="parameter-name">filter</span>, </span></li>
 <li><span class="parameter" id="search-param-scope"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">scope</span>, </span></li>
 <li><span class="parameter" id="search-param-limit"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/int-class.html">int</a></span> <span class="parameter-name">limit</span> = <span class="default-value">20</span>, </span></li>
 <li><span class="parameter" id="search-param-ignoreSpelling"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">ignoreSpelling</span> = <span class="default-value">false</span>, </span></li>
@@ -72,8 +72,6 @@
 <ul>
 <li><code>query</code> Query string, i.e. 'Oasis Wonderwall'.</li>
 <li><code>filter</code> Filter for item types.
-         Allowed values: <code>songs</code>, <code>videos</code>, <code>albums</code>, <code>artists</code>, <code>playlists</code>,
-         <code>community_playlists</code>, <code>featured_playlists</code>, <code>uploads</code>.
          (Default: Default search, including all types of items).</li>
 <li><code>scope</code> Search scope. Allowed values: <code>library</code>, <code>uploads</code>.
         (Default: Search the public YouTube Music catalogue).
@@ -196,7 +194,7 @@ Normally there are 3 results per <code>resultType</code> and an additional <code
   <h2><span>Implementation</span></h2>
   <pre class="language-dart"><code class="language-dart">Future&lt;List&gt; search(
   String query, {
-  String? filter,
+  SearchFilter? filter,
   String? scope,
   int limit = 20,
   bool ignoreSpelling = false,
@@ -217,12 +215,6 @@ Normally there are 3 results per <code>resultType</code> and an additional <code
     &#39;podcasts&#39;,
     &#39;episodes&#39;,
   ];
-  if (filter != null &amp;&amp; !filters.contains(filter)) {
-    throw YTMusicUserError(
-      &#39;Invalid filter provided. Please use one of the following filters or leave out the parameter: &#39;
-      &#39;${filters.join(&#39;, &#39;)}&#39;,
-    );
-  }
 
   const scopes = [&#39;library&#39;, &#39;uploads&#39;];
   if (scope != null &amp;&amp; !scopes.contains(scope)) {
@@ -240,7 +232,8 @@ Normally there are 3 results per <code>resultType</code> and an additional <code
 
   if (scope == &#39;library&#39; &amp;&amp;
       filter != null &amp;&amp;
-      [&#39;community_playlists&#39;, &#39;featured_playlists&#39;].contains(filter)) {
+      (filter == SearchFilter.community_playlists ||
+          filter == SearchFilter.featured_playlists)) {
     throw YTMusicUserError(
       &#39;$filter cannot be set when searching library. Please use one of the following filters or leave out the parameter: &#39;
       &#39;${filters.sublist(0, 3).followedBy(filters.sublist(5)).join(&#39;, &#39;)}&#39;,
@@ -283,11 +276,14 @@ Normally there are 3 results per <code>resultType</code> and an additional <code
 
   &#47;&#47; set filter for parser
   String? resultType;
-  final String? realFilter;
-  if (filter != null &amp;&amp; filter.contains(&#39;playlists&#39;)) {
-    realFilter = &#39;playlists&#39;;
+  final SearchFilter? realFilter;
+  if (filter != null &amp;&amp;
+      (filter == SearchFilter.playlists ||
+          filter == SearchFilter.featured_playlists ||
+          filter == SearchFilter.community_playlists)) {
+    realFilter = SearchFilter.playlists;
   } else if (scope == &#39;uploads&#39;) {
-    realFilter = &#39;uploads&#39;;
+    realFilter = SearchFilter.uploads;
     resultType = &#39;upload&#39;;
   } else {
     realFilter = filter;
@@ -335,7 +331,9 @@ Normally there are 3 results per <code>resultType</code> and an additional <code
       &#47;&#47; so we take care to not set the result type for that scope
       if (realFilter != null &amp;&amp; scope != &#39;uploads&#39;) {
         resultType =
-            realFilter.substring(0, realFilter.length - 1).toLowerCase();
+            realFilter.name
+                .substring(0, realFilter.name.length - 1)
+                .toLowerCase();
       }
     } else {
       continue;
@@ -403,7 +401,7 @@ Normally there are 3 results per <code>resultType</code> and an additional <code
 <footer>
   <span class="no-break">
     ytmusicapi_dart
-      2.0.0
+      2.1.0
   </span>
   
 </footer>

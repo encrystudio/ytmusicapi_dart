@@ -113,7 +113,12 @@
     searchResult[&#39;title&#39;] = nav(data, TITLE_TEXT);
 
     final runs = nav(data, [&#39;subtitle&#39;, &#39;runs&#39;]) as List;
-    final songInfo = parseSongRuns(runs.sublist(2));
+    final JsonMap songInfo;
+    if (runs.length &gt;= 2) {
+      songInfo = parseSongRuns(runs.sublist(2));
+    } else {
+      songInfo = parseSongRuns(runs);
+    }
     searchResult.addAll(songInfo);
   }
 
@@ -185,7 +190,7 @@
 <footer>
   <span class="no-break">
     ytmusicapi_dart
-      2.0.0
+      2.1.0
   </span>
   
 </footer>
