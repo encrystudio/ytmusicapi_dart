@@ -1,4 +1,5 @@
 import 'package:ytmusicapi_dart/continuations.dart';
+import 'package:ytmusicapi_dart/enums.dart';
 import 'package:ytmusicapi_dart/exceptions.dart';
 import 'package:ytmusicapi_dart/mixins/protocol.dart';
 import 'package:ytmusicapi_dart/navigation.dart';
@@ -13,8 +14,6 @@ mixin SearchMixin on MixinProtocol {
   ///
   /// - [query] Query string, i.e. 'Oasis Wonderwall'.
   /// - [filter] Filter for item types.
-  ///            Allowed values: `songs`, `videos`, `albums`, `artists`, `playlists`,
-  ///            `community_playlists`, `featured_playlists`, `uploads`.
   ///            (Default: Default search, including all types of items).
   /// - [scope] Search scope. Allowed values: `library`, `uploads`.
   ///           (Default: Search the public YouTube Music catalogue).
@@ -132,7 +131,7 @@ mixin SearchMixin on MixinProtocol {
   /// ```
   Future<List> search(
     String query, {
-    String? filter,
+    SearchFilter? filter,
     String? scope,
     int limit = 20,
     bool ignoreSpelling = false,
@@ -153,12 +152,6 @@ mixin SearchMixin on MixinProtocol {
       'podcasts',
       'episodes',
     ];
-    if (filter != null && !filters.contains(filter)) {
-      throw YTMusicUserError(
-        'Invalid filter provided. Please use one of the following filters or leave out the parameter: '
-        '${filters.join(', ')}',
-      );
-    }
 
     const scopes = ['library', 'uploads'];
     if (scope != null && !scopes.contains(scope)) {
@@ -176,7 +169,8 @@ mixin SearchMixin on MixinProtocol {
 
     if (scope == 'library' &&
         filter != null &&
-        ['community_playlists', 'featured_playlists'].contains(filter)) {
+        (filter == SearchFilter.community_playlists ||
+            filter == SearchFilter.featured_playlists)) {
       throw YTMusicUserError(
         '$filter cannot be set when searching library. Please use one of the following filters or leave out the parameter: '
         '${filters.sublist(0, 3).followedBy(filters.sublist(5)).join(', ')}',
@@ -219,11 +213,14 @@ mixin SearchMixin on MixinProtocol {
 
     // set filter for parser
     String? resultType;
-    final String? realFilter;
-    if (filter != null && filter.contains('playlists')) {
-      realFilter = 'playlists';
+    final SearchFilter? realFilter;
+    if (filter != null &&
+        (filter == SearchFilter.playlists ||
+            filter == SearchFilter.featured_playlists ||
+            filter == SearchFilter.community_playlists)) {
+      realFilter = SearchFilter.playlists;
     } else if (scope == 'uploads') {
-      realFilter = 'uploads';
+      realFilter = SearchFilter.uploads;
       resultType = 'upload';
     } else {
       realFilter = filter;
@@ -271,7 +268,9 @@ mixin SearchMixin on MixinProtocol {
         // so we take care to not set the result type for that scope
         if (realFilter != null && scope != 'uploads') {
           resultType =
-              realFilter.substring(0, realFilter.length - 1).toLowerCase();
+              realFilter.name
+                  .substring(0, realFilter.name.length - 1)
+                  .toLowerCase();
         }
       } else {
         continue;

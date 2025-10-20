@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.1.0
+
+- Replaced the search `filter` parameter from a String to an enum for improved type safety and clarity. Code that previously passed a raw string as the search `filter` will no longer compile. You must update your usage to the new `SearchFilter` enum.
+- Added early-stage Dart classes for parsing and deserializing search-related JSON into strongly typed objects. These classes are still under active development and may change in future releases. They are not yet recommended for production use.
+
 ## 2.0.0
 
 - This release is a full rewrite of the library. Many components have been ported from the original Python implementation, and the API and usage have been completely redesigned. Please note: Old APIs are no longer compatible. Refer to the updated README for details on the new structure, available features, and stable functionality.

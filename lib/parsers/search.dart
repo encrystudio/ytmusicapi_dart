@@ -1,3 +1,4 @@
+import 'package:ytmusicapi_dart/enums.dart';
 import 'package:ytmusicapi_dart/helpers.dart';
 import 'package:ytmusicapi_dart/navigation.dart';
 import 'package:ytmusicapi_dart/parsers/albums.dart';
@@ -83,7 +84,12 @@ JsonMap parseTopResult(JsonMap data, List<String> searchResultTypes) {
     searchResult['title'] = nav(data, TITLE_TEXT);
 
     final runs = nav(data, ['subtitle', 'runs']) as List;
-    final songInfo = parseSongRuns(runs.sublist(2));
+    final JsonMap songInfo;
+    if (runs.length >= 2) {
+      songInfo = parseSongRuns(runs.sublist(2));
+    } else {
+      songInfo = parseSongRuns(runs);
+    }
     searchResult.addAll(songInfo);
   }
 
@@ -349,7 +355,11 @@ List parseSearchResults(
 }
 
 /// Get search params for given [filter], [scope] and [ignoreSpelling].
-String? getSearchParams(String? filter, String? scope, bool ignoreSpelling) {
+String? getSearchParams(
+  SearchFilter? filter,
+  String? scope,
+  bool ignoreSpelling,
+) {
   const filteredParam1 = 'EgWKAQ';
   String? params;
   late String param1;
@@ -370,15 +380,17 @@ String? getSearchParams(String? filter, String? scope, bool ignoreSpelling) {
   }
 
   if (scope == null && filter != null) {
-    if (filter == 'playlists') {
+    if (filter == SearchFilter.playlists) {
       params = 'Eg-KAQwIABAAGAAgACgB';
       params +=
           ignoreSpelling
               ? 'MABCAggBagoQBBADEAkQBRAK'
               : 'MABqChAEEAMQCRAFEAo%3D';
-    } else if (filter.contains('playlists')) {
+    } else if (filter == SearchFilter.playlists ||
+        filter == SearchFilter.featured_playlists ||
+        filter == SearchFilter.community_playlists) {
       param1 = 'EgeKAQQoA';
-      param2 = filter == 'featured_playlists' ? 'Dg' : 'EA';
+      param2 = filter == SearchFilter.featured_playlists ? 'Dg' : 'EA';
       param3 =
           ignoreSpelling
               ? 'BQgIIAWoMEA4QChADEAQQCRAF'
@@ -400,7 +412,7 @@ String? getSearchParams(String? filter, String? scope, bool ignoreSpelling) {
   return params ?? (param1 + param2 + param3);
 }
 
-String _getParam2(String filter) {
+String _getParam2(SearchFilter filter) {
   const filterParams = {
     'songs': 'II',
     'videos': 'IQ',
@@ -411,7 +423,7 @@ String _getParam2(String filter) {
     'podcasts': 'JQ',
     'episodes': 'JI',
   };
-  return filterParams[filter]!;
+  return filterParams[filter.name]!;
 }
 
 /// Parses search suggestions.

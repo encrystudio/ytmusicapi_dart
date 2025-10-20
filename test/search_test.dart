@@ -1,6 +1,7 @@
 // ignore_for_file: avoid_dynamic_calls
 
 import 'package:test/test.dart';
+import 'package:ytmusicapi_dart/enums.dart';
 import 'package:ytmusicapi_dart/parsers/search.dart';
 import 'package:ytmusicapi_dart/type_alias.dart';
 import 'package:ytmusicapi_dart/ytmusicapi_dart.dart';
@@ -15,13 +16,6 @@ void main() {
   group('Search Tests', () {
     test('search exceptions', () {
       const query = 'edm playlist';
-
-      expect(
-        () async => await yt.search(query, filter: 'song'),
-        throwsA(
-          predicate((e) => e.toString().contains('Invalid filter provided')),
-        ),
-      );
 
       expect(
         () async => await yt.search(query, scope: 'upload'),
@@ -99,7 +93,7 @@ void main() {
       for (final c in cases) {
         final query = c.$1;
         final expected = c.$2;
-        final results = await yt.search(query, filter: 'albums');
+        final results = await yt.search(query, filter: SearchFilter.albums);
         expect(
           results.any((r) => _mapContainsAll(r as JsonMap, expected)),
           isTrue,
@@ -127,13 +121,16 @@ void main() {
           results.where((r) => r['resultType'] == 'album').length;
       expect(albumCount, lessThanOrEqualTo(10));
 
-      final songResults = await ytLocal.search('ABBA', filter: 'songs');
+      final songResults = await ytLocal.search(
+        'ABBA',
+        filter: SearchFilter.songs,
+      );
       expect(songResults.every((r) => r['resultType'] == 'song'), isTrue);
     });
 
     test('search filters', () async {
       const query = 'hip hop playlist';
-      final resultsSongs = await yt.search(query, filter: 'songs');
+      final resultsSongs = await yt.search(query, filter: SearchFilter.songs);
       expect(resultsSongs.length, greaterThan(10));
       expect(resultsSongs.every((r) => r['views'] != ''), isTrue);
       expect(
@@ -142,7 +139,7 @@ void main() {
       );
       expect(resultsSongs.every((r) => r['resultType'] == 'song'), isTrue);
 
-      final resultsVideos = await yt.search(query, filter: 'videos');
+      final resultsVideos = await yt.search(query, filter: SearchFilter.videos);
       expect(resultsVideos.length, greaterThan(10));
       for (final r in resultsVideos) {
         if (r['videoType'] != 'MUSIC_VIDEO_TYPE_PODCAST_EPISODE') {
