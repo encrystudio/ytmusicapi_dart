@@ -32,16 +32,38 @@ enum ArtistOrderType {
   const ArtistOrderType(this.value);
 }
 
+/// Options for search filter.
 enum SearchFilter {
+  /// Songs.
   songs,
+
+  /// Video.
   videos,
+
+  /// Albums.
   albums,
+
+  /// Artists.
   artists,
+
+  /// Playlists.
   playlists,
+
+  /// Community playlists.
   community_playlists,
+
+  /// Featured playlists.
   featured_playlists,
+
+  /// Uploads.
   uploads,
+
+  /// Profiles.
   profiles,
+
+  /// Podcasts.
   podcasts,
+
+  /// Episodes.
   episodes,
 }
