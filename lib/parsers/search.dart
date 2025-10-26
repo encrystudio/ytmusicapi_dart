@@ -53,6 +53,10 @@ JsonMap parseTopResult(JsonMap data, List<String> searchResultTypes) {
     'category': category,
     'resultType': resultType,
   };
+  if (['song', 'album'].contains(resultType)) {
+    searchResult['isExplicit'] =
+        nav(data, SUBTITLE_BADGE_LABEL, nullIfAbsent: true) != null;
+  }
 
   if (resultType == 'artist') {
     final subscribers = nav(data, SUBTITLE2, nullIfAbsent: true) as String?;

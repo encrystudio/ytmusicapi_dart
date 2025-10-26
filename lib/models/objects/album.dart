@@ -1,6 +1,5 @@
 // ignore_for_file: public_member_api_docs
 
-import 'package:ytmusicapi_dart/exceptions.dart';
 import 'package:ytmusicapi_dart/models/objects/base.dart';
 import 'package:ytmusicapi_dart/type_alias.dart';
 
@@ -26,9 +25,6 @@ class YtAlbum extends YtBaseObject {
   }) : super(type: YtObjectType.ALBUM);
 
   factory YtAlbum.fromJson(JsonMap jsonData) {
-    if (jsonData['category'] == 'Top result') {
-      throw YTMusicError('Top results cannot be parsed here.');
-    }
     return YtAlbum(
       thumbnailData: YtThumbnailData.fromJson(
         List<JsonMap>.from(jsonData['thumbnails'] as List),

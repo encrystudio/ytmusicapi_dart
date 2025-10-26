@@ -1,6 +1,5 @@
 // ignore_for_file: public_member_api_docs
 
-import 'package:ytmusicapi_dart/exceptions.dart';
 import 'package:ytmusicapi_dart/models/objects/base.dart';
 import 'package:ytmusicapi_dart/type_alias.dart';
 
@@ -23,9 +22,6 @@ class YtPlaylist extends YtBaseObject {
   }) : super(type: YtObjectType.PLAYLIST);
 
   factory YtPlaylist.fromJson(JsonMap jsonData) {
-    if (jsonData['category'] == 'Top result') {
-      throw YTMusicError('Top results cannot be parsed here.');
-    }
     return YtPlaylist(
       thumbnailData: YtThumbnailData.fromJson(
         List<JsonMap>.from(jsonData['thumbnails'] as List),
@@ -33,9 +29,17 @@ class YtPlaylist extends YtBaseObject {
       playlistType: YtPlaylistType.fromValue(
         jsonData['category'] as String? ?? 'Playlists',
       ),
-      id: jsonData['browseId'] as String,
+      id: jsonData['browseId'] as String? ?? jsonData['playlistId'] as String,
       title: jsonData['title'] as String,
-      author: jsonData['author'] as String,
+      author:
+          (jsonData['author'] is String)
+              ? jsonData['author'] as String
+              : (List<JsonMap>.from(jsonData['author'] as List)
+                  .map(
+                    (author) =>
+                        YtBaseObject.fromJson(author, 'id', 'name').title,
+                  )
+                  .join(', ')),
 
       duration: jsonData['duration'] as Duration?,
       year:

@@ -1,10 +1,7 @@
 include: package:lint/package.yaml
 
-analyzer:
-  errors:
-    constant_identifier_names: ignore
-
 linter:
   rules:
     prefer_single_quotes: true
     public_member_api_docs: true
+    constant_identifier_names: false

@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.1.1
+
+- Added parsing support for `Top result` as a Dart object.
+- Introduced the `isExplicit` field to songs and albums that appear as the `Top result`, enabling more accurate metadata handling.
+
 ## 2.1.0
 
 - Replaced the search `filter` parameter from a String to an enum for improved type safety and clarity. Code that previously passed a raw string as the search `filter` will no longer compile. You must update your usage to the new `SearchFilter` enum.

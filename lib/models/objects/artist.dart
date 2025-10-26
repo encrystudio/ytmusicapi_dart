@@ -1,6 +1,5 @@
 // ignore_for_file: public_member_api_docs
 
-import 'package:ytmusicapi_dart/exceptions.dart';
 import 'package:ytmusicapi_dart/models/objects/base.dart';
 import 'package:ytmusicapi_dart/type_alias.dart';
 
@@ -18,9 +17,6 @@ class YtArtist extends YtBaseObject {
   }) : super(type: YtObjectType.ARTIST);
 
   factory YtArtist.fromJson(JsonMap jsonData) {
-    if (jsonData['category'] == 'Top result') {
-      throw YTMusicError('Top results cannot be parsed here.');
-    }
     return YtArtist(
       id:
           jsonData['browseId'] as String? ??

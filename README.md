@@ -17,6 +17,38 @@ This project and its authors are **not affiliated with, endorsed by, or sponsore
 This library is provided **for educational and research purposes only**.
 The authors and contributors **assume no responsibility or liability** for any misuse of this software, violation of YouTube’s Terms of Service, or any other damages or consequences arising from its use. **Use at your own risk**.
 
+## Getting started
+
+Add this to your pubspec.yaml file:
+
+```yaml
+dependencies:
+  ytmusicapi_dart: ^2.0.0
+```
+
+Or run this command:
+
+```sh
+dart pub add ytmusicapi_dart
+```
+
+It is possible that YouTube restricts the access to the API after some time. If that happens, you will get an error message. Try again later.
+
+## Usage
+
+```dart
+import 'package:ytmusicapi_dart/ytmusicapi_dart.dart';
+
+Future<void> main() async {
+  final ytmusic = await YTMusic.create();
+  final results = await ytmusic.search('search term');
+  print(results);
+  ytmusic.close();
+}
+```
+
+More examples can be found in the [example folder](/example/).
+
 ## Features
 
 > [!WARNING]
@@ -92,38 +124,6 @@ These features from [sigma67's ytmusicapi](https://github.com/sigma67/ytmusicapi
 #### Localization
 
 - languages other than English
-
-## Getting started
-
-Add this to your pubspec.yaml file:
-
-```yaml
-dependencies:
-  ytmusicapi_dart: ^2.0.0
-```
-
-Or run this command:
-
-```sh
-dart pub add ytmusicapi_dart
-```
-
-It is possible that YouTube restricts the access to the API after some time. If that happens, you will get an error message. Try again later.
-
-## Usage
-
-```dart
-import 'package:ytmusicapi_dart/ytmusicapi_dart.dart';
-
-Future<void> main() async {
-  final ytmusic = await YTMusic.create();
-  final results = await ytmusic.search('search term');
-  print(results);
-  ytmusic.close();
-}
-```
-
-More examples can be found in the [example folder](/example/).
 
 ## Additional information
 

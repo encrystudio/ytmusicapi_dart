@@ -103,7 +103,12 @@ enum YtPlaylistType {
   static YtPlaylistType fromValue(String value) {
     return YtPlaylistType.values.firstWhere(
       (e) => e.value == value,
-      orElse: () => throw FormatException('Invalid value: $value'),
+      orElse: () {
+        if (value == 'Top result') {
+          return YtPlaylistType.PLAYLIST;
+        }
+        throw FormatException('Invalid value: $value');
+      },
     );
   }
 }
@@ -114,11 +119,7 @@ List<YtBaseObject> searchResultToDart(List<dynamic> results) {
   return results
       .where(
         (result) =>
-            ![
-              'episode',
-              'podcast',
-            ].contains((result as JsonMap)['resultType']) &&
-            (result['category'] != 'Top result'),
+            !['episode', 'podcast'].contains((result as JsonMap)['resultType']),
       )
       .map((result) {
         final resultType = (result as JsonMap)['resultType'];
