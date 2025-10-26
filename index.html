@@ -57,6 +57,26 @@ We highly recommend wrapping most API calls in a <code>try-catch</code> block to
 <strong>YouTube, YouTube Music</strong>, and all related trademarks, logos, and brand names are the property of their respective owners.</p>
 <p>This library is provided <strong>for educational and research purposes only</strong>.
 The authors and contributors <strong>assume no responsibility or liability</strong> for any misuse of this software, violation of YouTube’s Terms of Service, or any other damages or consequences arising from its use. <strong>Use at your own risk</strong>.</p>
+<h2 id="getting-started">Getting started</h2>
+<p>Add this to your pubspec.yaml file:</p>
+<pre class="language-yaml"><code class="language-yaml">dependencies:
+  ytmusicapi_dart: ^2.0.0
+</code></pre>
+<p>Or run this command:</p>
+<pre class="language-sh"><code class="language-sh">dart pub add ytmusicapi_dart
+</code></pre>
+<p>It is possible that YouTube restricts the access to the API after some time. If that happens, you will get an error message. Try again later.</p>
+<h2 id="usage">Usage</h2>
+<pre class="language-dart"><code class="language-dart">import 'package:ytmusicapi_dart/ytmusicapi_dart.dart';
+
+Future&lt;void&gt; main() async {
+  final ytmusic = await YTMusic.create();
+  final results = await ytmusic.search('search term');
+  print(results);
+  ytmusic.close();
+}
+</code></pre>
+<p>More examples can be found in the <a href="/example/">example folder</a>.</p>
 <h2 id="features">Features</h2>
 <div class="markdown-alert markdown-alert-warning">
 <p class="markdown-alert-title">Warning</p>
@@ -166,26 +186,6 @@ The authors and contributors <strong>assume no responsibility or liability</stro
 <ul>
 <li>languages other than English</li>
 </ul>
-<h2 id="getting-started">Getting started</h2>
-<p>Add this to your pubspec.yaml file:</p>
-<pre class="language-yaml"><code class="language-yaml">dependencies:
-  ytmusicapi_dart: ^2.0.0
-</code></pre>
-<p>Or run this command:</p>
-<pre class="language-sh"><code class="language-sh">dart pub add ytmusicapi_dart
-</code></pre>
-<p>It is possible that YouTube restricts the access to the API after some time. If that happens, you will get an error message. Try again later.</p>
-<h2 id="usage">Usage</h2>
-<pre class="language-dart"><code class="language-dart">import 'package:ytmusicapi_dart/ytmusicapi_dart.dart';
-
-Future&lt;void&gt; main() async {
-  final ytmusic = await YTMusic.create();
-  final results = await ytmusic.search('search term');
-  print(results);
-  ytmusic.close();
-}
-</code></pre>
-<p>More examples can be found in the <a href="/example/">example folder</a>.</p>
 <h2 id="additional-information">Additional information</h2>
 <p>This package is highly inspired by and ported to Dart from <a href="https://github.com/sigma67/ytmusicapi">sigma67's ytmusicapi</a>, which is licensed under the MIT license, just like this package.
 For additional information, check <a href="https://github.com/sigma67/ytmusicapi">the repository</a>.
@@ -608,7 +608,7 @@ If you want to help (I would appreciate it), implement more functionality from t
 <footer>
   <span class="no-break">
     ytmusicapi_dart
-      2.1.0
+      2.1.1
   </span>
   
 </footer>

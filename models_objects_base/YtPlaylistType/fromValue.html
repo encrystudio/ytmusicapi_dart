@@ -70,7 +70,12 @@
   <pre class="language-dart"><code class="language-dart">static YtPlaylistType fromValue(String value) {
   return YtPlaylistType.values.firstWhere(
     (e) =&gt; e.value == value,
-    orElse: () =&gt; throw FormatException(&#39;Invalid value: $value&#39;),
+    orElse: () {
+      if (value == &#39;Top result&#39;) {
+        return YtPlaylistType.PLAYLIST;
+      }
+      throw FormatException(&#39;Invalid value: $value&#39;);
+    },
   );
 }</code></pre>
 </section>
@@ -100,7 +105,7 @@
 <footer>
   <span class="no-break">
     ytmusicapi_dart
-      2.1.0
+      2.1.1
   </span>
   
 </footer>

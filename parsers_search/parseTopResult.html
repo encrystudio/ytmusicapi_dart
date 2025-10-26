@@ -82,6 +82,10 @@
     &#39;category&#39;: category,
     &#39;resultType&#39;: resultType,
   };
+  if ([&#39;song&#39;, &#39;album&#39;].contains(resultType)) {
+    searchResult[&#39;isExplicit&#39;] =
+        nav(data, SUBTITLE_BADGE_LABEL, nullIfAbsent: true) != null;
+  }
 
   if (resultType == &#39;artist&#39;) {
     final subscribers = nav(data, SUBTITLE2, nullIfAbsent: true) as String?;
@@ -190,7 +194,7 @@
 <footer>
   <span class="no-break">
     ytmusicapi_dart
-      2.1.0
+      2.1.1
   </span>
   
 </footer>

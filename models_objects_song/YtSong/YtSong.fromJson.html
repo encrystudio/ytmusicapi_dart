@@ -64,9 +64,6 @@
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
   <pre class="language-dart"><code class="language-dart">factory YtSong.fromJson(JsonMap jsonData) {
-  if (jsonData[&#39;category&#39;] == &#39;Top result&#39;) {
-    throw YTMusicError(&#39;Top results cannot be parsed here.&#39;);
-  }
   return YtSong(
     thumbnailData: YtThumbnailData.fromJson(
       List&lt;JsonMap&gt;.from(jsonData[&#39;thumbnails&#39;] as List),
@@ -83,9 +80,13 @@
             : null,
     inLibrary: jsonData[&#39;inLibrary&#39;] as bool? ?? false,
     feedbackTokenAdd:
-        (jsonData[&#39;feedbackTokens&#39;] as JsonMap)[&#39;add&#39;] as String?,
+        (jsonData[&#39;feedbackTokens&#39;]) != null
+            ? (jsonData[&#39;feedbackTokens&#39;] as JsonMap)[&#39;add&#39;] as String?
+            : null,
     feedbackTokenRemove:
-        (jsonData[&#39;feedbackTokens&#39;] as JsonMap)[&#39;remove&#39;] as String?,
+        (jsonData[&#39;feedbackTokens&#39;]) != null
+            ? (jsonData[&#39;feedbackTokens&#39;] as JsonMap)[&#39;remove&#39;] as String?
+            : null,
     videoType: VideoType.fromValue(jsonData[&#39;videoType&#39;] as String?),
     durationRaw: jsonData[&#39;duration&#39;] as String?,
     duration:
@@ -96,7 +97,7 @@
         List&lt;JsonMap&gt;.from(jsonData[&#39;artists&#39;] as List)
             .map((artist) =&gt; YtBaseObject.fromJson(artist, &#39;id&#39;, &#39;name&#39;))
             .toList(),
-    views: jsonData[&#39;views&#39;] as String,
+    views: jsonData[&#39;views&#39;] as String?,
     isExplicit: jsonData[&#39;isExplicit&#39;] as bool,
     year:
         (jsonData[&#39;year&#39;] is int)
@@ -133,7 +134,7 @@
 <footer>
   <span class="no-break">
     ytmusicapi_dart
-      2.1.0
+      2.1.1
   </span>
   
 </footer>

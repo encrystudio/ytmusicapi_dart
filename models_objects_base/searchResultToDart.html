@@ -71,11 +71,7 @@
   return results
       .where(
         (result) =&gt;
-            ![
-              &#39;episode&#39;,
-              &#39;podcast&#39;,
-            ].contains((result as JsonMap)[&#39;resultType&#39;]) &amp;&amp;
-            (result[&#39;category&#39;] != &#39;Top result&#39;),
+            ![&#39;episode&#39;, &#39;podcast&#39;].contains((result as JsonMap)[&#39;resultType&#39;]),
       )
       .map((result) {
         final resultType = (result as JsonMap)[&#39;resultType&#39;];
@@ -122,7 +118,7 @@
 <footer>
   <span class="no-break">
     ytmusicapi_dart
-      2.1.0
+      2.1.1
   </span>
   
 </footer>
