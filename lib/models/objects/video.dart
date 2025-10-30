@@ -9,7 +9,7 @@ class YtVideo extends YtBaseObject {
   final String? durationRaw;
   final Duration? duration;
   final List<YtBaseObject> artists;
-  final String views;
+  final String? views;
   final YtThumbnailData thumbnailData;
   final int? year;
 
@@ -42,7 +42,7 @@ class YtVideo extends YtBaseObject {
           List<JsonMap>.from(jsonData['artists'] as List)
               .map((artist) => YtBaseObject.fromJson(artist, 'id', 'name'))
               .toList(),
-      views: jsonData['views'] as String,
+      views: jsonData['views'] as String?,
       year:
           (jsonData['year'] is int)
               ? (jsonData['year'] as int)

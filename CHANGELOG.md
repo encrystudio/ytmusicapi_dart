@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.1.3
+
+- Made the `views` field of the `YtVideo` Dart object nullable to better handle cases where view counts may be unavailable or missing.
+
 ## 2.1.2
 
 - Added support for `MUSIC_VIDEO_TYPE_PODCAST_EPISODE` as a possible `VideoType` in Dart objects.
