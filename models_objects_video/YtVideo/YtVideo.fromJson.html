@@ -80,7 +80,7 @@
         List&lt;JsonMap&gt;.from(jsonData[&#39;artists&#39;] as List)
             .map((artist) =&gt; YtBaseObject.fromJson(artist, &#39;id&#39;, &#39;name&#39;))
             .toList(),
-    views: jsonData[&#39;views&#39;] as String,
+    views: jsonData[&#39;views&#39;] as String?,
     year:
         (jsonData[&#39;year&#39;] is int)
             ? (jsonData[&#39;year&#39;] as int)
@@ -116,7 +116,7 @@
 <footer>
   <span class="no-break">
     ytmusicapi_dart
-      2.1.2
+      2.1.3
   </span>
   
 </footer>
