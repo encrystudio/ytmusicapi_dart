@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.1.2
+
+- Added support for `MUSIC_VIDEO_TYPE_PODCAST_EPISODE` as a possible `VideoType` in Dart objects.
+
 ## 2.1.1
 
 - Added parsing support for `Top result` as a Dart object.
