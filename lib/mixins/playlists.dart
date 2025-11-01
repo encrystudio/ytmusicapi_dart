@@ -113,9 +113,9 @@ mixin PlaylistsMixin on MixinProtocol {
     bool related = false,
     int suggestionsLimit = 0,
   }) async {
-    checkAuth();
+    // checkAuth(); // TODO this was in original code, can be removed?
     final browseId = playlistId.startsWith('VL') ? playlistId : 'VL$playlistId';
-    final body = {'browseId': browseId};
+    final JsonMap body = {'browseId': browseId};
     const endpoint = 'browse';
     Future<JsonMap> requestFunc(String additionalParams) =>
         sendRequest(endpoint, body, additionalParams: additionalParams);

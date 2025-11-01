@@ -155,12 +155,14 @@ Future<JsonMap> parseAudioPlaylist(
 
   if ((contentData as JsonMap).containsKey('contents')) {
     playlist['tracks'] = parsePlaylistItems(
-      contentData['contents'] as List<JsonMap>,
+      List<JsonMap>.from(contentData['contents'] as List),
     );
 
     List parseFunc(contents) => parsePlaylistItems(contents as List<JsonMap>);
     (playlist['tracks'] as List).addAll(
-      await getContinuations2025(contentData, limit, requestFunc, parseFunc),
+      List<JsonMap>.from(
+        await getContinuations2025(contentData, limit, requestFunc, parseFunc),
+      ),
     );
   }
 

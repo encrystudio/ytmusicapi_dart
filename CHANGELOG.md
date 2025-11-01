@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.2.3
+
+- Removed `checkAuth()` call from `getPlaylist()`.
+- Fixed playlist parsing logic to ensure more reliable extraction of playlist metadata and items.
+
 ## 2.2.2
 
 - Added `audioPlaylistId` and `artists` fields to singles from channel content.
