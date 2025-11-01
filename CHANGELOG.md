@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.2.2
+
+- Added `audioPlaylistId` and `artists` fields to singles from channel content.
+
 ## 2.2.1
 
 - Added `audioPlaylistId` as a valid JSON key for the `playlistId` property in the `YtAlbum` Dart object to improve compatibility with data parsed from the artist page `related` section.

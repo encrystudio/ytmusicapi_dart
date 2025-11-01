@@ -156,6 +156,18 @@ JsonMap parseSingle(JsonMap result) {
     'type': nav(realResult, SUBTITLE, nullIfAbsent: true),
     'year': nav(realResult, SUBTITLE2, nullIfAbsent: true),
     'browseId': nav(realResult, [...TITLE, ...NAVIGATION_BROWSE_ID]),
+    'audioPlaylistId': parseAlbumPlaylistIdIfExists(
+      nav(realResult, THUMBNAIL_OVERLAY_NAVIGATION, nullIfAbsent: true)
+          as JsonMap?,
+    ),
+    'artists':
+        List<JsonMap>.from(
+              (nav(realResult, ['subtitle', 'runs'], nullIfAbsent: true) ?? [])
+                  as List,
+            ) // TODO should nullIfAbsent be true?
+            .where((x) => x.containsKey('navigationEndpoint'))
+            .map((x) => parseIdName(x as JsonMap?))
+            .toList(),
     'thumbnails': nav(realResult, THUMBNAIL_RENDERER),
   };
 }
