@@ -110,7 +110,7 @@ JsonMap parseAlbum(JsonMap result) {
 
   final album = <String, dynamic>{
     'title': nav(realResult, TITLE_TEXT),
-    'type': nav(realResult, SUBTITLE),
+    'type': 'Album',
     'artists': artists,
     'browseId': nav(realResult, [...TITLE, ...NAVIGATION_BROWSE_ID]),
     'audioPlaylistId': parseAlbumPlaylistIdIfExists(
@@ -122,10 +122,23 @@ JsonMap parseAlbum(JsonMap result) {
         nav(realResult, SUBTITLE_BADGE_LABEL, nullIfAbsent: true) != null,
   };
 
-  final year = nav(realResult, SUBTITLE2, nullIfAbsent: true);
-  if (year != null && (year is String) && RegExp(r'^\d+$').hasMatch(year)) {
-    album['year'] = year;
-  }
+  const validTypes = {'Album', 'Single', 'EP'};
+  final yearRegex = RegExp(r'^\d+$');
+
+  final subtitle = nav(realResult, SUBTITLE, nullIfAbsent: true) as String?;
+  final subtitle2 = nav(realResult, SUBTITLE2, nullIfAbsent: true) as String?;
+
+  final type = [
+    subtitle,
+    subtitle2,
+  ].firstWhere((s) => s != null && validTypes.contains(s), orElse: () => null);
+  if (type != null) album['type'] = type;
+
+  final year = [
+    subtitle,
+    subtitle2,
+  ].firstWhere((s) => s != null && yearRegex.hasMatch(s), orElse: () => null);
+  if (year != null) album['year'] = year;
 
   return album;
 }
@@ -140,7 +153,8 @@ JsonMap parseSingle(JsonMap result) {
   }
   return {
     'title': nav(realResult, TITLE_TEXT),
-    'year': nav(realResult, SUBTITLE, nullIfAbsent: true),
+    'type': nav(realResult, SUBTITLE, nullIfAbsent: true),
+    'year': nav(realResult, SUBTITLE2, nullIfAbsent: true),
     'browseId': nav(realResult, [...TITLE, ...NAVIGATION_BROWSE_ID]),
     'thumbnails': nav(realResult, THUMBNAIL_RENDERER),
   };

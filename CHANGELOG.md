@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.2.0
+
+- Improved parsing logic for `type` and `year` fields in album and single channel contents. The parsing is now more accurate and consistent, but the results may differ from previous versions and could potentially break existing implementations.
+
 ## 2.1.6
 
 - Added `YtAlbumType.SINGLE`.
