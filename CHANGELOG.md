@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.2.4
+
+- Fixed `title` field extraction in `parseAudioPlaylist()` to correctly handle cases where the tracks have no album.
+
 ## 2.2.3
 
 - Removed `checkAuth()` call from `getPlaylist()`.

@@ -166,9 +166,16 @@ Future<JsonMap> parseAudioPlaylist(
     );
   }
 
-  playlist['title'] =
-      (((playlist['tracks'] as List)[0] as JsonMap)['album']
-          as JsonMap)['name'];
+  try {
+    playlist['title'] =
+        (((playlist['tracks'] as List)[0] as JsonMap)['album']
+            as JsonMap)['name'];
+  } catch (_) {
+    playlist['title'] =
+        List<JsonMap>.from(
+          ((playlist['tracks'] as List)[0] as JsonMap)['artists'] as List,
+        )[0]['name'];
+  }
 
   playlist['duration_seconds'] = sumTotalDuration(playlist);
 
