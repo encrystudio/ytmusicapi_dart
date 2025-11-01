@@ -122,9 +122,16 @@
     );
   }
 
-  playlist[&#39;title&#39;] =
-      (((playlist[&#39;tracks&#39;] as List)[0] as JsonMap)[&#39;album&#39;]
-          as JsonMap)[&#39;name&#39;];
+  try {
+    playlist[&#39;title&#39;] =
+        (((playlist[&#39;tracks&#39;] as List)[0] as JsonMap)[&#39;album&#39;]
+            as JsonMap)[&#39;name&#39;];
+  } catch (_) {
+    playlist[&#39;title&#39;] =
+        List&lt;JsonMap&gt;.from(
+          ((playlist[&#39;tracks&#39;] as List)[0] as JsonMap)[&#39;artists&#39;] as List,
+        )[0][&#39;name&#39;];
+  }
 
   playlist[&#39;duration_seconds&#39;] = sumTotalDuration(playlist);
 
@@ -156,7 +163,7 @@
 <footer>
   <span class="no-break">
     ytmusicapi_dart
-      2.2.3
+      2.2.4
   </span>
   
 </footer>
