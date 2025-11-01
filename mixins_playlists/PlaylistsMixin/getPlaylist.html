@@ -172,9 +172,9 @@ needed for moving/removing playlist items.</p>
   bool related = false,
   int suggestionsLimit = 0,
 }) async {
-  checkAuth();
+  &#47;&#47; checkAuth(); &#47;&#47; TODO this was in original code, can be removed?
   final browseId = playlistId.startsWith(&#39;VL&#39;) ? playlistId : &#39;VL$playlistId&#39;;
-  final body = {&#39;browseId&#39;: browseId};
+  final JsonMap body = {&#39;browseId&#39;: browseId};
   const endpoint = &#39;browse&#39;;
   Future&lt;JsonMap&gt; requestFunc(String additionalParams) =&gt;
       sendRequest(endpoint, body, additionalParams: additionalParams);
@@ -353,7 +353,7 @@ needed for moving/removing playlist items.</p>
 <footer>
   <span class="no-break">
     ytmusicapi_dart
-      2.2.2
+      2.2.3
   </span>
   
 </footer>

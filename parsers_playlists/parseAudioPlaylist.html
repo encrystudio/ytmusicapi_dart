@@ -111,12 +111,14 @@
 
   if ((contentData as JsonMap).containsKey(&#39;contents&#39;)) {
     playlist[&#39;tracks&#39;] = parsePlaylistItems(
-      contentData[&#39;contents&#39;] as List&lt;JsonMap&gt;,
+      List&lt;JsonMap&gt;.from(contentData[&#39;contents&#39;] as List),
     );
 
     List parseFunc(contents) =&gt; parsePlaylistItems(contents as List&lt;JsonMap&gt;);
     (playlist[&#39;tracks&#39;] as List).addAll(
-      await getContinuations2025(contentData, limit, requestFunc, parseFunc),
+      List&lt;JsonMap&gt;.from(
+        await getContinuations2025(contentData, limit, requestFunc, parseFunc),
+      ),
     );
   }
 
@@ -154,7 +156,7 @@
 <footer>
   <span class="no-break">
     ytmusicapi_dart
-      2.2.2
+      2.2.3
   </span>
   
 </footer>
