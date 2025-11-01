@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.1.4
+
+- Added `title` as a valid JSON key for the `title` property in the YtArtist Dart object to improve compatibility with data parsed from the artist page `related` section.
+
 ## 2.1.3
 
 - Made the `views` field of the `YtVideo` Dart object nullable to better handle cases where view counts may be unavailable or missing.

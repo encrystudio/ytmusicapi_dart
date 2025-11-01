@@ -23,6 +23,7 @@ class YtArtist extends YtBaseObject {
           ((jsonData['artists'] as List)[0] as JsonMap)['id'] as String,
       title:
           jsonData['artist'] as String? ??
+          jsonData['title'] as String? ??
           ((jsonData['artists'] as List)[0] as JsonMap)['name'] as String,
       shuffleId: jsonData['shuffleId'] as String?,
       radioId: jsonData['radioId'] as String?,
