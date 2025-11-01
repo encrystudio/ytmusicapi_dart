@@ -54,8 +54,9 @@
 
     <section class="multi-line-signature">
       
-      <span class="name ">YtAlbum.fromJson</span>(<wbr><ol class="parameter-list single-line"> <li><span class="parameter" id="fromJson-param-jsonData"><span class="type-annotation"><a href="../../type_alias/JsonMap.html">JsonMap</a></span> <span class="parameter-name">jsonData</span></span></li>
-</ol>)
+      <span class="name ">YtAlbum.fromJson</span>(<wbr><ol class="parameter-list"> <li><span class="parameter" id="fromJson-param-jsonData"><span class="type-annotation"><a href="../../type_alias/JsonMap.html">JsonMap</a></span> <span class="parameter-name">jsonData</span>, {</span></li>
+<li><span class="parameter" id="fromJson-param-type"><span class="type-annotation"><a href="../../models_objects_base/YtAlbumType.html">YtAlbumType</a>?</span> <span class="parameter-name">type</span>, </span></li>
+</ol>})
     </section>
     
 
@@ -63,14 +64,16 @@
     
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
-  <pre class="language-dart"><code class="language-dart">factory YtAlbum.fromJson(JsonMap jsonData) {
+  <pre class="language-dart"><code class="language-dart">factory YtAlbum.fromJson(JsonMap jsonData, {YtAlbumType? type}) {
   return YtAlbum(
     thumbnailData: YtThumbnailData.fromJson(
       List&lt;JsonMap&gt;.from(jsonData[&#39;thumbnails&#39;] as List),
     ),
-    albumType: YtAlbumType.fromValue(
-      jsonData[&#39;type&#39;] as String? ?? jsonData[&#39;resultType&#39;] as String,
-    ),
+    albumType:
+        type ??
+        YtAlbumType.fromValue(
+          jsonData[&#39;type&#39;] as String? ?? jsonData[&#39;resultType&#39;] as String,
+        ),
     id: jsonData[&#39;browseId&#39;] as String,
     title: jsonData[&#39;title&#39;] as String,
     artists:
@@ -114,7 +117,7 @@
 <footer>
   <span class="no-break">
     ytmusicapi_dart
-      2.1.4
+      2.1.5
   </span>
   
 </footer>
