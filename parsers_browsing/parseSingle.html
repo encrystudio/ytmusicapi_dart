@@ -82,6 +82,18 @@
     &#39;type&#39;: nav(realResult, SUBTITLE, nullIfAbsent: true),
     &#39;year&#39;: nav(realResult, SUBTITLE2, nullIfAbsent: true),
     &#39;browseId&#39;: nav(realResult, [...TITLE, ...NAVIGATION_BROWSE_ID]),
+    &#39;audioPlaylistId&#39;: parseAlbumPlaylistIdIfExists(
+      nav(realResult, THUMBNAIL_OVERLAY_NAVIGATION, nullIfAbsent: true)
+          as JsonMap?,
+    ),
+    &#39;artists&#39;:
+        List&lt;JsonMap&gt;.from(
+              (nav(realResult, [&#39;subtitle&#39;, &#39;runs&#39;], nullIfAbsent: true) ?? [])
+                  as List,
+            ) &#47;&#47; TODO should nullIfAbsent be true?
+            .where((x) =&gt; x.containsKey(&#39;navigationEndpoint&#39;))
+            .map((x) =&gt; parseIdName(x as JsonMap?))
+            .toList(),
     &#39;thumbnails&#39;: nav(realResult, THUMBNAIL_RENDERER),
   };
 }</code></pre>
@@ -111,7 +123,7 @@
 <footer>
   <span class="no-break">
     ytmusicapi_dart
-      2.2.1
+      2.2.2
   </span>
   
 </footer>
