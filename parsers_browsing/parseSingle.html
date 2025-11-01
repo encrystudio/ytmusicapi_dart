@@ -79,7 +79,8 @@
   }
   return {
     &#39;title&#39;: nav(realResult, TITLE_TEXT),
-    &#39;year&#39;: nav(realResult, SUBTITLE, nullIfAbsent: true),
+    &#39;type&#39;: nav(realResult, SUBTITLE, nullIfAbsent: true),
+    &#39;year&#39;: nav(realResult, SUBTITLE2, nullIfAbsent: true),
     &#39;browseId&#39;: nav(realResult, [...TITLE, ...NAVIGATION_BROWSE_ID]),
     &#39;thumbnails&#39;: nav(realResult, THUMBNAIL_RENDERER),
   };
@@ -110,7 +111,7 @@
 <footer>
   <span class="no-break">
     ytmusicapi_dart
-      2.1.6
+      2.2.0
   </span>
   
 </footer>

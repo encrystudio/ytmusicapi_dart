@@ -88,7 +88,7 @@
 
   final album = &lt;String, dynamic&gt;{
     &#39;title&#39;: nav(realResult, TITLE_TEXT),
-    &#39;type&#39;: nav(realResult, SUBTITLE),
+    &#39;type&#39;: &#39;Album&#39;,
     &#39;artists&#39;: artists,
     &#39;browseId&#39;: nav(realResult, [...TITLE, ...NAVIGATION_BROWSE_ID]),
     &#39;audioPlaylistId&#39;: parseAlbumPlaylistIdIfExists(
@@ -100,10 +100,23 @@
         nav(realResult, SUBTITLE_BADGE_LABEL, nullIfAbsent: true) != null,
   };
 
-  final year = nav(realResult, SUBTITLE2, nullIfAbsent: true);
-  if (year != null &amp;&amp; (year is String) &amp;&amp; RegExp(r&#39;^\d+$&#39;).hasMatch(year)) {
-    album[&#39;year&#39;] = year;
-  }
+  const validTypes = {&#39;Album&#39;, &#39;Single&#39;, &#39;EP&#39;};
+  final yearRegex = RegExp(r&#39;^\d+$&#39;);
+
+  final subtitle = nav(realResult, SUBTITLE, nullIfAbsent: true) as String?;
+  final subtitle2 = nav(realResult, SUBTITLE2, nullIfAbsent: true) as String?;
+
+  final type = [
+    subtitle,
+    subtitle2,
+  ].firstWhere((s) =&gt; s != null &amp;&amp; validTypes.contains(s), orElse: () =&gt; null);
+  if (type != null) album[&#39;type&#39;] = type;
+
+  final year = [
+    subtitle,
+    subtitle2,
+  ].firstWhere((s) =&gt; s != null &amp;&amp; yearRegex.hasMatch(s), orElse: () =&gt; null);
+  if (year != null) album[&#39;year&#39;] = year;
 
   return album;
 }</code></pre>
@@ -133,7 +146,7 @@
 <footer>
   <span class="no-break">
     ytmusicapi_dart
-      2.1.6
+      2.2.0
   </span>
   
 </footer>
