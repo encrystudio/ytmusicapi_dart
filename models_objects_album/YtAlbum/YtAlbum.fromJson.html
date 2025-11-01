@@ -83,7 +83,9 @@
 
     duration: jsonData[&#39;duration&#39;] as Duration?,
     isExplicit: jsonData[&#39;isExplicit&#39;] as bool?,
-    playlistId: jsonData[&#39;playlistId&#39;] as String,
+    playlistId:
+        jsonData[&#39;playlistId&#39;] as String? ??
+        jsonData[&#39;audioPlaylistId&#39;] as String,
     year:
         ((jsonData[&#39;year&#39;] is String)
             ? (int.tryParse(jsonData[&#39;year&#39;] as String))
@@ -117,7 +119,7 @@
 <footer>
   <span class="no-break">
     ytmusicapi_dart
-      2.2.0
+      2.2.1
   </span>
   
 </footer>
