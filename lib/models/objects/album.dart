@@ -43,7 +43,9 @@ class YtAlbum extends YtBaseObject {
 
       duration: jsonData['duration'] as Duration?,
       isExplicit: jsonData['isExplicit'] as bool?,
-      playlistId: jsonData['playlistId'] as String,
+      playlistId:
+          jsonData['playlistId'] as String? ??
+          jsonData['audioPlaylistId'] as String,
       year:
           ((jsonData['year'] is String)
               ? (int.tryParse(jsonData['year'] as String))

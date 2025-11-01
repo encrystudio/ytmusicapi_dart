@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.2.1
+
+- Added `audioPlaylistId` as a valid JSON key for the `playlistId` property in the `YtAlbum` Dart object to improve compatibility with data parsed from the artist page `related` section.
+
 ## 2.2.0
 
 - Improved parsing logic for `type` and `year` fields in album and single channel contents. The parsing is now more accurate and consistent, but the results may differ from previous versions and could potentially break existing implementations.
@@ -14,7 +18,7 @@
 
 ## 2.1.4
 
-- Added `title` as a valid JSON key for the `title` property in the YtArtist Dart object to improve compatibility with data parsed from the artist page `related` section.
+- Added `title` as a valid JSON key for the `title` property in the `YtArtist` Dart object to improve compatibility with data parsed from the artist page `related` section.
 
 ## 2.1.3
 
