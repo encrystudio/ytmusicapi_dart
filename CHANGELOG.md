@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.1.5
+
+- Added possibility to pass `YtAlbumType` directly to a `YtAlbum` if it is already known, allowing more efficient construction.
+
 ## 2.1.4
 
 - Added `title` as a valid JSON key for the `title` property in the YtArtist Dart object to improve compatibility with data parsed from the artist page `related` section.

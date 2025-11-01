@@ -24,14 +24,16 @@ class YtAlbum extends YtBaseObject {
     required super.title,
   }) : super(type: YtObjectType.ALBUM);
 
-  factory YtAlbum.fromJson(JsonMap jsonData) {
+  factory YtAlbum.fromJson(JsonMap jsonData, {YtAlbumType? type}) {
     return YtAlbum(
       thumbnailData: YtThumbnailData.fromJson(
         List<JsonMap>.from(jsonData['thumbnails'] as List),
       ),
-      albumType: YtAlbumType.fromValue(
-        jsonData['type'] as String? ?? jsonData['resultType'] as String,
-      ),
+      albumType:
+          type ??
+          YtAlbumType.fromValue(
+            jsonData['type'] as String? ?? jsonData['resultType'] as String,
+          ),
       id: jsonData['browseId'] as String,
       title: jsonData['title'] as String,
       artists:
