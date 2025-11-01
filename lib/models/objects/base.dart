@@ -73,6 +73,8 @@ class YtThumbnailData {
 }
 
 enum YtAlbumType {
+  SINGLE('Single'),
+
   EP('EP'),
 
   ALBUM('Album');

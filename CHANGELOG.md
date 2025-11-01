@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.1.6
+
+- Added `YtAlbumType.SINGLE`.
+
 ## 2.1.5
 
 - Added possibility to pass `YtAlbumType` directly to a `YtAlbum` if it is already known, allowing more efficient construction.
