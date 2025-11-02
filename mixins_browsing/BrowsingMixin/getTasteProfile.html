@@ -85,7 +85,9 @@ Only returns a list of suggested artists, not the actual list of selected entrie
   final response = await sendRequest(&#39;browse&#39;, {
     &#39;browseId&#39;: &#39;FEmusic_tastebuilder&#39;,
   });
-  final profiles = nav(response, TASTE_PROFILE_ITEMS) as List&lt;JsonMap&gt;;
+  final profiles = List&lt;JsonMap&gt;.from(
+    nav(response, TASTE_PROFILE_ITEMS) as List,
+  );
 
   final tasteProfiles = &lt;String, dynamic&gt;{};
   for (final itemList in profiles) {
@@ -93,8 +95,10 @@ Only returns a list of suggested artists, not the actual list of selected entrie
         in (itemList[&#39;tastebuilderItemListRenderer&#39;]
             as Map&lt;String, List&lt;JsonMap&gt;&gt;)[&#39;contents&#39;]!) {
       final artist =
-          (nav(item[&#39;tastebuilderItemRenderer&#39;], TASTE_PROFILE_ARTIST)
-              as List&lt;JsonMap&gt;)[0][&#39;text&#39;];
+          List&lt;JsonMap&gt;.from(
+            nav(item[&#39;tastebuilderItemRenderer&#39;], TASTE_PROFILE_ARTIST)
+                as List,
+          )[0][&#39;text&#39;];
       tasteProfiles[artist as String] = {
         &#39;selectionValue&#39;:
             (item[&#39;tastebuilderItemRenderer&#39;]
@@ -134,7 +138,7 @@ Only returns a list of suggested artists, not the actual list of selected entrie
 <footer>
   <span class="no-break">
     ytmusicapi_dart
-      2.2.6
+      2.2.7
   </span>
   
 </footer>

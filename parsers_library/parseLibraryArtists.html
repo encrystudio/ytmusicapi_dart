@@ -80,7 +80,7 @@
   final results = getLibraryContents(response, MUSIC_SHELF);
   if (results == null) return [];
 
-  final artists = parseArtists(results[&#39;contents&#39;] as List&lt;JsonMap&gt;);
+  final artists = parseArtists(List&lt;JsonMap&gt;.from(results[&#39;contents&#39;] as List));
 
   if (results.containsKey(&#39;continuations&#39;)) {
     List parseFunc(List&lt;JsonMap&gt; contents) =&gt; parseArtists(contents);
@@ -124,7 +124,7 @@
 <footer>
   <span class="no-break">
     ytmusicapi_dart
-      2.2.6
+      2.2.7
   </span>
   
 </footer>

@@ -174,12 +174,13 @@
 
   album[&#39;duration_seconds&#39;] = sumTotalDuration(album);
   for (var i = 0; i &lt; (album[&#39;tracks&#39;] as List).length; i++) {
-    (album[&#39;tracks&#39;] as List&lt;JsonMap&gt;)[i][&#39;album&#39;] = album[&#39;title&#39;];
-    (album[&#39;tracks&#39;] as List&lt;JsonMap&gt;)[i][&#39;artists&#39;] =
-        ((album[&#39;tracks&#39;] as List&lt;JsonMap&gt;)[i][&#39;artists&#39;] != null &amp;&amp;
-                ((album[&#39;tracks&#39;] as List&lt;JsonMap&gt;)[i][&#39;artists&#39;] as List)
+    List&lt;JsonMap&gt;.from(album[&#39;tracks&#39;] as List)[i][&#39;album&#39;] = album[&#39;title&#39;];
+    List&lt;JsonMap&gt;.from(album[&#39;tracks&#39;] as List)[i][&#39;artists&#39;] =
+        (List&lt;JsonMap&gt;.from(album[&#39;tracks&#39;] as List)[i][&#39;artists&#39;] != null &amp;&amp;
+                (List&lt;JsonMap&gt;.from(album[&#39;tracks&#39;] as List)[i][&#39;artists&#39;]
+                        as List)
                     .isNotEmpty)
-            ? (album[&#39;tracks&#39;] as List&lt;JsonMap&gt;)[i][&#39;artists&#39;]
+            ? List&lt;JsonMap&gt;.from(album[&#39;tracks&#39;] as List)[i][&#39;artists&#39;]
             : album[&#39;artists&#39;];
   }
   return album;
@@ -211,7 +212,7 @@
 <footer>
   <span class="no-break">
     ytmusicapi_dart
-      2.2.6
+      2.2.7
   </span>
   
 </footer>

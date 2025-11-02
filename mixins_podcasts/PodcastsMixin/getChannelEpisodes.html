@@ -86,7 +86,11 @@
     ...SECTION_LIST_ITEM,
     ...GRID_ITEMS,
   ]);
-  return parseContentList(results as List&lt;JsonMap&gt;, parseEpisode, key: MMRIR);
+  return parseContentList(
+    List&lt;JsonMap&gt;.from(results as List),
+    parseEpisode,
+    key: MMRIR,
+  );
 }</code></pre>
 </section>
 
@@ -115,7 +119,7 @@
 <footer>
   <span class="no-break">
     ytmusicapi_dart
-      2.2.6
+      2.2.7
   </span>
   
 </footer>

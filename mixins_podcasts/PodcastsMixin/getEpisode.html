@@ -140,7 +140,7 @@ it to the <code>SE</code> (saved episodes) playlist.</li>
   ], nullIfAbsent: true);
   if (descriptionRuns != null) {
     episode[&#39;description&#39;] = Description.fromRuns(
-      descriptionRuns as List&lt;JsonMap&gt;,
+      List&lt;JsonMap&gt;.from(descriptionRuns as List),
     );
   }
 
@@ -173,7 +173,7 @@ it to the <code>SE</code> (saved episodes) playlist.</li>
 <footer>
   <span class="no-break">
     ytmusicapi_dart
-      2.2.6
+      2.2.7
   </span>
   
 </footer>

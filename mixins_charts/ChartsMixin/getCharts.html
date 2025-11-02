@@ -168,7 +168,7 @@ chart genres (US-only), and chart artists.</p>
     final parseFunc = chartsCategories[i].item2;
     final key = chartsCategories[i].item3;
     charts[name] = parseContentList(
-      nav(results[1 + i], CAROUSEL_CONTENTS) as List&lt;JsonMap&gt;,
+      List&lt;JsonMap&gt;.from(nav(results[1 + i], CAROUSEL_CONTENTS) as List),
       parseFunc,
       key: key,
     );
@@ -202,7 +202,7 @@ chart genres (US-only), and chart artists.</p>
 <footer>
   <span class="no-break">
     ytmusicapi_dart
-      2.2.6
+      2.2.7
   </span>
   
 </footer>

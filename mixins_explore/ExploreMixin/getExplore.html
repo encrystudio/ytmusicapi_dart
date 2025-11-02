@@ -196,7 +196,7 @@
     switch (browseId) {
       case &#39;FEmusic_new_releases_albums&#39;:
         explore[&#39;new_releases&#39;] = parseContentList(
-          contents as List&lt;JsonMap&gt;,
+          List&lt;JsonMap&gt;.from(contents as List),
           parseAlbum,
         );
 
@@ -211,14 +211,14 @@
 
       case &#39;FEmusic_top_non_music_audio_episodes&#39;:
         explore[&#39;top_episodes&#39;] = parseContentList(
-          contents as List&lt;JsonMap&gt;,
+          List&lt;JsonMap&gt;.from(contents as List),
           parseChartEpisode,
           key: MMRIR,
         );
 
       case &#39;FEmusic_new_releases_videos&#39;:
         explore[&#39;new_videos&#39;] = parseContentList(
-          contents as List&lt;JsonMap&gt;,
+          List&lt;JsonMap&gt;.from(contents as List),
           parseVideo,
         );
 
@@ -227,7 +227,7 @@
           explore[&#39;top_songs&#39;] = {
             &#39;playlist&#39;: browseId,
             &#39;items&#39;: parseContentList(
-              contents as List&lt;JsonMap&gt;,
+              List&lt;JsonMap&gt;.from(contents as List),
               parseChartSong,
               key: MRLIR,
             ),
@@ -236,7 +236,7 @@
           explore[&#39;trending&#39;] = {
             &#39;playlist&#39;: browseId,
             &#39;items&#39;: parseContentList(
-              contents as List&lt;JsonMap&gt;,
+              List&lt;JsonMap&gt;.from(contents as List),
               parseSongFlat,
               key: MRLIR,
             ),
@@ -274,7 +274,7 @@
 <footer>
   <span class="no-break">
     ytmusicapi_dart
-      2.2.6
+      2.2.7
   </span>
   
 </footer>

@@ -124,9 +124,9 @@
   if (response.containsKey(&#39;status&#39;) &amp;&amp;
       (response[&#39;status&#39;] as JsonMap).containsKey(&#39;SUCCEEDED&#39;)) {
     final resultMap =
-        (response[&#39;playlistEditResults&#39;] as List&lt;JsonMap&gt;)
-            .map((r) =&gt; r[&#39;playlistEditVideoAddedResultData&#39;])
-            .toList();
+        List&lt;JsonMap&gt;.from(
+          response[&#39;playlistEditResults&#39;] as List,
+        ).map((r) =&gt; r[&#39;playlistEditVideoAddedResultData&#39;]).toList();
     return {&#39;status&#39;: response[&#39;status&#39;], &#39;playlistEditResults&#39;: resultMap};
   } else {
     return response;
@@ -159,7 +159,7 @@
 <footer>
   <span class="no-break">
     ytmusicapi_dart
-      2.2.6
+      2.2.7
   </span>
   
 </footer>

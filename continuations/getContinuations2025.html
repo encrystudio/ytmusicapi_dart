@@ -93,7 +93,9 @@
     );
     if (continuationItems == null) break;
 
-    final contents = await parseFunc(continuationItems as List&lt;JsonMap&gt;);
+    final contents = await parseFunc(
+      List&lt;JsonMap&gt;.from(continuationItems as List),
+    );
     if (contents.isEmpty) break;
 
     items.addAll(contents);
@@ -128,7 +130,7 @@
 <footer>
   <span class="no-break">
     ytmusicapi_dart
-      2.2.6
+      2.2.7
   </span>
   
 </footer>

@@ -77,7 +77,9 @@
     &#39;results&#39;: results,
     &#39;parsed&#39;:
         results != null
-            ? parsePlaylistItems(results[&#39;contents&#39;] as List&lt;JsonMap&gt;)
+            ? parsePlaylistItems(
+              List&lt;JsonMap&gt;.from(results[&#39;contents&#39;] as List),
+            )
             : results,
   };
 }</code></pre>
@@ -107,7 +109,7 @@
 <footer>
   <span class="no-break">
     ytmusicapi_dart
-      2.2.6
+      2.2.7
   </span>
   
 </footer>

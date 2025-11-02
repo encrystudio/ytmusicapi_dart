@@ -130,7 +130,9 @@ episodes can be retrieved via <a href="../../mixins_podcasts/PodcastsMixin/getCh
   };
 
   final results = nav(response, [...SINGLE_COLUMN_TAB, ...SECTION_LIST]);
-  channel.addAll(parser.parseChannelContents(results as List&lt;JsonMap&gt;));
+  channel.addAll(
+    parser.parseChannelContents(List&lt;JsonMap&gt;.from(results as List)),
+  );
 
   return channel;
 }</code></pre>
@@ -161,7 +163,7 @@ episodes can be retrieved via <a href="../../mixins_podcasts/PodcastsMixin/getCh
 <footer>
   <span class="no-break">
     ytmusicapi_dart
-      2.2.6
+      2.2.7
   </span>
   
 </footer>

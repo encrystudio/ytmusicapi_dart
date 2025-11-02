@@ -240,10 +240,9 @@ needed for moving/removing playlist items.</p>
           as JsonMap?;
   playlist[&#39;description&#39;] =
       descriptionShelf != null
-          ? ((descriptionShelf[&#39;description&#39;] as JsonMap)[&#39;runs&#39;]
-                  as List&lt;JsonMap&gt;)
-              .map((run) =&gt; run[&#39;text&#39;])
-              .join()
+          ? List&lt;JsonMap&gt;.from(
+            (descriptionShelf[&#39;description&#39;] as JsonMap)[&#39;runs&#39;] as List,
+          ).map((run) =&gt; run[&#39;text&#39;]).join()
           : null;
 
   playlist.addAll(parsePlaylistHeaderMeta(header));
@@ -262,7 +261,8 @@ needed for moving/removing playlist items.</p>
   if (sectionList.containsKey(&#39;continuations&#39;)) {
     var additionalParams = getContinuationParams(sectionList);
     if ((playlist[&#39;owned&#39;] as bool) &amp;&amp; (suggestionsLimit &gt; 0 || related)) {
-      List parseFunc(results) =&gt; parsePlaylistItems(results as List&lt;JsonMap&gt;);
+      List parseFunc(results) =&gt;
+          parsePlaylistItems(List&lt;JsonMap&gt;.from(results as List));
       final suggested = await requestFunc(additionalParams);
       final continuation = nav(suggested, SECTION_LIST_CONTINUATION);
       additionalParams = getContinuationParams(continuation as JsonMap);
@@ -294,8 +294,10 @@ needed for moving/removing playlist items.</p>
         nullIfAbsent: true,
       );
       if (continuation != null) {
-        Future&lt;List&gt; parseFunc(results) =&gt;
-            parseContentList(results as List&lt;JsonMap&gt;, parsePlaylist);
+        Future&lt;List&gt; parseFunc(results) =&gt; parseContentList(
+          List&lt;JsonMap&gt;.from(results as List),
+          parsePlaylist,
+        );
         playlist[&#39;related&#39;] = getContinuationContents(
           nav(continuation, [...CONTENT, ...CAROUSEL]) as JsonMap,
           parseFunc,
@@ -309,9 +311,10 @@ needed for moving/removing playlist items.</p>
       nav(sectionList, [...CONTENT, &#39;musicPlaylistShelfRenderer&#39;]) as JsonMap;
   if (contentData.containsKey(&#39;contents&#39;)) {
     playlist[&#39;tracks&#39;] = parsePlaylistItems(
-      contentData[&#39;contents&#39;] as List&lt;JsonMap&gt;,
+      List&lt;JsonMap&gt;.from(contentData[&#39;contents&#39;] as List),
     );
-    List parseFunc(contents) =&gt; parsePlaylistItems(contents as List&lt;JsonMap&gt;);
+    List parseFunc(contents) =&gt;
+        parsePlaylistItems(List&lt;JsonMap&gt;.from(contents as List));
     (playlist[&#39;tracks&#39;] as List).addAll(
       await getContinuations2025(
         contentData,
@@ -353,7 +356,7 @@ needed for moving/removing playlist items.</p>
 <footer>
   <span class="no-break">
     ytmusicapi_dart
-      2.2.6
+      2.2.7
   </span>
   
 </footer>

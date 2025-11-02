@@ -89,7 +89,7 @@
   ], nullIfAbsent: true);
   if (results == null) return [];
 
-  return parseContentList(results as List&lt;JsonMap&gt;, parsePlaylist);
+  return parseContentList(List&lt;JsonMap&gt;.from(results as List), parsePlaylist);
 }</code></pre>
 </section>
 
@@ -118,7 +118,7 @@
 <footer>
   <span class="no-break">
     ytmusicapi_dart
-      2.2.6
+      2.2.7
   </span>
   
 </footer>

@@ -147,7 +147,7 @@ shown in the "Related" tab of the watch panel.</p>
   if (browseId.isEmpty) throw Exception(&#39;Invalid browseId provided.&#39;);
   final response = await sendRequest(&#39;browse&#39;, {&#39;browseId&#39;: browseId});
   final sections = nav(response, [&#39;contents&#39;, ...SECTION_LIST]);
-  return parseMixedContent(sections as List&lt;JsonMap&gt;);
+  return parseMixedContent(List&lt;JsonMap&gt;.from(sections as List));
 }</code></pre>
 </section>
 
@@ -176,7 +176,7 @@ shown in the "Related" tab of the watch panel.</p>
 <footer>
   <span class="no-break">
     ytmusicapi_dart
-      2.2.6
+      2.2.7
   </span>
   
 </footer>

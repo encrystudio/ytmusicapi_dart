@@ -81,9 +81,9 @@
     &#39;params&#39;: params,
   });
 
-  for (final section
-      in nav(response, [...SINGLE_COLUMN_TAB, ...SECTION_LIST])
-          as List&lt;JsonMap&gt;) {
+  for (final section in List&lt;JsonMap&gt;.from(
+    nav(response, [...SINGLE_COLUMN_TAB, ...SECTION_LIST]) as List,
+  )) {
     List path = [];
     if (section.containsKey(&#39;gridRenderer&#39;)) {
       path = GRID_ITEMS;
@@ -96,7 +96,10 @@
     if (path.isNotEmpty) {
       final results = nav(section, path);
       playlists.addAll(
-        await parseContentList(results as List&lt;JsonMap&gt;, parsePlaylist),
+        await parseContentList(
+          List&lt;JsonMap&gt;.from(results as List),
+          parsePlaylist,
+        ),
       );
     }
   }
@@ -129,7 +132,7 @@
 <footer>
   <span class="no-break">
     ytmusicapi_dart
-      2.2.6
+      2.2.7
   </span>
   
 </footer>

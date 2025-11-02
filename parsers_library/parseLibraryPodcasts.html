@@ -83,7 +83,7 @@
   Future&lt;List&gt; parseFunc(List&lt;JsonMap&gt; contents) =&gt;
       parseContentList(contents, parsePodcast);
   final podcasts = await parseFunc(
-    (results[&#39;items&#39;] as List).sublist(1) as List&lt;JsonMap&gt;,
+    List&lt;JsonMap&gt;.from((results[&#39;items&#39;] as List).sublist(1)),
   ); &#47;&#47; skip first &quot;Add podcast&quot;
 
   if (results.containsKey(&#39;continuations&#39;)) {
@@ -127,7 +127,7 @@
 <footer>
   <span class="no-break">
     ytmusicapi_dart
-      2.2.6
+      2.2.7
   </span>
   
 </footer>
