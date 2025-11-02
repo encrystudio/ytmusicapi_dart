@@ -85,6 +85,8 @@ List parseAlbums(List<JsonMap> results) {
     album['playlistId'] = nav(data, MENU_PLAYLIST_ID, nullIfAbsent: true);
     album['title'] = nav(data, TITLE_TEXT);
     album['thumbnails'] = nav(data, THUMBNAIL_RENDERER);
+    album['isExplicit'] =
+        nav(data, SUBTITLE_BADGE_LABEL, nullIfAbsent: true) != null;
 
     if (data['subtitle'] != null &&
         (data['subtitle'] as JsonMap).containsKey('runs')) {

@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.2.6
+
+- Added `isExplicit` parsing to `parseAlbums()`.
+
 ## 2.2.5
 
 - Fixed issue where the `YtAlbum` Dart object would throw an error when the album JSON lacked an `artists` key. The parsing logic now defaults to an empty list.
