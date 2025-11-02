@@ -109,7 +109,7 @@ mixin ChartsMixin on MixinProtocol {
       final parseFunc = chartsCategories[i].item2;
       final key = chartsCategories[i].item3;
       charts[name] = parseContentList(
-        nav(results[1 + i], CAROUSEL_CONTENTS) as List<JsonMap>,
+        List<JsonMap>.from(nav(results[1 + i], CAROUSEL_CONTENTS) as List),
         parseFunc,
         key: key,
       );

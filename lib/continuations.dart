@@ -43,7 +43,9 @@ Future<List> getContinuations2025(
     );
     if (continuationItems == null) break;
 
-    final contents = await parseFunc(continuationItems as List<JsonMap>);
+    final contents = await parseFunc(
+      List<JsonMap>.from(continuationItems as List),
+    );
     if (contents.isEmpty) break;
 
     items.addAll(contents);

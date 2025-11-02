@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.2.7
+
+- Fixed type casts for improved stability.
+
 ## 2.2.6
 
 - Added `isExplicit` parsing to `parseAlbums()`.

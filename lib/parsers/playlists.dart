@@ -158,7 +158,8 @@ Future<JsonMap> parseAudioPlaylist(
       List<JsonMap>.from(contentData['contents'] as List),
     );
 
-    List parseFunc(contents) => parsePlaylistItems(contents as List<JsonMap>);
+    List parseFunc(contents) =>
+        parsePlaylistItems(List<JsonMap>.from(contents as List));
     (playlist['tracks'] as List).addAll(
       List<JsonMap>.from(
         await getContinuations2025(contentData, limit, requestFunc, parseFunc),

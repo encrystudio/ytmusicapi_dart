@@ -181,10 +181,9 @@ mixin PlaylistsMixin on MixinProtocol {
             as JsonMap?;
     playlist['description'] =
         descriptionShelf != null
-            ? ((descriptionShelf['description'] as JsonMap)['runs']
-                    as List<JsonMap>)
-                .map((run) => run['text'])
-                .join()
+            ? List<JsonMap>.from(
+              (descriptionShelf['description'] as JsonMap)['runs'] as List,
+            ).map((run) => run['text']).join()
             : null;
 
     playlist.addAll(parsePlaylistHeaderMeta(header));
@@ -203,7 +202,8 @@ mixin PlaylistsMixin on MixinProtocol {
     if (sectionList.containsKey('continuations')) {
       var additionalParams = getContinuationParams(sectionList);
       if ((playlist['owned'] as bool) && (suggestionsLimit > 0 || related)) {
-        List parseFunc(results) => parsePlaylistItems(results as List<JsonMap>);
+        List parseFunc(results) =>
+            parsePlaylistItems(List<JsonMap>.from(results as List));
         final suggested = await requestFunc(additionalParams);
         final continuation = nav(suggested, SECTION_LIST_CONTINUATION);
         additionalParams = getContinuationParams(continuation as JsonMap);
@@ -235,8 +235,10 @@ mixin PlaylistsMixin on MixinProtocol {
           nullIfAbsent: true,
         );
         if (continuation != null) {
-          Future<List> parseFunc(results) =>
-              parseContentList(results as List<JsonMap>, parsePlaylist);
+          Future<List> parseFunc(results) => parseContentList(
+            List<JsonMap>.from(results as List),
+            parsePlaylist,
+          );
           playlist['related'] = getContinuationContents(
             nav(continuation, [...CONTENT, ...CAROUSEL]) as JsonMap,
             parseFunc,
@@ -250,9 +252,10 @@ mixin PlaylistsMixin on MixinProtocol {
         nav(sectionList, [...CONTENT, 'musicPlaylistShelfRenderer']) as JsonMap;
     if (contentData.containsKey('contents')) {
       playlist['tracks'] = parsePlaylistItems(
-        contentData['contents'] as List<JsonMap>,
+        List<JsonMap>.from(contentData['contents'] as List),
       );
-      List parseFunc(contents) => parsePlaylistItems(contents as List<JsonMap>);
+      List parseFunc(contents) =>
+          parsePlaylistItems(List<JsonMap>.from(contents as List));
       (playlist['tracks'] as List).addAll(
         await getContinuations2025(
           contentData,
@@ -475,9 +478,9 @@ mixin PlaylistsMixin on MixinProtocol {
     if (response.containsKey('status') &&
         (response['status'] as JsonMap).containsKey('SUCCEEDED')) {
       final resultMap =
-          (response['playlistEditResults'] as List<JsonMap>)
-              .map((r) => r['playlistEditVideoAddedResultData'])
-              .toList();
+          List<JsonMap>.from(
+            response['playlistEditResults'] as List,
+          ).map((r) => r['playlistEditVideoAddedResultData']).toList();
       return {'status': response['status'], 'playlistEditResults': resultMap};
     } else {
       return response;

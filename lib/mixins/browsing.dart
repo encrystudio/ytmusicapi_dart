@@ -525,7 +525,7 @@ mixin BrowsingMixin on MixinProtocol {
     ], nullIfAbsent: true);
     if (results == null) return [];
 
-    return parseContentList(results as List<JsonMap>, parsePlaylist);
+    return parseContentList(List<JsonMap>.from(results as List), parsePlaylist);
   }
 
   /// Retrieve a list of videos for a given user.
@@ -548,7 +548,7 @@ mixin BrowsingMixin on MixinProtocol {
     ], nullIfAbsent: true);
     if (results == null) return [];
 
-    return parseContentList(results as List<JsonMap>, parseVideo);
+    return parseContentList(List<JsonMap>.from(results as List), parseVideo);
   }
 
   /// Get an album's `browseId` based on its [audioPlaylistId].
@@ -674,12 +674,13 @@ mixin BrowsingMixin on MixinProtocol {
 
     album['duration_seconds'] = sumTotalDuration(album);
     for (var i = 0; i < (album['tracks'] as List).length; i++) {
-      (album['tracks'] as List<JsonMap>)[i]['album'] = album['title'];
-      (album['tracks'] as List<JsonMap>)[i]['artists'] =
-          ((album['tracks'] as List<JsonMap>)[i]['artists'] != null &&
-                  ((album['tracks'] as List<JsonMap>)[i]['artists'] as List)
+      List<JsonMap>.from(album['tracks'] as List)[i]['album'] = album['title'];
+      List<JsonMap>.from(album['tracks'] as List)[i]['artists'] =
+          (List<JsonMap>.from(album['tracks'] as List)[i]['artists'] != null &&
+                  (List<JsonMap>.from(album['tracks'] as List)[i]['artists']
+                          as List)
                       .isNotEmpty)
-              ? (album['tracks'] as List<JsonMap>)[i]['artists']
+              ? List<JsonMap>.from(album['tracks'] as List)[i]['artists']
               : album['artists'];
     }
     return album;
@@ -957,7 +958,7 @@ mixin BrowsingMixin on MixinProtocol {
     if (browseId.isEmpty) throw Exception('Invalid browseId provided.');
     final response = await sendRequest('browse', {'browseId': browseId});
     final sections = nav(response, ['contents', ...SECTION_LIST]);
-    return parseMixedContent(sections as List<JsonMap>);
+    return parseMixedContent(List<JsonMap>.from(sections as List));
   }
 
   /// Returns lyrics of a song or video. When [timestamps] is set, lyrics are returned with timestamps, if available.
@@ -1095,7 +1096,9 @@ mixin BrowsingMixin on MixinProtocol {
     final response = await sendRequest('browse', {
       'browseId': 'FEmusic_tastebuilder',
     });
-    final profiles = nav(response, TASTE_PROFILE_ITEMS) as List<JsonMap>;
+    final profiles = List<JsonMap>.from(
+      nav(response, TASTE_PROFILE_ITEMS) as List,
+    );
 
     final tasteProfiles = <String, dynamic>{};
     for (final itemList in profiles) {
@@ -1103,8 +1106,10 @@ mixin BrowsingMixin on MixinProtocol {
           in (itemList['tastebuilderItemListRenderer']
               as Map<String, List<JsonMap>>)['contents']!) {
         final artist =
-            (nav(item['tastebuilderItemRenderer'], TASTE_PROFILE_ARTIST)
-                as List<JsonMap>)[0]['text'];
+            List<JsonMap>.from(
+              nav(item['tastebuilderItemRenderer'], TASTE_PROFILE_ARTIST)
+                  as List,
+            )[0]['text'];
         tasteProfiles[artist as String] = {
           'selectionValue':
               (item['tastebuilderItemRenderer']

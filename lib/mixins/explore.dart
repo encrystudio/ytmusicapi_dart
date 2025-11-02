@@ -85,9 +85,9 @@ mixin ExploreMixin on MixinProtocol {
       'params': params,
     });
 
-    for (final section
-        in nav(response, [...SINGLE_COLUMN_TAB, ...SECTION_LIST])
-            as List<JsonMap>) {
+    for (final section in List<JsonMap>.from(
+      nav(response, [...SINGLE_COLUMN_TAB, ...SECTION_LIST]) as List,
+    )) {
       List path = [];
       if (section.containsKey('gridRenderer')) {
         path = GRID_ITEMS;
@@ -100,7 +100,10 @@ mixin ExploreMixin on MixinProtocol {
       if (path.isNotEmpty) {
         final results = nav(section, path);
         playlists.addAll(
-          await parseContentList(results as List<JsonMap>, parsePlaylist),
+          await parseContentList(
+            List<JsonMap>.from(results as List),
+            parsePlaylist,
+          ),
         );
       }
     }
@@ -239,7 +242,7 @@ mixin ExploreMixin on MixinProtocol {
       switch (browseId) {
         case 'FEmusic_new_releases_albums':
           explore['new_releases'] = parseContentList(
-            contents as List<JsonMap>,
+            List<JsonMap>.from(contents as List),
             parseAlbum,
           );
 
@@ -254,14 +257,14 @@ mixin ExploreMixin on MixinProtocol {
 
         case 'FEmusic_top_non_music_audio_episodes':
           explore['top_episodes'] = parseContentList(
-            contents as List<JsonMap>,
+            List<JsonMap>.from(contents as List),
             parseChartEpisode,
             key: MMRIR,
           );
 
         case 'FEmusic_new_releases_videos':
           explore['new_videos'] = parseContentList(
-            contents as List<JsonMap>,
+            List<JsonMap>.from(contents as List),
             parseVideo,
           );
 
@@ -270,7 +273,7 @@ mixin ExploreMixin on MixinProtocol {
             explore['top_songs'] = {
               'playlist': browseId,
               'items': parseContentList(
-                contents as List<JsonMap>,
+                List<JsonMap>.from(contents as List),
                 parseChartSong,
                 key: MRLIR,
               ),
@@ -279,7 +282,7 @@ mixin ExploreMixin on MixinProtocol {
             explore['trending'] = {
               'playlist': browseId,
               'items': parseContentList(
-                contents as List<JsonMap>,
+                List<JsonMap>.from(contents as List),
                 parseSongFlat,
                 key: MRLIR,
               ),

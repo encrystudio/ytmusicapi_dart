@@ -74,7 +74,9 @@ mixin PodcastsMixin on MixinProtocol {
     };
 
     final results = nav(response, [...SINGLE_COLUMN_TAB, ...SECTION_LIST]);
-    channel.addAll(parser.parseChannelContents(results as List<JsonMap>));
+    channel.addAll(
+      parser.parseChannelContents(List<JsonMap>.from(results as List)),
+    );
 
     return channel;
   }
@@ -95,7 +97,11 @@ mixin PodcastsMixin on MixinProtocol {
       ...SECTION_LIST_ITEM,
       ...GRID_ITEMS,
     ]);
-    return parseContentList(results as List<JsonMap>, parseEpisode, key: MMRIR);
+    return parseContentList(
+      List<JsonMap>.from(results as List),
+      parseEpisode,
+      key: MMRIR,
+    );
   }
 
   /// Returns podcast metadata and episodes.
@@ -156,8 +162,11 @@ mixin PodcastsMixin on MixinProtocol {
               ...MUSIC_SHELF,
             ])
             as JsonMap;
-    Future<List> parseFunc(contents) =>
-        parseContentList(contents as List<JsonMap>, parseEpisode, key: MMRIR);
+    Future<List> parseFunc(contents) => parseContentList(
+      List<JsonMap>.from(contents as List),
+      parseEpisode,
+      key: MMRIR,
+    );
     final episodes = await parseFunc(results['contents']);
 
     if (results.containsKey('continuations')) {
@@ -252,7 +261,7 @@ mixin PodcastsMixin on MixinProtocol {
     ], nullIfAbsent: true);
     if (descriptionRuns != null) {
       episode['description'] = Description.fromRuns(
-        descriptionRuns as List<JsonMap>,
+        List<JsonMap>.from(descriptionRuns as List),
       );
     }
 
@@ -282,8 +291,11 @@ mixin PodcastsMixin on MixinProtocol {
               ...MUSIC_SHELF,
             ])
             as JsonMap;
-    Future<List> parseFunc(contents) =>
-        parseContentList(contents as List<JsonMap>, parseEpisode, key: MMRIR);
+    Future<List> parseFunc(contents) => parseContentList(
+      List<JsonMap>.from(contents as List),
+      parseEpisode,
+      key: MMRIR,
+    );
     playlist['episodes'] = parseFunc(results['contents']);
 
     return playlist;

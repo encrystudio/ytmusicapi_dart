@@ -55,7 +55,7 @@ Future<List> parseLibraryAlbums(
   final results = getLibraryContents(response, GRID);
   if (results == null) return [];
 
-  final albums = parseAlbums(results['items'] as List<JsonMap>);
+  final albums = parseAlbums(List<JsonMap>.from(results['items'] as List));
 
   if (results.containsKey('continuations')) {
     List parseFunc(List<JsonMap> contents) => parseAlbums(contents);
@@ -116,7 +116,7 @@ Future<List> parseLibraryPodcasts(
   Future<List> parseFunc(List<JsonMap> contents) =>
       parseContentList(contents, parsePodcast);
   final podcasts = await parseFunc(
-    (results['items'] as List).sublist(1) as List<JsonMap>,
+    List<JsonMap>.from((results['items'] as List).sublist(1)),
   ); // skip first "Add podcast"
 
   if (results.containsKey('continuations')) {
@@ -144,7 +144,7 @@ Future<List> parseLibraryArtists(
   final results = getLibraryContents(response, MUSIC_SHELF);
   if (results == null) return [];
 
-  final artists = parseArtists(results['contents'] as List<JsonMap>);
+  final artists = parseArtists(List<JsonMap>.from(results['contents'] as List));
 
   if (results.containsKey('continuations')) {
     List parseFunc(List<JsonMap> contents) => parseArtists(contents);
@@ -180,7 +180,9 @@ JsonMap parseLibrarySongs(JsonMap response) {
     'results': results,
     'parsed':
         results != null
-            ? parsePlaylistItems(results['contents'] as List<JsonMap>)
+            ? parsePlaylistItems(
+              List<JsonMap>.from(results['contents'] as List),
+            )
             : results,
   };
 }
