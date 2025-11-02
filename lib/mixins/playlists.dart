@@ -257,11 +257,13 @@ mixin PlaylistsMixin on MixinProtocol {
       List parseFunc(contents) =>
           parsePlaylistItems(List<JsonMap>.from(contents as List));
       (playlist['tracks'] as List).addAll(
-        await getContinuations2025(
-          contentData,
-          limit,
-          requestFuncContinuations,
-          parseFunc,
+        List<JsonMap>.from(
+          await getContinuations2025(
+            contentData,
+            limit,
+            requestFuncContinuations,
+            parseFunc,
+          ),
         ),
       );
     }
