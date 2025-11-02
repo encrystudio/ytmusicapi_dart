@@ -37,9 +37,11 @@ class YtAlbum extends YtBaseObject {
       id: jsonData['browseId'] as String,
       title: jsonData['title'] as String,
       artists:
-          List<JsonMap>.from(jsonData['artists'] as List)
-              .map((artist) => YtBaseObject.fromJson(artist, 'id', 'name'))
-              .toList(),
+          jsonData['artists'] != null
+              ? List<JsonMap>.from(jsonData['artists'] as List)
+                  .map((artist) => YtBaseObject.fromJson(artist, 'id', 'name'))
+                  .toList()
+              : [],
 
       duration: jsonData['duration'] as Duration?,
       isExplicit: jsonData['isExplicit'] as bool?,
