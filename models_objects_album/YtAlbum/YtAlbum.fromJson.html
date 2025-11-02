@@ -77,9 +77,11 @@
     id: jsonData[&#39;browseId&#39;] as String,
     title: jsonData[&#39;title&#39;] as String,
     artists:
-        List&lt;JsonMap&gt;.from(jsonData[&#39;artists&#39;] as List)
-            .map((artist) =&gt; YtBaseObject.fromJson(artist, &#39;id&#39;, &#39;name&#39;))
-            .toList(),
+        jsonData[&#39;artists&#39;] != null
+            ? List&lt;JsonMap&gt;.from(jsonData[&#39;artists&#39;] as List)
+                .map((artist) =&gt; YtBaseObject.fromJson(artist, &#39;id&#39;, &#39;name&#39;))
+                .toList()
+            : [],
 
     duration: jsonData[&#39;duration&#39;] as Duration?,
     isExplicit: jsonData[&#39;isExplicit&#39;] as bool?,
@@ -119,7 +121,7 @@
 <footer>
   <span class="no-break">
     ytmusicapi_dart
-      2.2.4
+      2.2.5
   </span>
   
 </footer>
