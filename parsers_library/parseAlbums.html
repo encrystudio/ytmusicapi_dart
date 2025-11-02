@@ -80,6 +80,8 @@
     album[&#39;playlistId&#39;] = nav(data, MENU_PLAYLIST_ID, nullIfAbsent: true);
     album[&#39;title&#39;] = nav(data, TITLE_TEXT);
     album[&#39;thumbnails&#39;] = nav(data, THUMBNAIL_RENDERER);
+    album[&#39;isExplicit&#39;] =
+        nav(data, SUBTITLE_BADGE_LABEL, nullIfAbsent: true) != null;
 
     if (data[&#39;subtitle&#39;] != null &amp;&amp;
         (data[&#39;subtitle&#39;] as JsonMap).containsKey(&#39;runs&#39;)) {
@@ -122,7 +124,7 @@
 <footer>
   <span class="no-break">
     ytmusicapi_dart
-      2.2.5
+      2.2.6
   </span>
   
 </footer>
