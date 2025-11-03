@@ -17,6 +17,7 @@ class YtSong extends YtBaseObject {
   final bool isExplicit;
   final YtThumbnailData thumbnailData;
   final int? year;
+  final bool isAvailable;
 
   YtSong({
     required this.album,
@@ -31,16 +32,18 @@ class YtSong extends YtBaseObject {
     required this.isExplicit,
     required this.thumbnailData,
     required this.year,
+    required this.isAvailable,
     required super.id,
     required super.title,
   }) : super(type: YtObjectType.SONG);
 
   factory YtSong.fromJson(JsonMap jsonData) {
+    final String? id = jsonData['videoId'] as String?;
     return YtSong(
       thumbnailData: YtThumbnailData.fromJson(
         List<JsonMap>.from(jsonData['thumbnails'] as List),
       ),
-      id: jsonData['videoId'] as String,
+      id: id,
       title: jsonData['title'] as String,
       album:
           jsonData['album'] is JsonMap
@@ -77,6 +80,10 @@ class YtSong extends YtBaseObject {
               : ((jsonData['year'] is String)
                   ? (int.tryParse(jsonData['year'] as String))
                   : null),
+      isAvailable:
+          (jsonData['isAvailable'] as bool?) == null
+              ? (id != null)
+              : jsonData['isAvailable'] as bool && (id != null),
     );
   }
 

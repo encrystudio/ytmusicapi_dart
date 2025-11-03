@@ -12,6 +12,7 @@ class YtVideo extends YtBaseObject {
   final String? views;
   final YtThumbnailData thumbnailData;
   final int? year;
+  final bool isAvailable;
 
   YtVideo({
     required this.videoType,
@@ -21,16 +22,18 @@ class YtVideo extends YtBaseObject {
     required this.views,
     required this.thumbnailData,
     required this.year,
+    required this.isAvailable,
     required super.id,
     required super.title,
   }) : super(type: YtObjectType.VIDEO);
 
   factory YtVideo.fromJson(JsonMap jsonData) {
+    final String? id = jsonData['videoId'] as String?;
     return YtVideo(
       thumbnailData: YtThumbnailData.fromJson(
         List<JsonMap>.from(jsonData['thumbnails'] as List),
       ),
-      id: jsonData['videoId'] as String,
+      id: id,
       title: jsonData['title'] as String,
       videoType: VideoType.fromValue(jsonData['videoType'] as String?),
       durationRaw: jsonData['duration'] as String?,
@@ -49,6 +52,10 @@ class YtVideo extends YtBaseObject {
               : ((jsonData['year'] is String)
                   ? (int.tryParse(jsonData['year'] as String))
                   : null),
+      isAvailable:
+          (jsonData['isAvailable'] as bool?) == null
+              ? (id != null)
+              : jsonData['isAvailable'] as bool && (id != null),
     );
   }
 

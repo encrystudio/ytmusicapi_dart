@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.3.0
+
+- Added `YtSong.isAvailable` and `YtVideo.isAvailable` fields to indicate if the content is currently available.
+- Improved `id` parsing in `YtSong` and `YtVideo`; returns `null` instead of `''` when an ID is missing.
+- These changes may break existing code that relied on empty strings for missing IDs or assumed all content is available.
+
 ## 2.2.8
 
 - Fixed type cast in `getPlaylist()` for improved stability.
