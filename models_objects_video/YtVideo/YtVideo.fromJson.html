@@ -64,11 +64,12 @@
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
   <pre class="language-dart"><code class="language-dart">factory YtVideo.fromJson(JsonMap jsonData) {
+  final String? id = jsonData[&#39;videoId&#39;] as String?;
   return YtVideo(
     thumbnailData: YtThumbnailData.fromJson(
       List&lt;JsonMap&gt;.from(jsonData[&#39;thumbnails&#39;] as List),
     ),
-    id: jsonData[&#39;videoId&#39;] as String,
+    id: id,
     title: jsonData[&#39;title&#39;] as String,
     videoType: VideoType.fromValue(jsonData[&#39;videoType&#39;] as String?),
     durationRaw: jsonData[&#39;duration&#39;] as String?,
@@ -87,6 +88,10 @@
             : ((jsonData[&#39;year&#39;] is String)
                 ? (int.tryParse(jsonData[&#39;year&#39;] as String))
                 : null),
+    isAvailable:
+        (jsonData[&#39;isAvailable&#39;] as bool?) == null
+            ? (id != null)
+            : jsonData[&#39;isAvailable&#39;] as bool &amp;&amp; (id != null),
   );
 }</code></pre>
 </section>
@@ -116,7 +121,7 @@
 <footer>
   <span class="no-break">
     ytmusicapi_dart
-      2.2.8
+      2.3.0
   </span>
   
 </footer>
