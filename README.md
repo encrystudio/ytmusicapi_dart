@@ -76,6 +76,10 @@ No feature is considered stable enough yet.
 - get watch playlists (next songs when you press play/radio/shuffle in YouTube Music)
 - get song lyrics
 
+
+#### Localization
+- all supported languages
+
 ### Available
 
 #### Browsing
@@ -104,7 +108,7 @@ No feature is considered stable enough yet.
 #### Localization
 
 - regions
-- English language
+- all supported language
 
 ### Missing Features
 
@@ -120,10 +124,6 @@ These features from [sigma67's ytmusicapi](https://github.com/sigma67/ytmusicapi
 
 - upload songs and remove them again
 - list uploaded songs, artists and albums
-
-#### Localization
-
-- languages other than English
 
 ## Additional information
 

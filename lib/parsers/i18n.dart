@@ -1,48 +1,36 @@
+import 'package:ytmusicapi_dart/locales/locales.dart';
 import 'package:ytmusicapi_dart/navigation.dart';
 import 'package:ytmusicapi_dart/parsers/browsing.dart';
 import 'package:ytmusicapi_dart/parsers/podcasts.dart';
 import 'package:ytmusicapi_dart/type_alias.dart';
 
-// ignore: public_member_api_docs
-const EN_LOCALE = {
-  'album': 'album',
-  'artist': 'artist',
-  'playlist': 'playlist',
-  'song': 'song',
-  'video': 'video',
-  'station': 'station',
-  'profile': 'profile',
-  'podcast': 'podcast',
-  'episode': 'episode',
-  'single': 'single',
-  'ep': 'ep',
-  'albums': 'albums',
-  'singles & eps': 'singles & eps',
-  'shows': 'Audiobooks and shows',
-  'videos': 'videos',
-  'playlists': 'playlists',
-  'related': 'fans might also like',
-  'episodes': 'latest episodes',
-  'podcasts': 'podcasts',
-};
-
-/// Translates [key] to current language. // TODO
-///
-/// Currently uses English for everything.
-String t(String key) {
-  if (EN_LOCALE.containsKey(key)) {
-    return EN_LOCALE[key]!;
-  }
-  return key;
-}
-
 /// i18n parser.
 class Parser {
   /// The current language.
-  final dynamic lang;
+  final String lang;
+
+  /// The locale for the current language.
+  late final LOCALES locale;
 
   /// Create new [Parser].
-  Parser(this.lang);
+  Parser(this.lang) {
+    /// get locale for language (throws error if language is not supported)
+    locale = LOCALES.from_lang(lang);
+
+    // try {
+    //   locale = LOCALES.from_lang(lang);
+    // } catch (e) {
+    //   locale = LOCALES.LOCALE_EN;
+    // }
+  }
+
+  /// Translates [key] to current language.
+  String t(String key) {
+    if (locale.translations.containsKey(key)) {
+      return locale.translations[key]!;
+    }
+    return key;
+  }
 
   /// Returns all search result types.
   List<String> getSearchResultTypes() {
