@@ -39,7 +39,6 @@ class YtSong extends YtBaseObject {
 
   factory YtSong.fromJson(JsonMap jsonData) {
     final String? id = jsonData['videoId'] as String?;
-    print(jsonData);
     return YtSong(
       thumbnailData: YtThumbnailData.fromJson(
         List<JsonMap>.from(jsonData['thumbnails'] as List),

@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.4.1
+
+- Removed `print` statement in `YtSong`
+
 ## 2.4.0
 
 - Applied changes from [upstream](https://github.com/sigma67/ytmusicapi)
