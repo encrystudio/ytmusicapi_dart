@@ -33,7 +33,7 @@ enum ArtistOrderType {
 }
 
 /// Options for search filter.
-enum SearchFilter {
+enum SearchFilterType {
   /// Songs.
   songs,
 

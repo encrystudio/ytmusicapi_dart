@@ -61,6 +61,9 @@ class RefreshableTokenMap extends BaseTokenMap {
   /// String used to obtain new access token upon expiration.
   final String? refreshToken;
 
+  /// Seconds until refresh token expiration from request timestamp.
+  final int? refreshTokenExpiresIn;
+
   /// Create new [RefreshableTokenMap].
   RefreshableTokenMap({
     super.accessToken,
@@ -69,6 +72,7 @@ class RefreshableTokenMap extends BaseTokenMap {
     super.tokenType,
     this.expiresAt,
     this.refreshToken,
+    this.refreshTokenExpiresIn,
   });
 
   /// Create new [RefreshableTokenMap] from a [JsonMap].
@@ -79,6 +83,7 @@ class RefreshableTokenMap extends BaseTokenMap {
     tokenType: json['token_type'] as String?,
     expiresAt: json['expires_at'] as int?,
     refreshToken: json['refresh_token'] as String?,
+    refreshTokenExpiresIn: json['refresh_token_expires_in'] as int?,
   );
 
   /// Returns this [RefreshableTokenMap] instance as [JsonMap].
@@ -87,6 +92,8 @@ class RefreshableTokenMap extends BaseTokenMap {
     ...super.toJson(),
     if (expiresAt != null) 'expires_at': expiresAt,
     if (refreshToken != null) 'refresh_token': refreshToken,
+    if (refreshTokenExpiresIn != null)
+      'refresh_token_expires_in': refreshTokenExpiresIn,
   };
 }
 

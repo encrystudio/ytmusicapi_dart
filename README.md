@@ -125,6 +125,10 @@ These features from [sigma67's ytmusicapi](https://github.com/sigma67/ytmusicapi
 
 - languages other than English
 
+#### Tests
+
+- All tests with ``// TODO`` comments are missing
+
 ## Additional information
 
 This package is highly inspired by and ported to Dart from [sigma67's ytmusicapi](https://github.com/sigma67/ytmusicapi), which is licensed under the MIT license, just like this package.

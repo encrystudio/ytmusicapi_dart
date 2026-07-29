@@ -93,7 +93,7 @@ void main() {
       for (final c in cases) {
         final query = c.$1;
         final expected = c.$2;
-        final results = await yt.search(query, filter: SearchFilter.albums);
+        final results = await yt.search(query, filter: SearchFilterType.albums);
         expect(
           results.any((r) => _mapContainsAll(r as JsonMap, expected)),
           isTrue,
@@ -123,14 +123,17 @@ void main() {
 
       final songResults = await ytLocal.search(
         'ABBA',
-        filter: SearchFilter.songs,
+        filter: SearchFilterType.songs,
       );
       expect(songResults.every((r) => r['resultType'] == 'song'), isTrue);
     });
 
     test('search filters', () async {
       const query = 'hip hop playlist';
-      final resultsSongs = await yt.search(query, filter: SearchFilter.songs);
+      final resultsSongs = await yt.search(
+        query,
+        filter: SearchFilterType.songs,
+      );
       expect(resultsSongs.length, greaterThan(10));
       expect(resultsSongs.every((r) => r['views'] != ''), isTrue);
       expect(
@@ -139,7 +142,10 @@ void main() {
       );
       expect(resultsSongs.every((r) => r['resultType'] == 'song'), isTrue);
 
-      final resultsVideos = await yt.search(query, filter: SearchFilter.videos);
+      final resultsVideos = await yt.search(
+        query,
+        filter: SearchFilterType.videos,
+      );
       expect(resultsVideos.length, greaterThan(10));
       for (final r in resultsVideos) {
         if (r['videoType'] != 'MUSIC_VIDEO_TYPE_PODCAST_EPISODE') {

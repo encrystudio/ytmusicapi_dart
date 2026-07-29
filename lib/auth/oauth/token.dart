@@ -190,6 +190,9 @@ class RefreshingToken extends OAuthToken {
     final rawToken = await credentials.tokenFromCode(
       code.toJson()['device_code'] as String,
     );
+    final refreshTokenExpiresIn =
+        rawToken.refreshTokenExpiresIn ??
+        rawToken.toJson()['refresh_token_expires_in'] as int;
     final refToken = RefreshingToken(
       credentials: credentials,
       scope: DefaultScope(rawToken.scope),
@@ -197,7 +200,7 @@ class RefreshingToken extends OAuthToken {
       accessToken: rawToken.accessToken!,
       refreshToken: rawToken.refreshToken!,
       expiresAt: rawToken.expiresAt!,
-      expiresIn: rawToken.expiresIn!,
+      expiresIn: refreshTokenExpiresIn,
     );
     refToken.update(refToken.asMap());
     if (toFile != null) refToken.localCache = toFile;

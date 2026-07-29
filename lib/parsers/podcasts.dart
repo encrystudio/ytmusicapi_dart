@@ -209,6 +209,33 @@ JsonMap parseEpisode(JsonMap data) {
   };
 }
 
+/// Parses episode from [data]
+JsonMap parseEpisodeFlat(JsonMap data) {
+  return {
+    'title': nav(getFlexColumnItem(data, 0), TEXT_RUN_TEXT),
+    'podcast': parseIdName(
+      nav(getFlexColumnItem(data, 1), TEXT_RUN) as JsonMap,
+    ),
+    'videoId': nav(data, ['playlistItemData', 'videoId']),
+    'browseId': nav(getFlexColumnItem(data, 0), [
+      ...TEXT_RUN,
+      ...NAVIGATION_BROWSE_ID,
+    ]),
+    'playlistId': nav(data, [
+      ...PLAY_BUTTON,
+      'playNavigationEndpoint',
+      ...WATCH_PLAYLIST_ID,
+    ]),
+    'videoType': nav(data, [
+      ...PLAY_BUTTON,
+      'playNavigationEndpoint',
+      ...NAVIGATION_VIDEO_TYPE,
+    ]),
+    'date': nav(getFlexColumnItem(data, 2), TEXT_RUN_TEXT),
+    'thumbnails': nav(data, THUMBNAILS),
+  };
+}
+
 /// Parses podcast from [data].
 JsonMap parsePodcast(JsonMap data) {
   final JsonMap realData;

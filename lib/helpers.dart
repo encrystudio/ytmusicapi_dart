@@ -7,6 +7,8 @@ import 'package:intl/intl.dart';
 import 'package:unorm_dart/unorm_dart.dart' as unorm;
 import 'package:ytmusicapi_dart/constants.dart';
 import 'package:ytmusicapi_dart/mixins/utils.dart';
+import 'package:ytmusicapi_dart/models/content/text_run.dart';
+import 'package:ytmusicapi_dart/navigation.dart';
 import 'package:ytmusicapi_dart/type_alias.dart';
 
 /// Returns initial request headers.
@@ -108,4 +110,34 @@ int sumTotalDuration(JsonMap item) {
     }
     return sum;
   });
+}
+
+/// Parses a descriptionRuns section
+(String, List<TextRun>) parseDescriptionRuns(dynamic descriptionRunsList) {
+  if (descriptionRunsList is! List) {
+    return ('', []);
+  }
+
+  final descriptionRuns = List<TextRun>.empty(growable: true);
+  final description = StringBuffer();
+
+  for (final run in List<Map<String, dynamic>>.from(descriptionRunsList)) {
+    {
+      description.write(run['text']);
+      // hashtag runs carry a searchEndpoint instead of an urlEndpoint - treat them as plain text
+      final link = nav(run, [
+        'navigationEndpoint',
+        'urlEndpoint',
+        'url',
+      ], nullIfAbsent: true);
+      if (link != null) {
+        descriptionRuns.add(
+          HyperLink(text: run['text'] as String, url: link as String),
+        );
+      } else {
+        descriptionRuns.add(PlainText(text: run['text'] as String));
+      }
+    }
+  }
+  return (description.toString(), descriptionRuns);
 }

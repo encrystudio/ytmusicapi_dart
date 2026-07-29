@@ -40,9 +40,15 @@ mixin WatchMixin on MixinProtocol {
   ///           "height": 60
   ///         }...
   ///       ],
+  ///       "inLibrary": false,
   ///       "feedbackTokens": {
   ///         "add": "AB9zfpIGg9XN4u2iJ...",
   ///         "remove": "AB9zfpJdzWLcdZtC..."
+  ///       },
+  ///       "pinnedToListenAgain": true,
+  ///       "listenAgainFeedbackTokens": {
+  ///         "pin": "AB9zfpK8kP5mQ7rT...",
+  ///         "unpin": "AB9zfpLy3L9vB2xN..."
   ///       },
   ///       "likeStatus": "INDIFFERENT",
   ///       "videoType": "MUSIC_VIDEO_TYPE_ATV",
@@ -153,8 +159,9 @@ mixin WatchMixin on MixinProtocol {
       'watchNextTabbedResultsRenderer',
     ]);
 
-    final lyricsBrowseId = getTabBrowseId(watchNextRenderer as JsonMap, 1);
-    final relatedBrowseId = getTabBrowseId(watchNextRenderer, 2);
+    final browseIds = getTabBrowseIds(watchNextRenderer as JsonMap);
+    final lyricsBrowseId = browseIds['MUSIC_PAGE_TYPE_TRACK_LYRICS'];
+    final relatedBrowseId = browseIds['MUSIC_PAGE_TYPE_TRACK_RELATED'];
 
     final results =
         nav(watchNextRenderer, [

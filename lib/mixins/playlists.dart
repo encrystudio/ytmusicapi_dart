@@ -1,8 +1,10 @@
 import 'package:ytmusicapi_dart/continuations.dart';
+import 'package:ytmusicapi_dart/enums.dart';
 import 'package:ytmusicapi_dart/exceptions.dart';
 import 'package:ytmusicapi_dart/helpers.dart';
 import 'package:ytmusicapi_dart/mixins/protocol.dart';
 import 'package:ytmusicapi_dart/mixins/utils.dart';
+import 'package:ytmusicapi_dart/models/content/enums.dart';
 import 'package:ytmusicapi_dart/navigation.dart';
 import 'package:ytmusicapi_dart/parsers/browsing.dart';
 import 'package:ytmusicapi_dart/parsers/playlists.dart';
@@ -96,10 +98,22 @@ mixin PlaylistsMixin on MixinProtocol {
   ///       "isAvailable": true,
   ///       "isExplicit": false,
   ///       "videoType": "MUSIC_VIDEO_TYPE_OMV",
+  ///       "inLibrary": false,
   ///       "feedbackTokens": {
   ///         "add": "AB9zfpJxtvrU...",
   ///         "remove": "AB9zfpKTyZ..."
-  ///       }
+  ///   },
+  ///   "pinnedToListenAgain": false,
+  ///   "listenAgainFeedbackTokens": {
+  ///     "pin": "AB9zfpImL2k...",
+  ///     "unpin": "AB9zfpJt6pA..."
+  ///   },
+  ///   "communityVoteStatus": {
+  ///     "netVoteValue": 12,
+  ///     "status": "VOTE_STATUS_UPVOTED"
+  ///   }
+  /// }
+  ///   "creditsBrowseId": "MPTCekz1IJ9I0sw"
   ///     }
   ///   ]
   /// }
@@ -107,6 +121,23 @@ mixin PlaylistsMixin on MixinProtocol {
   /// ```
   /// The `setVideoId` is the unique id of this playlist item and
   /// needed for moving/removing playlist items.
+  ///
+  /// Note that communityVoteStatus can be null if the information is not available (i.e. playlist does not have that setting enabled, the request is not authenticated, ...)
+  ///
+  /// Collaborative playlists replace ``author`` with limited data about ``collaborators``:
+  ///   {
+  ///     "collaborators": {
+  ///       "text": "by Sample Author and 1 other",
+  ///       "avatars": [
+  ///         {
+  ///           "url": "https://yt3.ggpht.com/sample-author-photo"
+  ///         },
+  ///         {
+  ///           "url": "https://yt3.ggpht.com/sample-collaborator-photo"
+  ///         }
+  ///       ]
+  ///     }
+  ///   }
   Future<JsonMap> getPlaylist(
     String playlistId, {
     int? limit = 100,
@@ -125,7 +156,16 @@ mixin PlaylistsMixin on MixinProtocol {
     Future<JsonMap> requestFuncContinuations(JsonMap body) =>
         sendRequest(endpoint, body);
 
-    if (playlistId.startsWith('OLA') || playlistId.startsWith('VLOLA')) {
+    final isOla =
+        playlistId.startsWith('OLA') || playlistId.startsWith('VLOLA');
+    final hasPlaylistHeader =
+        nav(response, [
+          ...TWO_COLUMN_RENDERER,
+          ...TAB_CONTENT,
+          ...SECTION_LIST_ITEM,
+        ], nullIfAbsent: true) !=
+        null;
+    if (isOla && !hasPlaylistHeader) {
       return parseAudioPlaylist(response, limit, requestFuncContinuations);
     }
 
@@ -187,6 +227,7 @@ mixin PlaylistsMixin on MixinProtocol {
             : null;
 
     playlist.addAll(parsePlaylistHeaderMeta(header));
+    final isCollaborative = playlist.containsKey('collaborators');
 
     playlist.addAll(
       parseSongRuns(
@@ -253,9 +294,12 @@ mixin PlaylistsMixin on MixinProtocol {
     if (contentData.containsKey('contents')) {
       playlist['tracks'] = parsePlaylistItems(
         List<JsonMap>.from(contentData['contents'] as List),
+        isCollaborative: isCollaborative,
       );
-      List parseFunc(contents) =>
-          parsePlaylistItems(List<JsonMap>.from(contents as List));
+      List parseFunc(contents) => parsePlaylistItems(
+        List<JsonMap>.from(contents as List),
+        isCollaborative: isCollaborative,
+      );
       (playlist['tracks'] as List).addAll(
         List<JsonMap>.from(
           await getContinuations2025(
@@ -278,8 +322,10 @@ mixin PlaylistsMixin on MixinProtocol {
   /// - [limit] How many items to return. (Default: `100`).
   ///
   /// Returns List of `playlistItem` Maps. See [getPlaylist].
-  Future<JsonMap> getLikedSongs({int limit = 100}) =>
-      getPlaylist('LM', limit: limit);
+  Future<JsonMap> getLikedSongs({int limit = 100}) {
+    checkAuth();
+    return getPlaylist('LM', limit: limit);
+  }
 
   /// Gets playlist items for the 'Liked Songs' playlist.
   ///
@@ -330,8 +376,43 @@ mixin PlaylistsMixin on MixinProtocol {
 
     const endpoint = 'playlist/create';
     final response = await sendRequest(endpoint, body);
-    return response.containsKey('playlistId')
-        ? response['playlistId']
+
+    if (response.containsKey('playlistId')) {
+      return response['playlistId'] as String;
+    }
+
+    validateWriteResponse(response);
+    return response;
+  }
+
+  /// Given an invite token, join a collaborative playlist and add it to your library.
+  ///
+  /// - [playlistId] ID of the playlist to join.
+  /// If you're already a collaborator, an Unauthorized server error is raised.
+  /// - [joinCollaborationToken] See [editPlaylist], or `jct` in YTM's invite URL.
+  ///
+  /// Returns status string or full response.
+  Future<dynamic> joinCollaborativePlaylist(
+    String playlistId,
+    String joinCollaborationToken,
+  ) async {
+    checkAuth();
+
+    final body = <String, dynamic>{
+      'playlistId': validatePlaylistId(playlistId),
+      'actions': [
+        {
+          'action': 'ACTION_JOIN_COLLABORATION',
+          'joinCollaborationToken': joinCollaborationToken,
+        },
+      ],
+    };
+
+    const endpoint = 'browse/edit_playlist';
+    final response = await sendRequest(endpoint, body);
+
+    return response.containsKey('status')
+        ? response['status'] as String
         : response;
   }
 
@@ -343,21 +424,39 @@ mixin PlaylistsMixin on MixinProtocol {
   /// - [title] Optional. New title for the playlist.
   /// - [description] Optional. New description for the playlist.
   /// - [privacyStatus] Optional. New privacy status for the playlist.
+  /// - [collaboration] Optional. Enable or disable collaboration.
+  ///                    If False and collaboration is not enabled, a Forbidden server error is raised.
+  ///                    If True, a new ``joinCollaborationToken`` is returned.
+  ///                    Collaborators cannot interact with private playlists.
   /// - [moveItem] Optional. Move one item before another. Items are specified by setVideoId, which is the
   ///              unique id of this playlist item. See [getPlaylist].
   /// - [addPlaylistId] Optional. Id of another playlist to add to this playlist.
+  /// - [sortOrder] Optional. Change the order tracks are returned in. The default is ``MANUAL``.
   /// - [addToTop] Optional. Change the state of this playlist to add items to the top of the playlist (if `true`)
   ///              or the bottom of the playlist (if `false` - this is also the default of a new playlist).
+  /// - [voteOption]: Optional. Change who can participate in community voting in this playlist.
+  ///                 Note that a bad request will be thrown if voteOption is PlaylistVoteEditOptions.COLLABORATORS_ONLY
+  ///                 but the playlist is not enabled for collaboration prior to the edit.
   ///
-  /// Returns status String or full response.
+  /// Returns Status String, [collaboration] dict described below, or full response
+  ///
+  /// Dictionary returned when [collaboration] is true and the request is successful
+  ///
+  ///   {
+  ///      "status": "STATUS_SUCCEEDED",
+  ///      "joinCollaborationToken": "kM9wXdRj2p8v_qL3sHBkTz"
+  ///   }
   Future<dynamic> editPlaylist(
     String playlistId, {
     String? title,
     String? description,
     String? privacyStatus,
+    bool? collaboration,
     dynamic moveItem,
     String? addPlaylistId,
+    PlaylistSortOrder? sortOrder,
     bool? addToTop,
+    PlaylistVoteEditOptions? voteOption,
   }) async {
     checkAuth();
     final body = <String, dynamic>{
@@ -384,6 +483,15 @@ mixin PlaylistsMixin on MixinProtocol {
       });
     }
 
+    if (collaboration != null) {
+      actions.add({'action': 'ACTION_CREATE_COLLABORATION_INVITE_LINK'});
+    } else if (!collaboration!) {
+      actions.add({
+        'action': 'ACTION_SET_CLOSED_TO_CONTRIBUTIONS',
+        'closedToContributions': true,
+      });
+    }
+
     if (moveItem != null) {
       final action = {
         'action': 'ACTION_MOVE_VIDEO_BEFORE',
@@ -402,17 +510,47 @@ mixin PlaylistsMixin on MixinProtocol {
         'addedFullListId': addPlaylistId,
       });
     }
+
+    if (sortOrder != null) {
+      actions.add({
+        'action': 'ACTION_SET_PLAYLIST_VIDEO_ORDER',
+        'playlistVideoOrder': sortOrder.value,
+      });
+    }
+
     if (addToTop != null) {
       actions.add({
         'action': 'ACTION_SET_ADD_TO_TOP',
-        'addToTop': addToTop.toString(),
+        'addToTop': addToTop.toString().toLowerCase(),
+      });
+    }
+
+    if (voteOption != null) {
+      actions.add({
+        'action': 'ACTION_SET_ALLOW_ITEM_VOTE',
+        'itemVotePermission': voteOption.getArgumentForRequest(),
       });
     }
 
     body['actions'] = actions;
     const endpoint = 'browse/edit_playlist';
     final response = await sendRequest(endpoint, body);
-    return response.containsKey('status') ? response['status'] : response;
+
+    if (collaboration && response['status'] == ResponseStatus.SUCCEEDED) {
+      final inviteLink = nav(response, ['collaborationInviteLink']);
+
+      return {
+        'status': response['status'],
+        'joinCollaborationToken': nav(
+          Uri.splitQueryString(Uri.parse(inviteLink as String).query),
+          ['jct', 0],
+        ),
+      };
+    }
+
+    return response.containsKey('status')
+        ? response['status'] as String
+        : response;
   }
 
   /// Delete a playlist.

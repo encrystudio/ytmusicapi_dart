@@ -170,12 +170,18 @@ mixin BrowsingMixin on MixinProtocol {
   /// ```json
   /// {
   ///   "description": "Oasis were ...",
+  ///   "descriptionRuns": [
+  ///     {
+  ///       "text":"Oasis were ..."
+  ///     }
+  ///   ],
   ///   "views": "3,693,390,359 views",
   ///   "name": "Oasis",
   ///   "channelId": "UCUDVBtnOQi4c7E8jebpjc9Q",
   ///   "shuffleId": "RDAOkjHYJjL1a3xspEyVkhHAsg",
   ///   "radioId": "RDEMkjHYJjL1a3xspEyVkhHAsg",
   ///   "subscribers": "3.86M",
+  ///   "monthlyListeners": "29.1M",
   ///   "subscribed": false,
   ///   "thumbnails": [...],
   ///   "songs": {
@@ -207,6 +213,7 @@ mixin BrowsingMixin on MixinProtocol {
   ///       {
   ///         "title": "Stand By Me (Mustique Demo)",
   ///         "thumbnails": [...],
+  ///         "type": "Single",
   ///         "year": "2016",
   ///         "browseId": "MPREb_7MPKLhibN5G"
   ///       }
@@ -242,6 +249,11 @@ mixin BrowsingMixin on MixinProtocol {
   ///     ]
   ///   }
   /// }
+  ///
+  ///  The difference between description and descriptionRuns is that description is just the raw text of the description and does not have any knowledge of the hyperlinks in the description.
+  ///  Whereas descriptionRuns is a list of dictionaries which contains the text runs of the description that is aware of the hyperlinks in the description. There are two types of text runs.
+  ///    1. PlainText: which has format {"text": string}
+  ///    2. HyperLink: which has format {"text": string, "url": string}
   /// ```
   Future<JsonMap> getArtist(String channelId) async {
     final String cleanChannelId;
@@ -255,17 +267,21 @@ mixin BrowsingMixin on MixinProtocol {
     final response = await sendRequest(endpoint, body);
 
     final results = List<JsonMap>.from(
-      nav(response, [...SINGLE_COLUMN_TAB, ...SECTION_LIST]) as List,
+      nav(response, SINGLE_COLUMN_TAB + SECTION_LIST) as List,
     );
-
     final header =
         JsonMap.from(
               response['header']! as JsonMap,
             )['musicImmersiveHeaderRenderer']
+            as JsonMap? ??
+        JsonMap.from(
+              response['header']! as JsonMap,
+            )['musicVisualHeaderRenderer']
             as JsonMap;
     final artist = <String, dynamic>{
       'name': nav(header, TITLE_TEXT),
       'description': null,
+      'descriptionRuns': [],
       'views': null,
     };
 
@@ -276,7 +292,13 @@ mixin BrowsingMixin on MixinProtocol {
     );
 
     if (descriptionShelf != null) {
-      artist['description'] = nav(descriptionShelf, DESCRIPTION);
+      final parsedDescriptionRuns = parseDescriptionRuns(
+        nav(descriptionShelf, DESCRIPTION_RUN_LIST),
+      );
+      final description = parsedDescriptionRuns.$1;
+      final descriptionRuns = parsedDescriptionRuns.$2;
+      artist['description'] = description;
+      artist['descriptionRuns'] = descriptionRuns;
       artist['views'] =
           descriptionShelf.containsKey('subheader')
               ? (((descriptionShelf['subheader']! as JsonMap)['runs']!
@@ -305,6 +327,14 @@ mixin BrowsingMixin on MixinProtocol {
       0,
       'text',
     ], nullIfAbsent: true);
+    artist['monthlyListeners'] = nav(header, [
+      'monthlyListenerCount',
+      'runs',
+      0,
+      'text',
+    ], nullIfAbsent: true);
+    artist['monthlyListeners'] = (artist['monthlyListeners'] as String?)
+        ?.replaceAll(' monthly audience', '');
     artist['subscribed'] = subscriptionButton['subscribed'];
     artist['thumbnails'] = nav(header, THUMBNAILS, nullIfAbsent: true);
     artist['songs'] = JsonMap.from({'browseId': null});
@@ -581,6 +611,9 @@ mixin BrowsingMixin on MixinProtocol {
   ///   "type": "Album",
   ///   "thumbnails": [...],
   ///   "description": "Revival is the...",
+  ///   "descriptionRuns": [
+  ///     {"text": "Revival is the..."},
+  ///   ],
   ///   "artists": [
   ///     {
   ///       "name": "Eminem",
@@ -609,10 +642,18 @@ mixin BrowsingMixin on MixinProtocol {
   ///       "duration": "5:03",
   ///       "duration_seconds": 303,
   ///       "trackNumber": 0,
+  ///       "inLibrary": false,
   ///       "feedbackTokens": {
   ///         "add": "AB9zfpK...",
   ///         "remove": "AB9zfpK..."
-  ///       }
+  ///       },
+  ///                   "pinnedToListenAgain": false,
+  ///      "listenAgainFeedbackTokens": {
+  ///        "pin": "AB9zfpJ...",
+  ///        "unpin": "AB9zfpL..."
+  ///      },
+  ///      "creditsBrowseId": "MPTCiKLU7z_xdYQ"
+  ///      }
   ///     }
   ///   ],
   ///   "other_versions": [
@@ -626,6 +667,8 @@ mixin BrowsingMixin on MixinProtocol {
   ///   ],
   ///   "duration_seconds": 4657
   /// }
+
+  /// For the distinction between description and descriptionRuns please refer to getArtist.
   /// ```
   Future<JsonMap> getAlbum(String browseId, {JsonMap? requestData}) async {
     if (browseId.isEmpty || !browseId.startsWith('MPRE')) {
@@ -684,6 +727,93 @@ mixin BrowsingMixin on MixinProtocol {
               : album['artists'];
     }
     return album;
+  }
+
+  /// Get credits for a song. Top-level entries are limited to ``performed_by``,
+  /// ``written_by``, ``produced_by`` and ``music_metadata_provided_by``.
+  /// If YouTube returns additional data, it will be returned in ``other_sections``.
+  ///
+  /// - [browseId] `browseId` for the credits of a song, for example returned as ``creditsBrowseId`` in the tracks of [getAlbum]
+  /// Returns a Map with credit sections.
+  ///
+  /// Example::
+  ///
+  /// {
+  ///   "performed_by": {
+  ///     "localized_title": "Performed by",
+  ///     "data": [
+  ///       "Eminem",
+  ///       "Beyoncé"
+  ///     ]
+  ///   },
+  ///   "written_by": {
+  ///     "localized_title": "Written by",
+  ///     "data": [
+  ///       "Marshall Mathers",
+  ///       "Beyoncé Knowles",
+  ///       "Holly Hafermann"
+  ///     ]
+  ///   },
+  ///   "produced_by": {
+  ///     "localized_title": "Produced by",
+  ///     "data": [
+  ///       "Rick Rubin"
+  ///     ]
+  ///   },
+  ///   "music_metadata_provided_by": {
+  ///     "localized_title": "Music metadata provided by"
+  ///     "data": [
+  ///       "Eminem Catalog PS"
+  ///     ]
+  ///   },
+  ///   "other_sections": [
+  ///     {
+  ///       "localized_title": "Piano",
+  ///       "data": [
+  ///         "Skylar Grey"
+  ///       ]
+  ///     }
+  ///   ]
+  /// }
+  Future<JsonMap> getSongCredits(String browseId) async {
+    if (browseId.isEmpty || !browseId.startsWith('MPTC')) {
+      throw Exception(
+        'Invalid song credits browseId provided, must start with MPTC.',
+      );
+    }
+    final body = {'browseId': browseId};
+    const endpoint = 'browse';
+    final response = await sendRequest(endpoint, body);
+
+    final credits = <String, dynamic>{'other_sections': []};
+    final sections = List<JsonMap>.from(
+      nav(response, CREDITS_SECTIONS) as List,
+    );
+    final localizedSectionMap = parser.getSongCreditSectionMap();
+    for (final section in sections) {
+      final sectionContent = section['dismissableDialogContentSectionRenderer'];
+      final sectionLocalName = nav(sectionContent, TITLE_TEXT);
+      final sectionSnakeCaseName =
+          localizedSectionMap[sectionLocalName] as String?;
+      final subtitleRuns = List<JsonMap>.from(
+        nav(sectionContent, SUBTITLE_RUNS) as List? ?? [],
+      );
+
+      final sectionData = {
+        'localized_title': sectionLocalName,
+        'data': [
+          for (var i = 0; i < subtitleRuns.length; i += 2)
+            subtitleRuns[i]['text'],
+        ],
+      };
+
+      if (sectionSnakeCaseName != null) {
+        credits[sectionSnakeCaseName] = sectionData;
+      } else {
+        (credits['other_sections'] as List).add(sectionData);
+      }
+    }
+    return credits;
   }
 
   /// Returns metadata and streaming information about a song or video.

@@ -2,6 +2,7 @@ import 'dart:core';
 
 import 'package:ytmusicapi_dart/continuations.dart';
 import 'package:ytmusicapi_dart/helpers.dart';
+import 'package:ytmusicapi_dart/models/content/enums.dart';
 import 'package:ytmusicapi_dart/navigation.dart';
 import 'package:ytmusicapi_dart/parsers/songs.dart';
 import 'package:ytmusicapi_dart/parsers/utils.dart';
@@ -69,47 +70,79 @@ JsonMap parsePlaylistHeaderMeta(JsonMap header) {
   };
 
   if (header.containsKey('facepile')) {
-    playlistMeta['author'] = {
-      'name': nav(header, [
-        'facepile',
-        'avatarStackViewModel',
-        'text',
-        'content',
-      ]),
-      'id': nav(header, [
-        'facepile',
-        'avatarStackViewModel',
-        'rendererContext',
-        'commandContext',
-        'onTap',
-        'innertubeCommand',
-        'browseEndpoint',
-        'browseId',
-      ], nullIfAbsent: true),
-    };
+    final avatarRenderer = nav(header, [
+      'facepile',
+      'avatarStackViewModel',
+      'rendererContext',
+    ]);
+
+    final avatarCommand = nav(avatarRenderer, [
+      'commandContext',
+      'onTap',
+      'innertubeCommand',
+    ], nullIfAbsent: true);
+
+    if (nav(avatarCommand, [
+          'showEngagementPanelEndpoint',
+          'identifier',
+          'tag',
+        ], nullIfAbsent: true) ==
+        'PAplaylist_collaborate') {
+      final avatars = List<JsonMap>.from(
+        nav(header, ['facepile', 'avatarStackViewModel', 'avatars']) as List,
+      );
+
+      playlistMeta['collaborators'] = {
+        'text': nav(avatarRenderer, ['accessibilityContext', 'label']),
+        'avatars': [
+          for (final avatar in avatars)
+            (((avatar['avatarViewModel'] as JsonMap)['image']
+                    as JsonMap)['sources']
+                as List)[0],
+        ],
+      };
+    } else {
+      playlistMeta['author'] = {
+        'name': nav(header, [
+          'facepile',
+          'avatarStackViewModel',
+          'text',
+          'content',
+        ]),
+        'id': nav(avatarCommand, [
+          'browseEndpoint',
+          'browseId',
+        ], nullIfAbsent: true),
+      };
+    }
   }
 
-  if (((header['secondSubtitle'] as JsonMap?)?['runs'] as List?) != null) {
-    final secondSubtitleRuns =
-        (header['secondSubtitle'] as JsonMap)['runs'] as List;
-    final hasViews = (secondSubtitleRuns.length > 3) ? 2 : 0;
-    final hasDuration = (secondSubtitleRuns.length > 1) ? 2 : 0;
+  final secondSubtitleRuns =
+      nav(header, ['secondSubtitle', 'runs'], nullIfAbsent: true) as List?;
 
+  if (secondSubtitleRuns != null) {
+    final hasViews = secondSubtitleRuns.length > 3 ? 2 : 0;
     playlistMeta['views'] =
         hasViews == 0
             ? null
             : toInt((secondSubtitleRuns[0] as JsonMap)['text'] as String);
+
+    final hasDuration = secondSubtitleRuns.length > 1 ? 2 : 0;
     playlistMeta['duration'] =
         hasDuration == 0
             ? null
             : (secondSubtitleRuns[hasViews + hasDuration] as JsonMap)['text'];
 
     final songCountText =
-        (secondSubtitleRuns[hasViews + 0] as JsonMap)['text'] as String;
+        (secondSubtitleRuns[hasViews] as JsonMap)['text'] as String;
+
     final songCountSearch =
-        RegExp(r'\d+').allMatches(songCountText).map((m) => m[0]).join();
+        RegExp(
+          r'\d+',
+        ).allMatches(songCountText).map((match) => match.group(0)!).toList();
+
     playlistMeta['trackCount'] =
-        songCountSearch.isEmpty ? null : toInt(songCountSearch);
+        songCountSearch.isNotEmpty ? toInt(songCountSearch.join()) : null;
   }
 
   return playlistMeta;
@@ -143,13 +176,8 @@ Future<JsonMap> parseAudioPlaylist(
   ]);
 
   playlist['id'] = nav(contentData, [
-    ...CONTENT,
-    MRLIR,
-    ...PLAY_BUTTON,
-    'playNavigationEndpoint',
-    ...WATCH_PLAYLIST_ID,
+    ['targetId'],
   ]);
-  playlist['trackCount'] = nav(contentData, ['collapsedItemCount']);
 
   playlist['tracks'] = [];
 
@@ -166,6 +194,8 @@ Future<JsonMap> parseAudioPlaylist(
       ),
     );
   }
+
+  playlist['trackCount'] = (playlist['tracks'] as List).length;
 
   try {
     playlist['title'] =
@@ -184,23 +214,28 @@ Future<JsonMap> parseAudioPlaylist(
 }
 
 /// Parses items from playlist.
-List parsePlaylistItems(
+List<JsonMap> parsePlaylistItems(
   List<JsonMap> results, {
-  List<List<String>>? menuEntries,
   bool isAlbum = false,
+  bool isCollaborative = false,
 }) {
   final songs = <JsonMap>[];
 
   for (final result in results) {
-    if (!result.containsKey(MRLIR)) continue;
+    if (!result.containsKey(MRLIR)) {
+      continue;
+    }
 
-    final data = result[MRLIR];
+    final data = result[MRLIR] as JsonMap;
     final song = parsePlaylistItem(
-      data as JsonMap,
-      menuEntries: menuEntries,
+      data,
       isAlbum: isAlbum,
+      isCollaborative: isCollaborative,
     );
-    if (song != null) songs.add(song);
+
+    if (song != null) {
+      songs.add(song);
+    }
   }
 
   return songs;
@@ -209,19 +244,20 @@ List parsePlaylistItems(
 /// Parses item from playlist.
 JsonMap? parsePlaylistItem(
   JsonMap data, {
-  List<List<String>>? menuEntries,
   bool isAlbum = false,
+  bool isCollaborative = false,
 }) {
   String? videoId;
   String? setVideoId;
-  dynamic like;
-  dynamic feedbackTokens;
-  dynamic libraryStatus;
+  String? creditsBrowseId;
+  String? like;
 
+  // If the item has a menu, find its setVideoId
   if (data.containsKey('menu')) {
     for (final item in List<JsonMap>.from(nav(data, MENU_ITEMS) as List)) {
       if (item.containsKey('menuServiceItemRenderer')) {
         final menuService = nav(item, MENU_SERVICE) as JsonMap;
+
         if (menuService.containsKey('playlistEditEndpoint')) {
           setVideoId =
               nav(menuService, [
@@ -231,6 +267,7 @@ JsonMap? parsePlaylistItem(
                     'setVideoId',
                   ], nullIfAbsent: true)
                   as String?;
+
           videoId =
               nav(menuService, [
                     'playlistEditEndpoint',
@@ -240,54 +277,89 @@ JsonMap? parsePlaylistItem(
                   ], nullIfAbsent: true)
                   as String?;
         }
-      }
-      if (item.containsKey(TOGGLE_MENU)) {
-        feedbackTokens = parseSongMenuTokens(item);
-        libraryStatus = parseSongLibraryStatus(item);
-      }
-    }
-  }
+      } else if (item.containsKey(MNIR)) {
+        final maybeCreditsBrowseId =
+            nav(item, [MNIR, ...NAVIGATION_BROWSE_ID], nullIfAbsent: true)
+                as String?;
 
-  if (nav(data, PLAY_BUTTON, nullIfAbsent: true) != null) {
-    final playBtn = nav(data, PLAY_BUTTON) as JsonMap;
-    if (playBtn.containsKey('playNavigationEndpoint')) {
-      videoId =
-          ((playBtn['playNavigationEndpoint'] as JsonMap)['watchEndpoint']
-                  as JsonMap)['videoId']
-              as String?;
-      if (data.containsKey('menu')) {
-        like = nav(data, MENU_LIKE_STATUS, nullIfAbsent: true);
+        if (maybeCreditsBrowseId != null &&
+            maybeCreditsBrowseId.startsWith('MPTC')) {
+          creditsBrowseId = maybeCreditsBrowseId;
+        }
       }
     }
   }
 
-  final isAvailable =
-      !(data['musicItemRendererDisplayPolicy'] ==
-          'MUSIC_ITEM_RENDERER_DISPLAY_POLICY_GREY_OUT');
+  final songMenuData = <String, dynamic>{
+    'inLibrary': null,
+    'pinnedToListenAgain': null,
+    ...parseSongMenuData(data),
+  };
 
-  final usePresetColumns = !isAvailable || isAlbum ? true : null;
+  final playButton = nav(data, PLAY_BUTTON, nullIfAbsent: true) as JsonMap?;
+
+  if (playButton != null && playButton.containsKey('playNavigationEndpoint')) {
+    videoId =
+        nav(data, [
+              ...PLAY_BUTTON,
+              'playNavigationEndpoint',
+              'watchEndpoint',
+              'videoId',
+            ])
+            as String;
+
+    if (data.containsKey('menu')) {
+      like = nav(data, MENU_LIKE_STATUS, nullIfAbsent: true) as String?;
+    }
+  }
+
+  var isAvailable = true;
+
+  if (data.containsKey('musicItemRendererDisplayPolicy')) {
+    isAvailable =
+        data['musicItemRendererDisplayPolicy'] !=
+        'MUSIC_ITEM_RENDERER_DISPLAY_POLICY_GREY_OUT';
+  }
+
+  final usePresetColumns = (!isAvailable || isAlbum) ? true : null;
 
   int? titleIndex = usePresetColumns == true ? 0 : null;
   int? artistIndex = usePresetColumns == true ? 1 : null;
-  int? albumIndex = usePresetColumns == true ? 2 : null;
+  int? durationIndex;
+  int? albumIndex = isCollaborative ? 3 : (usePresetColumns == true ? 2 : null);
+
   final userChannelIndexes = <int>[];
   int? unrecognizedIndex;
 
-  for (var index = 0; index < (data['flexColumns'] as List).length; index++) {
+  final flexColumns = data['flexColumns'] as List;
+
+  for (var index = 0; index < flexColumns.length; index++) {
     final flexColumnItem = getFlexColumnItem(data, index);
-    final navigationEndpoint = nav(flexColumnItem, [
-      ...TEXT_RUN,
-      'navigationEndpoint',
-    ], nullIfAbsent: true);
+
+    final navigationEndpoint =
+        nav(flexColumnItem, [
+              ...TEXT_RUN,
+              'navigationEndpoint',
+            ], nullIfAbsent: true)
+            as JsonMap?;
 
     if (navigationEndpoint == null) {
-      if (nav(flexColumnItem, TEXT_RUN_TEXT, nullIfAbsent: true) != null) {
-        unrecognizedIndex ??= index;
+      final run = nav(flexColumnItem, TEXT_RUN, nullIfAbsent: true) as JsonMap?;
+
+      if (run != null && run.containsKey('text')) {
+        final parsed = parseSongRun(run);
+
+        if (parsed['type'] == 'duration') {
+          durationIndex = index;
+        } else {
+          unrecognizedIndex ??= index;
+        }
       }
+
       continue;
     }
 
-    if ((navigationEndpoint as Map).containsKey('watchEndpoint')) {
+    if (navigationEndpoint.containsKey('watchEndpoint')) {
       titleIndex = index;
     } else if (navigationEndpoint.containsKey('browseEndpoint')) {
       final pageType = nav(navigationEndpoint, [
@@ -300,7 +372,8 @@ JsonMap? parsePlaylistItem(
       if (pageType == 'MUSIC_PAGE_TYPE_ARTIST' ||
           pageType == 'MUSIC_PAGE_TYPE_UNKNOWN') {
         artistIndex = index;
-      } else if (pageType == 'MUSIC_PAGE_TYPE_ALBUM') {
+      } else if (pageType == 'MUSIC_PAGE_TYPE_ALBUM' ||
+          pageType == 'MUSIC_PAGE_TYPE_AUDIOBOOK') {
         albumIndex = index;
       } else if (pageType == 'MUSIC_PAGE_TYPE_USER_CHANNEL') {
         userChannelIndexes.add(index);
@@ -311,30 +384,41 @@ JsonMap? parsePlaylistItem(
   }
 
   artistIndex ??= unrecognizedIndex;
+
   if (artistIndex == null && userChannelIndexes.isNotEmpty) {
     artistIndex = userChannelIndexes.last;
   }
 
   final title = titleIndex != null ? getItemText(data, titleIndex) : null;
-  if (title == 'Song deleted') return null;
+
+  if (title == 'Song deleted') {
+    return null;
+  }
 
   final artists =
       artistIndex != null ? parseSongArtists(data, artistIndex) : null;
+
   final album = albumIndex != null ? parseSongAlbum(data, albumIndex) : null;
+
   final views = isAlbum ? getItemText(data, 2) : null;
 
-  String? duration;
+  String? duration =
+      durationIndex != null ? getItemText(data, durationIndex) : null;
+
   if (data.containsKey('fixedColumns')) {
-    final firstColumn = getFixedColumnItem(data, 0);
-    duration =
-        ((firstColumn?['text'] as JsonMap?)?['simpleText'] ??
-                nav(firstColumn, ['text', 'simpleText']) ??
-                nav(firstColumn, TEXT_RUN_TEXT))
-            as String?;
+    final fixedColumn = getFixedColumnItem(data, 0);
+
+    if (nav(fixedColumn, ['text', 'simpleText'], nullIfAbsent: true) != null) {
+      duration = nav(fixedColumn, ['text', 'simpleText']) as String;
+    } else {
+      duration = nav(fixedColumn, TEXT_RUN_TEXT) as String;
+    }
   }
 
   final thumbnails = nav(data, THUMBNAILS, nullIfAbsent: true);
+
   final isExplicit = nav(data, BADGE_LABEL, nullIfAbsent: true) != null;
+
   final videoType = nav(data, [
     ...MENU_ITEMS,
     0,
@@ -343,18 +427,30 @@ JsonMap? parsePlaylistItem(
     ...NAVIGATION_VIDEO_TYPE,
   ], nullIfAbsent: true);
 
+  final votingStatus =
+      nav(data, ENGAGEMENT_BAR, nullIfAbsent: true) as JsonMap?;
+
+  final communityVoteStatus =
+      votingStatus == null
+          ? null
+          : {
+            'netVoteValue': votingStatus['votes'],
+            'status': VoteStatus.fromValue(votingStatus['status'] as String),
+          };
+
   final song = <String, dynamic>{
     'videoId': videoId,
     'title': title,
     'artists': artists,
     'album': album,
     'likeStatus': like,
-    'inLibrary': libraryStatus,
+    ...songMenuData,
     'thumbnails': thumbnails,
     'isAvailable': isAvailable,
     'isExplicit': isExplicit,
     'videoType': videoType,
     'views': views,
+    'communityVoteStatus': communityVoteStatus,
   };
 
   if (isAlbum) {
@@ -363,21 +459,18 @@ JsonMap? parsePlaylistItem(
             ? int.parse(nav(data, ['index', 'runs', 0, 'text']) as String)
             : null;
   }
-  if (duration != null) {
+
+  if (duration != null && duration.isNotEmpty) {
     song['duration'] = duration;
     song['duration_seconds'] = parseDuration(duration);
   }
-  if (setVideoId != null) song['setVideoId'] = setVideoId;
-  if (feedbackTokens != null) song['feedbackTokens'] = feedbackTokens;
 
-  if (menuEntries != null) {
-    final menuItems = nav(data, MENU_ITEMS);
-    for (final menuEntry in menuEntries) {
-      final items = findObjectsByKey(menuItems as List, menuEntry[0]);
-      song[menuEntry.last] = items
-          .map((itm) => nav(itm, menuEntry, nullIfAbsent: true))
-          .firstWhere((x) => x != null, orElse: () => null);
-    }
+  if (setVideoId != null) {
+    song['setVideoId'] = setVideoId;
+  }
+
+  if (creditsBrowseId != null) {
+    song['creditsBrowseId'] = creditsBrowseId;
   }
 
   return song;

@@ -2,10 +2,12 @@ import 'dart:core';
 
 import 'package:ytmusicapi_dart/navigation.dart';
 import 'package:ytmusicapi_dart/parsers/albums.dart';
+import 'package:ytmusicapi_dart/parsers/artists.dart';
 import 'package:ytmusicapi_dart/parsers/podcasts.dart';
 import 'package:ytmusicapi_dart/parsers/songs.dart';
 import 'package:ytmusicapi_dart/parsers/utils.dart';
 import 'package:ytmusicapi_dart/type_alias.dart';
+import 'package:ytmusicapi_dart/utils.dart';
 
 /// Parse various contents from [rows].
 List parseMixedContent(List<JsonMap> rows) {
@@ -24,7 +26,10 @@ List parseMixedContent(List<JsonMap> rows) {
       if (!(results as JsonMap).containsKey('contents')) {
         continue;
       }
-      title = nav(results, [...CAROUSEL_TITLE, 'text']);
+      // some carousel headers only carry a strapline (e.g. "MORE FROM") instead of a title
+      title =
+          nav(results, [...CAROUSEL_TITLE, 'text'], nullIfAbsent: true) ??
+          nav(results, [...CAROUSEL_STRAPLINE, 'text'], nullIfAbsent: true);
       contents = [];
 
       for (final result in results['contents'] as Iterable) {
@@ -44,7 +49,8 @@ List parseMixedContent(List<JsonMap> rows) {
             } else {
               content = parseSong(data as JsonMap);
             }
-          } else if (pageType == 'MUSIC_PAGE_TYPE_ALBUM') {
+          } else if (pageType == 'MUSIC_PAGE_TYPE_ALBUM' ||
+              pageType == 'MUSIC_PAGE_TYPE_AUDIOBOOK') {
             content = parseAlbum(data as JsonMap);
           } else if (pageType == 'MUSIC_PAGE_TYPE_ARTIST' ||
               pageType == 'MUSIC_PAGE_TYPE_USER_CHANNEL') {
@@ -91,85 +97,59 @@ Future<List> parseContentList(
   return contents;
 }
 
+/// Parses album or single subtitles
+JsonMap parseAlbumSingleSubtitle(JsonMap result, JsonMap albumOrSingle) {
+  final typeOrYear = nav(result, SUBTITLE, nullIfAbsent: true);
+
+  if (typeOrYear != null) {
+    if ((typeOrYear as String).isNumeric()) {
+      albumOrSingle['year'] = typeOrYear;
+    } else {
+      albumOrSingle['type'] = typeOrYear;
+
+      final year = nav(result, SUBTITLE2, nullIfAbsent: true);
+
+      if (year != null && (year as String).isNumeric()) {
+        albumOrSingle['year'] = year;
+      }
+    }
+  }
+
+  return albumOrSingle;
+}
+
 /// Parses an album from [result].
 JsonMap parseAlbum(JsonMap result) {
-  final JsonMap realResult;
-  if (result.containsKey(MTRIR)) {
-    realResult = nav(result, [MTRIR]) as JsonMap;
-  } else {
-    realResult = result;
-  }
-  final artists =
-      List<JsonMap>.from(
-            (nav(realResult, ['subtitle', 'runs'], nullIfAbsent: true) ?? [])
-                as List,
-          ) // TODO should nullIfAbsent be true?
-          .where((x) => x.containsKey('navigationEndpoint'))
-          .map((x) => parseIdName(x as JsonMap?))
-          .toList();
+  final subtitleRuns = List<JsonMap>.from(
+    (nav(result, ['subtitle', 'runs'], nullIfAbsent: true) ?? []) as List,
+  );
 
   final album = <String, dynamic>{
-    'title': nav(realResult, TITLE_TEXT),
-    'type': 'Album',
-    'artists': artists,
-    'browseId': nav(realResult, [...TITLE, ...NAVIGATION_BROWSE_ID]),
+    'title': nav(result, TITLE_TEXT),
+    'artists': [
+      for (final x in subtitleRuns)
+        if (x.containsKey('navigationEndpoint')) parseIdName(x),
+    ],
+    'browseId': nav(result, [...TITLE, ...NAVIGATION_BROWSE_ID]),
     'audioPlaylistId': parseAlbumPlaylistIdIfExists(
-      nav(realResult, THUMBNAIL_OVERLAY_NAVIGATION, nullIfAbsent: true)
-          as JsonMap?,
+      nav(result, THUMBNAIL_OVERLAY_NAVIGATION, nullIfAbsent: true) as JsonMap,
     ),
-    'thumbnails': nav(realResult, THUMBNAIL_RENDERER),
-    'isExplicit':
-        nav(realResult, SUBTITLE_BADGE_LABEL, nullIfAbsent: true) != null,
+    'thumbnails': nav(result, THUMBNAIL_RENDERER),
+    'isExplicit': nav(result, SUBTITLE_BADGE_LABEL, nullIfAbsent: true) != null,
   };
 
-  const validTypes = {'Album', 'Single', 'EP'};
-  final yearRegex = RegExp(r'^\d+$');
-
-  final subtitle = nav(realResult, SUBTITLE, nullIfAbsent: true) as String?;
-  final subtitle2 = nav(realResult, SUBTITLE2, nullIfAbsent: true) as String?;
-
-  final type = [
-    subtitle,
-    subtitle2,
-  ].firstWhere((s) => s != null && validTypes.contains(s), orElse: () => null);
-  if (type != null) album['type'] = type;
-
-  final year = [
-    subtitle,
-    subtitle2,
-  ].firstWhere((s) => s != null && yearRegex.hasMatch(s), orElse: () => null);
-  if (year != null) album['year'] = year;
-
-  return album;
+  return parseAlbumSingleSubtitle(result, album);
 }
 
 /// Parses a single from [result].
 JsonMap parseSingle(JsonMap result) {
-  final JsonMap realResult;
-  if (result.containsKey(MTRIR)) {
-    realResult = nav(result, [MTRIR]) as JsonMap;
-  } else {
-    realResult = result;
-  }
-  return {
-    'title': nav(realResult, TITLE_TEXT),
-    'type': nav(realResult, SUBTITLE, nullIfAbsent: true),
-    'year': nav(realResult, SUBTITLE2, nullIfAbsent: true),
-    'browseId': nav(realResult, [...TITLE, ...NAVIGATION_BROWSE_ID]),
-    'audioPlaylistId': parseAlbumPlaylistIdIfExists(
-      nav(realResult, THUMBNAIL_OVERLAY_NAVIGATION, nullIfAbsent: true)
-          as JsonMap?,
-    ),
-    'artists':
-        List<JsonMap>.from(
-              (nav(realResult, ['subtitle', 'runs'], nullIfAbsent: true) ?? [])
-                  as List,
-            ) // TODO should nullIfAbsent be true?
-            .where((x) => x.containsKey('navigationEndpoint'))
-            .map((x) => parseIdName(x as JsonMap?))
-            .toList(),
-    'thumbnails': nav(realResult, THUMBNAIL_RENDERER),
+  final single = <String, dynamic>{
+    'title': nav(result, TITLE_TEXT),
+    'browseId': nav(result, [...TITLE, ...NAVIGATION_BROWSE_ID]),
+    'thumbnails': nav(result, THUMBNAIL_RENDERER),
   };
+
+  return parseAlbumSingleSubtitle(result, single);
 }
 
 /// Parses a song from [result].
@@ -187,11 +167,11 @@ JsonMap parseSong(JsonMap result) {
 }
 
 /// Parses a song from [data].
-JsonMap parseSongFlat(JsonMap data) {
-  final columns = List.generate(
-    (data['flexColumns'] as List).length,
-    (i) => getFlexColumnItem(data, i),
-  );
+JsonMap parseSongFlat(JsonMap data, {bool withPlaylistId = false}) {
+  final columns = [
+    for (var i = 0; i < (data['flexColumns'] as List).length; i++)
+      getFlexColumnItem(data, i),
+  ];
 
   final song = <String, dynamic>{
     'title': nav(columns[0], TEXT_RUN_TEXT),
@@ -199,12 +179,25 @@ JsonMap parseSongFlat(JsonMap data) {
       ...TEXT_RUN,
       ...NAVIGATION_VIDEO_ID,
     ], nullIfAbsent: true),
+    'videoType': nav(data, [
+      ...PLAY_BUTTON,
+      'playNavigationEndpoint',
+      ...NAVIGATION_VIDEO_TYPE,
+    ], nullIfAbsent: true),
     'thumbnails': nav(data, THUMBNAILS),
     'isExplicit': nav(data, BADGE_LABEL, nullIfAbsent: true) != null,
   };
 
-  final runs = nav(columns[1], TEXT_RUNS);
-  song.addAll(parseSongRuns(runs as List, skipTypeSpec: true));
+  if (withPlaylistId) {
+    song['playlistId'] = nav(data, [
+      ...PLAY_BUTTON,
+      'playNavigationEndpoint',
+      ...WATCH_PLAYLIST_ID,
+    ]);
+  }
+
+  final runs = nav(columns[1], TEXT_RUNS) as List;
+  song.addAll(parseSongRuns(runs, skipTypeSpec: true));
 
   if (columns.length > 2 &&
       columns[2] != null &&
@@ -246,7 +239,7 @@ JsonMap parseVideo(JsonMap result) {
   return {
     'title': nav(realResult, TITLE_TEXT),
     'videoId': videoId,
-    'artists': parseSongArtistsRuns(runs.sublist(0, artistsLen)),
+    'artists': parseArtistsRuns(runs.sublist(0, artistsLen)),
     'playlistId': nav(realResult, NAVIGATION_PLAYLIST_ID, nullIfAbsent: true),
     'thumbnails': nav(realResult, THUMBNAIL_RENDERER, nullIfAbsent: true),
     'views': (List<JsonMap>.from(runs).last['text'] as String).split(' ')[0],
@@ -277,7 +270,7 @@ JsonMap parsePlaylist(JsonMap data) {
     if ((subtitle['runs'] as List).length == 3 &&
         RegExp(r'\d+ ').hasMatch(nav(realData, SUBTITLE2) as String)) {
       playlist['count'] = (nav(realData, SUBTITLE2) as String).split(' ')[0];
-      playlist['author'] = parseSongArtistsRuns(
+      playlist['author'] = parseArtistsRuns(
         (subtitle['runs'] as List).sublist(0, 1),
       );
     }

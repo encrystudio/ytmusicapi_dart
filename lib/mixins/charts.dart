@@ -1,20 +1,41 @@
+import 'dart:math';
+
 import 'package:ytmusicapi_dart/mixins/protocol.dart';
 import 'package:ytmusicapi_dart/navigation.dart';
 import 'package:ytmusicapi_dart/parsers/browsing.dart';
 import 'package:ytmusicapi_dart/parsers/explore.dart';
 import 'package:ytmusicapi_dart/type_alias.dart';
-import 'package:ytmusicapi_dart/utils.dart';
+
+/// Extra playlist carousel some countries return between the video charts and the artists
+// ignore: non_constant_identifier_names
+final COUNTRY_EXTRA_CATEGORY = {'US': 'genres', 'IN': 'languages'};
+
+/// Chart playlists are the only carousel items linking to a "VL" playlist
+bool isPlaylistCarousel(List<JsonMap> contents) {
+  final browseId = nav(contents.first, [
+    MTRIR,
+    ...TITLE,
+    ...NAVIGATION_BROWSE_ID,
+  ], nullIfAbsent: true);
+  return browseId is String && browseId.startsWith('VL');
+}
+
+/// Returns true if [contents] is an artist carousel
+bool isArtistCarousel(List<JsonMap> contents) {
+  return contents.first.containsKey(MRLIR);
+}
 
 /// Mixin for chart functionalities.
 mixin ChartsMixin on MixinProtocol {
   /// Get latest charts data from YouTube Music: Artists and playlists of top videos.
+  /// Unauthenticated requests return unranked artists with "rank" and "trend" set to null.
   ///
-  /// US charts have an extra Genres section with some Genre charts.
+  /// US charts have an extra Genres section, IN charts an extra Languages section.
   ///
   /// - [country] ISO 3166-1 Alpha-2 country code. (Default: ``ZZ`` = Global).
   ///
   /// Returns Map containing chart video playlists (with separate daily/weekly charts if authenticated with a premium account),
-  /// chart genres (US-only), and chart artists.
+  /// chart genres (US-only, not returned by every response), chart languages (IN-only) and chart artists.
   ///
   /// Example:
   /// ```json
@@ -86,34 +107,62 @@ mixin ChartsMixin on MixinProtocol {
             ], nullIfAbsent: true),
         ].where((e) => e != null).toList();
 
-    final chartsCategories = <Tuple3<String, RequestFuncBodyType, String>>[
-      Tuple3('videos', parseChartPlaylist, MTRIR),
-      if (country == 'US') Tuple3('genres', parseChartPlaylist, MTRIR),
-      Tuple3('artists', parseChartArtist, MRLIR),
-    ];
+    // Carousels carry no machine-readable identity, so recognize them by their
+    // contents. Ignore anything else (some regions add an album chart) instead
+    // of shifting the categories that come after it.
+    final carousels = <List<JsonMap>>[];
 
-    // use result length to determine if the daily/weekly chart categories are present
-    if ((results.length - 1) > chartsCategories.length) {
-      // daily and weekly replace the "videos" playlist carousel
-      final dailyWeekly = [
-        Tuple3('daily', parseChartPlaylist, MTRIR),
-        Tuple3('weekly', parseChartPlaylist, MTRIR),
-      ];
-      chartsCategories
-        ..removeAt(0)
-        ..insertAll(0, dailyWeekly);
+    for (final section in results.skip(1)) {
+      final contents = nav(section, CAROUSEL_CONTENTS, nullIfAbsent: true);
+      if (contents != null) {
+        carousels.add(List<JsonMap>.from(contents as List));
+      }
     }
 
-    for (var i = 0; i < chartsCategories.length; i++) {
-      final name = chartsCategories[i].item1;
-      final parseFunc = chartsCategories[i].item2;
-      final key = chartsCategories[i].item3;
-      charts[name] = parseContentList(
-        List<JsonMap>.from(nav(results[1 + i], CAROUSEL_CONTENTS) as List),
-        parseFunc,
-        key: key,
+    final playlistCarousels =
+        carousels.where((c) => isPlaylistCarousel(c)).toList();
+
+    final artistCarousels =
+        carousels.where((c) => isArtistCarousel(c)).toList();
+
+    final playlistNames = <String>['videos'];
+
+    if (COUNTRY_EXTRA_CATEGORY.containsKey(country)) {
+      playlistNames.add(COUNTRY_EXTRA_CATEGORY[country]!);
+    }
+
+    // Premium sessions get daily and weekly carousels in place of the "videos" one.
+    // Could also be done via an isPremium attribute on YTMusic instance
+    if (playlistCarousels.length > playlistNames.length) {
+      playlistNames
+        ..clear()
+        ..addAll([
+          'daily',
+          'weekly',
+          if (COUNTRY_EXTRA_CATEGORY.containsKey(country))
+            COUNTRY_EXTRA_CATEGORY[country]!,
+        ]);
+    }
+
+    // leaves trailing names unused: YTM omits categories unpredictably,
+    // e.g. "genres" is missing from some US responses
+    final count = min(playlistNames.length, playlistCarousels.length);
+
+    for (var i = 0; i < count; i++) {
+      charts[playlistNames[i]] = parseContentList(
+        playlistCarousels[i],
+        parseChartPlaylist,
       );
     }
+
+    if (artistCarousels.isNotEmpty) {
+      charts['artists'] = parseContentList(
+        artistCarousels.first,
+        parseChartArtist,
+        key: MRLIR,
+      );
+    }
+
     return charts;
   }
 }

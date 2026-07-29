@@ -53,6 +53,14 @@ Future<String> setupBrowser({String? filepath, String? headersRaw}) async {
         if (chromeRememberedKey.isNotEmpty) {
           userHeaders[chromeRememberedKey] = header[0];
         }
+        if (!header[0].endsWith(':') &&
+            (chromeRememberedKey != 'Decoded' || header[0] == '}')) {
+          // support chrome format with or without colons for headers
+          //  and handle corner case of "Decoded:" multi-line header
+          chromeRememberedKey = '';
+        } else {
+          chromeRememberedKey = header[0];
+        }
         continue;
       }
       userHeaders[header[0].toLowerCase()] = header.sublist(1).join(': ');

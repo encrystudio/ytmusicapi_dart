@@ -4,6 +4,8 @@ library;
 import 'dart:core';
 import 'package:ytmusicapi_dart/exceptions.dart';
 import 'package:ytmusicapi_dart/models/content/enums.dart';
+import 'package:ytmusicapi_dart/navigation.dart';
+import 'package:ytmusicapi_dart/type_alias.dart';
 
 /// Literal `a_to_z`, `z_to_a`, or `recently_added`.
 typedef LibraryOrderType = String;
@@ -50,6 +52,27 @@ String prepareOrderParams(LibraryOrderType order) {
 String htmlToTxt(String htmlText) {
   final regExp = RegExp('<[^>]+>');
   return htmlText.replaceAll(regExp, '');
+}
+
+/// Check that YTM performed a write request instead of answering with a dialog.
+
+/// A gated request returns HTTP 200 with only a [showEngagementPanelEndpoint] action carrying the
+/// original request, for the web client to replay once the user has dealt with the dialog.
+
+/// - throws [YTMusicGatedError]: if the request was not performed
+void validateWriteResponse(JsonMap response) {
+  final panel = nav(response, [
+    'actions',
+    0,
+    'showEngagementPanelEndpoint',
+  ], nullIfAbsent: true);
+  if (panel == null) {
+    return;
+  }
+  final tag = nav(panel, ['identifier', 'tag'], nullIfAbsent: true);
+  throw YTMusicGatedError(
+    'YouTube Music did not perform this request and asked for interaction with its "$tag" dialog. The account may be temporarily restricted from this action.',
+  );
 }
 
 /// Returns the number of days since January 1, 1970.

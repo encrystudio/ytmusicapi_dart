@@ -72,9 +72,15 @@ mixin SearchMixin on MixinProtocol {
   ///     "duration": "4:19",
   ///     "duration_seconds": 259,
   ///     "isExplicit": false,
+  ///     "inLibrary": false,
   ///     "feedbackTokens": {
   ///       "add": null,
   ///       "remove": null
+  ///     },
+  ///     "pinnedToListenAgain": false,
+  ///      "listenAgainFeedbackTokens": {
+  ///        "pin": null,
+  ///         "unpin": null
   ///     }
   ///   },
   ///   {
@@ -94,7 +100,7 @@ mixin SearchMixin on MixinProtocol {
   ///     "browseId": "VLPLK1PkWQlWtnNfovRdGWpKffO1Wdi2kvDx",
   ///     "title": "Wonderwall - Oasis",
   ///     "author": "Tate Henderson",
-  ///     "itemCount": "174"
+  ///     "itemCount": "174" // itemCount of a playlist can be null as youtube music does not expose that information for search filtered to community playlist.
   ///   },
   ///   {
   ///     "category": "Videos",
@@ -131,7 +137,7 @@ mixin SearchMixin on MixinProtocol {
   /// ```
   Future<List> search(
     String query, {
-    SearchFilter? filter,
+    SearchFilterType? filter,
     String? scope,
     int limit = 20,
     bool ignoreSpelling = false,
@@ -169,8 +175,8 @@ mixin SearchMixin on MixinProtocol {
 
     if (scope == 'library' &&
         filter != null &&
-        (filter == SearchFilter.community_playlists ||
-            filter == SearchFilter.featured_playlists)) {
+        (filter == SearchFilterType.community_playlists ||
+            filter == SearchFilterType.featured_playlists)) {
       throw YTMusicUserError(
         '$filter cannot be set when searching library. Please use one of the following filters or leave out the parameter: '
         '${filters.sublist(0, 3).followedBy(filters.sublist(5)).join(', ')}',
@@ -212,18 +218,16 @@ mixin SearchMixin on MixinProtocol {
     }
 
     // set filter for parser
+    SearchFilterType? internalFilter = filter;
     String? resultType;
-    final SearchFilter? realFilter;
-    if (filter != null &&
-        (filter == SearchFilter.playlists ||
-            filter == SearchFilter.featured_playlists ||
-            filter == SearchFilter.community_playlists)) {
-      realFilter = SearchFilter.playlists;
+    if (internalFilter != null &&
+        (internalFilter == SearchFilterType.playlists ||
+            internalFilter == SearchFilterType.featured_playlists ||
+            internalFilter == SearchFilterType.community_playlists)) {
+      internalFilter = SearchFilterType.playlists;
     } else if (scope == 'uploads') {
-      realFilter = SearchFilter.uploads;
+      internalFilter = SearchFilterType.uploads;
       resultType = 'upload';
-    } else {
-      realFilter = filter;
     }
 
     for (final res in sectionList) {
@@ -262,18 +266,28 @@ mixin SearchMixin on MixinProtocol {
         );
         category =
             nav(res, MUSIC_SHELF + TITLE_TEXT, nullIfAbsent: true) as String?;
-
-        // if we know the filter it's easy to set the result type
-        // unfortunately uploads is modeled as a filter (historical reasons),
-        // so we take care to not set the result type for that scope
-        if (realFilter != null && scope != 'uploads') {
-          resultType =
-              realFilter.name
-                  .substring(0, realFilter.name.length - 1)
-                  .toLowerCase();
+      } else if (res.containsKey('itemSectionRenderer')) {
+        shelfContents = List<JsonMap>.from(
+          (res['itemSectionRenderer'] as JsonMap)['contents'] as List,
+        );
+        if (!shelfContents.first.containsKey(MRLIR)) {
+          continue;
         }
       } else {
         continue;
+      }
+
+      // if we know the filter it's easy to set the result type
+      // unfortunately uploads is modeled as a filter (historical reasons),
+      // so we take care to not set the result type for that scope
+      if ((res.containsKey('musicShelfRenderer') ||
+              res.containsKey('itemSectionRenderer')) &&
+          internalFilter != null &&
+          scope != scopes[1]) {
+        resultType =
+            internalFilter.name
+                .substring(0, internalFilter.name.length - 1)
+                .toLowerCase();
       }
 
       searchResults.addAll(
@@ -284,7 +298,7 @@ mixin SearchMixin on MixinProtocol {
         ),
       );
 
-      if (realFilter != null) {
+      if (internalFilter != null) {
         // if filter is set, there are continuations
         Future<JsonMap> requestFunc(dynamic additionalParams) => sendRequest(
           endpoint,

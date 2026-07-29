@@ -1,6 +1,6 @@
 import 'package:ytmusicapi_dart/helpers.dart';
 import 'package:ytmusicapi_dart/navigation.dart';
-import 'package:ytmusicapi_dart/parsers/podcasts.dart';
+import 'package:ytmusicapi_dart/parsers/artists.dart';
 import 'package:ytmusicapi_dart/parsers/songs.dart';
 import 'package:ytmusicapi_dart/type_alias.dart';
 
@@ -77,6 +77,7 @@ JsonMap parseAlbumHeader2024(JsonMap response) {
             ...RESPONSIVE_HEADER,
           ])
           as JsonMap;
+
   final album = <String, dynamic>{
     'title': nav(header, TITLE_TEXT),
     'type': nav(header, SUBTITLE),
@@ -84,18 +85,31 @@ JsonMap parseAlbumHeader2024(JsonMap response) {
     'isExplicit': nav(header, SUBTITLE_BADGE_LABEL, nullIfAbsent: true) != null,
   };
 
-  album['description'] = nav(header, [
-    'description',
-    ...DESCRIPTION_SHELF,
-    ...DESCRIPTION,
-  ], nullIfAbsent: true);
+  final (description, descriptionRuns) = parseDescriptionRuns(
+    nav(header, [
+      'description',
+      ...DESCRIPTION_SHELF,
+      ...DESCRIPTION_RUN_LIST,
+    ], nullIfAbsent: true),
+  );
+
+  album['description'] = description;
+  album['descriptionRuns'] = descriptionRuns;
 
   final albumInfo = parseSongRuns(
     ((header['subtitle'] as JsonMap)['runs'] as List).sublist(2),
   );
-  final baseAuthor = parseBaseHeader(header)['author'];
-  albumInfo['artists'] = baseAuthor != null ? [baseAuthor] : null;
+
+  final straplineRuns = nav(header, [
+    'straplineTextOne',
+    'runs',
+  ], nullIfAbsent: true);
+
+  albumInfo['artists'] =
+      straplineRuns != null ? parseArtistsRuns(straplineRuns as List) : null;
+
   album.addAll(albumInfo);
+
   if (((header['secondSubtitle'] as JsonMap)['runs'] as List).length > 1) {
     album['trackCount'] = toInt(
       (((header['secondSubtitle'] as JsonMap)['runs'] as List)[0]

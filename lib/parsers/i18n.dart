@@ -64,17 +64,27 @@ class Parser {
     return [t('single'), t('ep'), ...getSearchResultTypes()];
   }
 
+  /// Returns all song credit sections.
+  Map<String, dynamic> getSongCreditSectionMap() {
+    return {
+      t('performed_by'): 'performed_by',
+      t('written_by'): 'written_by',
+      t('produced_by'): 'produced_by',
+      t('music_metadata_provided_by'): 'music_metadata_provided_by',
+    };
+  }
+
   /// Parses content from a channel.
   JsonMap parseChannelContents(List<JsonMap> results) {
     final categories = [
-      ['albums', t('albums'), parseAlbum, 'MTRIR'],
-      ['singles', t('singles & eps'), parseSingle, 'MTRIR'],
-      ['shows', t('shows'), parseAlbum, 'MTRIR'],
-      ['videos', t('videos'), parseVideo, 'MTRIR'],
-      ['playlists', t('playlists'), parsePlaylist, 'MTRIR'],
-      ['related', t('related'), parseRelatedArtist, 'MTRIR'],
-      ['episodes', t('episodes'), parseEpisode, 'MMRIR'],
-      ['podcasts', t('podcasts'), parsePodcast, 'MTRIR'],
+      ['albums', t('albums'), parseAlbum, MTRIR],
+      ['singles', t('singles & eps'), parseSingle, MTRIR],
+      ['shows', t('shows'), parseAlbum, MTRIR],
+      ['videos', t('videos'), parseVideo, MTRIR],
+      ['playlists', t('playlists'), parsePlaylist, MTRIR],
+      ['related', t('related'), parseRelatedArtist, MTRIR],
+      ['episodes', t('episodes'), parseEpisode, MMRIR],
+      ['podcasts', t('podcasts'), parsePodcast, MTRIR],
     ];
 
     final artist = <String, dynamic>{};
@@ -114,7 +124,7 @@ class Parser {
         }
 
         (artist[categoryKey] as JsonMap)['results'] = parseContentList(
-          data[0]['contents'],
+          List<JsonMap>.from(data[0]['contents'] as List),
           categoryParser,
           key: categoryNavKey,
         );
@@ -127,12 +137,13 @@ class Parser {
 
 /// Parses [contents].
 List parseContentList(
-  dynamic contents,
-  JsonMap Function(JsonMap) parser, {
-  required String key,
+  List<JsonMap> results,
+  JsonMap Function(JsonMap) parseFunc, {
+  String key = MTRIR,
 }) {
-  if (contents is List) {
-    return contents.map((c) => parser(c as JsonMap)).toList().cast<JsonMap>();
+  final List contents = [];
+  for (final result in results) {
+    contents.add(parseFunc(result[key] as JsonMap));
   }
-  return [];
+  return contents;
 }

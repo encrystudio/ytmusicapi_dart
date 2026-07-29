@@ -13,9 +13,24 @@ const Map<String, String> TRENDS = {
 
 /// Parses a song from the charts [data].
 JsonMap parseChartSong(JsonMap data) {
-  final parsed = parseSongFlat(data);
+  final parsed = parseSongFlat(data, withPlaylistId: true);
   parsed.addAll(parseRanking(data));
   return parsed;
+}
+
+/// Parses the trending item
+JsonMap parseTrendingItem(JsonMap data) {
+  final videoType = nav(data, [
+    ...PLAY_BUTTON,
+    'playNavigationEndpoint',
+    ...NAVIGATION_VIDEO_TYPE,
+  ]);
+
+  if (videoType == 'MUSIC_VIDEO_TYPE_PODCAST_EPISODE') {
+    return parseEpisodeFlat(data);
+  }
+
+  return parseSongFlat(data, withPlaylistId: true);
 }
 
 /// Parses a playlist from the charts [data].
@@ -35,7 +50,11 @@ JsonMap parseChartEpisode(JsonMap data) {
   episode['podcast'] = parseIdName(
     nav(data, ['secondTitle', 'runs', 0]) as JsonMap?,
   );
-  episode['duration'] = nav(data, SUBTITLE2, nullIfAbsent: true);
+  episode['duration'] = nav(data, [
+    'playbackProgress',
+    ...PROGRESS_RENDERER,
+    ...DURATION_TEXT,
+  ], nullIfAbsent: true);
   return episode;
 }
 
@@ -53,23 +72,24 @@ JsonMap parseChartArtist(JsonMap data) {
     'thumbnails': nav(data, THUMBNAILS),
   };
 
-  parsed.addAll(parseRanking(data));
+  parsed.addAll(parseRanking(data, nullIfAbsent: true));
   return parsed;
 }
 
 /// Parses a ranking from the charts [data].
-JsonMap parseRanking(JsonMap data) {
+JsonMap parseRanking(JsonMap data, {bool nullIfAbsent = false}) {
+  final trendIconType = nav(data, [
+    'customIndexColumn',
+    'musicCustomIndexColumnRenderer',
+    ...ICON_TYPE,
+  ], nullIfAbsent: nullIfAbsent);
+
   return {
     'rank': nav(data, [
       'customIndexColumn',
       'musicCustomIndexColumnRenderer',
       ...TEXT_RUN_TEXT,
-    ]),
-    'trend':
-        TRENDS[nav(data, [
-          'customIndexColumn',
-          'musicCustomIndexColumnRenderer',
-          ...ICON_TYPE,
-        ])],
+    ], nullIfAbsent: nullIfAbsent),
+    'trend': trendIconType != null ? TRENDS[trendIconType] : null,
   };
 }

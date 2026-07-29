@@ -1,10 +1,13 @@
 import 'package:ytmusicapi_dart/enums.dart';
+import 'package:ytmusicapi_dart/exceptions.dart';
 import 'package:ytmusicapi_dart/helpers.dart';
 import 'package:ytmusicapi_dart/navigation.dart';
 import 'package:ytmusicapi_dart/parsers/albums.dart';
+import 'package:ytmusicapi_dart/parsers/artists.dart';
 import 'package:ytmusicapi_dart/parsers/songs.dart';
 import 'package:ytmusicapi_dart/parsers/utils.dart';
 import 'package:ytmusicapi_dart/type_alias.dart';
+import 'package:ytmusicapi_dart/utils.dart';
 
 // ignore: public_member_api_docs
 const ALL_RESULT_TYPES = [
@@ -117,12 +120,13 @@ JsonMap parseTopResult(JsonMap data, List<String> searchResultTypes) {
   if (resultType == 'playlist') {
     searchResult['playlistId'] = nav(data, MENU_PLAYLIST_ID);
     searchResult['title'] = nav(data, TITLE_TEXT);
-    searchResult['author'] = parseSongArtistsRuns(
+    searchResult['author'] = parseArtistsRuns(
       (nav(data, ['subtitle', 'runs']) as List).sublist(2),
     );
   }
 
   if (resultType == 'episode') {
+    searchResult['title'] = nav(data, TITLE_TEXT);
     searchResult['videoId'] = nav(data, [
       ...THUMBNAIL_OVERLAY_NAVIGATION,
       ...WATCH_VIDEO_ID,
@@ -204,17 +208,24 @@ JsonMap parseSearchResult(JsonMap data, String? resultType, String? category) {
     );
   } else if (realResultType == 'playlist') {
     final flexItem = nav(getFlexColumnItem(data, 1), TEXT_RUNS) as List;
+
     final hasAuthor = flexItem.length == defaultOffset + 3;
+
+    final itemInfoText =
+        (getItemText(data, 1, runIndex: hasAuthor ? 2 : 0) ?? '').split(' ');
+
     searchResult['itemCount'] =
-        (getItemText(data, 1, runIndex: defaultOffset + (hasAuthor ? 2 : 0)) ??
-                '')
-            .split(' ')[0];
+        itemInfoText.length >= 2 && itemInfoText[1] == 'songs'
+            ? itemInfoText[0]
+            : null;
+
     if (searchResult['itemCount'] != null &&
-        (num.tryParse(searchResult['itemCount'] as String) != null)) {
+        (searchResult['itemCount'] as String).isNumeric()) {
       searchResult['itemCount'] = toInt(searchResult['itemCount'] as String);
     }
+
     searchResult['author'] =
-        hasAuthor ? getItemText(data, 1, runIndex: defaultOffset) : null;
+        !hasAuthor ? null : getItemText(data, 1, runIndex: defaultOffset);
   } else if (realResultType == 'station') {
     searchResult['videoId'] = nav(data, NAVIGATION_VIDEO_ID);
     searchResult['playlistId'] = nav(data, NAVIGATION_PLAYLIST_ID);
@@ -227,16 +238,7 @@ JsonMap parseSearchResult(JsonMap data, String? resultType, String? category) {
     );
   } else if (realResultType == 'song') {
     searchResult['album'] = null;
-    if (data.containsKey('menu')) {
-      final toggleMenu = findObjectByKey(
-        nav(data, MENU_ITEMS) as List,
-        TOGGLE_MENU,
-      );
-      if (toggleMenu != null) {
-        searchResult['inLibrary'] = parseSongLibraryStatus(toggleMenu);
-        searchResult['feedbackTokens'] = parseSongMenuTokens(toggleMenu);
-      }
-    }
+    searchResult.addAll(parseSongMenuData(data));
   } else if (realResultType == 'upload') {
     final browseId = nav(data, NAVIGATION_BROWSE_ID, nullIfAbsent: true);
     if (browseId == null) {
@@ -298,7 +300,10 @@ JsonMap parseSearchResult(JsonMap data, String? resultType, String? category) {
     searchResult['duration'] = null;
     searchResult['year'] = null;
     final flexItem = getFlexColumnItem(data, 1);
-    final runs = (flexItem!['text'] as JsonMap)['runs'] as List;
+    if (flexItem == null) {
+      throw YTMusicError('Expected flex column item at index 1');
+    }
+    final runs = (flexItem['text'] as JsonMap)['runs'] as List;
     final flexItem2 = getFlexColumnItem(data, 2);
     if (flexItem2 != null) {
       runs.addAll([
@@ -360,7 +365,7 @@ List parseSearchResults(
 
 /// Get search params for given [filter], [scope] and [ignoreSpelling].
 String? getSearchParams(
-  SearchFilter? filter,
+  SearchFilterType? filter,
   String? scope,
   bool ignoreSpelling,
 ) {
@@ -384,17 +389,17 @@ String? getSearchParams(
   }
 
   if (scope == null && filter != null) {
-    if (filter == SearchFilter.playlists) {
+    if (filter == SearchFilterType.playlists) {
       params = 'Eg-KAQwIABAAGAAgACgB';
       params +=
           ignoreSpelling
               ? 'MABCAggBagoQBBADEAkQBRAK'
               : 'MABqChAEEAMQCRAFEAo%3D';
-    } else if (filter == SearchFilter.playlists ||
-        filter == SearchFilter.featured_playlists ||
-        filter == SearchFilter.community_playlists) {
+    } else if (filter == SearchFilterType.playlists ||
+        filter == SearchFilterType.featured_playlists ||
+        filter == SearchFilterType.community_playlists) {
       param1 = 'EgeKAQQoA';
-      param2 = filter == SearchFilter.featured_playlists ? 'Dg' : 'EA';
+      param2 = filter == SearchFilterType.featured_playlists ? 'Dg' : 'EA';
       param3 =
           ignoreSpelling
               ? 'BQgIIAWoMEA4QChADEAQQCRAF'
@@ -416,7 +421,7 @@ String? getSearchParams(
   return params ?? (param1 + param2 + param3);
 }
 
-String _getParam2(SearchFilter filter) {
+String _getParam2(SearchFilterType filter) {
   const filterParams = {
     'songs': 'II',
     'videos': 'IQ',

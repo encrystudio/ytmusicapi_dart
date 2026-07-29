@@ -43,19 +43,12 @@ List parseWatchPlaylist(List<JsonMap> results) {
 
 /// Parses an individual track from a watch playlist.
 JsonMap parseWatchTrack(JsonMap data) {
-  JsonMap? feedbackTokens;
   String? likeStatus;
-  bool? libraryStatus;
 
   for (final item in List<JsonMap>.from(nav(data, MENU_ITEMS) as List)) {
     if (item.containsKey(TOGGLE_MENU)) {
-      libraryStatus = parseSongLibraryStatus(item);
       final service =
-          (item[TOGGLE_MENU] as JsonMap?)!['defaultServiceEndpoint'] as JsonMap;
-
-      if (service.containsKey('feedbackEndpoint')) {
-        feedbackTokens = parseSongMenuTokens(item);
-      }
+          (item[TOGGLE_MENU] as JsonMap)['defaultServiceEndpoint'] as JsonMap;
 
       if (service.containsKey('likeEndpoint')) {
         likeStatus = parseLikeStatus(service);
@@ -68,16 +61,23 @@ JsonMap parseWatchTrack(JsonMap data) {
     'title': nav(data, TITLE_TEXT),
     'length': nav(data, ['lengthText', 'runs', 0, 'text'], nullIfAbsent: true),
     'thumbnail': nav(data, THUMBNAIL),
-    'feedbackTokens': feedbackTokens,
     'likeStatus': likeStatus,
-    'inLibrary': libraryStatus,
     'videoType': nav(data, [
       'navigationEndpoint',
       ...NAVIGATION_VIDEO_TYPE,
     ], nullIfAbsent: true),
   };
 
+  track.addAll({
+    'inLibrary': null,
+    'feedbackTokens': null,
+    'pinnedToListenAgain': null,
+    'listenAgainFeedbackTokens': null,
+    ...parseSongMenuData(data),
+  });
+
   final longBylineText = nav(data, ['longBylineText']) as JsonMap?;
+
   if (longBylineText != null) {
     final songInfo = parseSongRuns(longBylineText['runs'] as List);
     track.addAll(songInfo);
@@ -86,17 +86,29 @@ JsonMap parseWatchTrack(JsonMap data) {
   return track;
 }
 
-/// Gets the browse ID for a given [tabId] in a [watchNextRenderer].
-String? getTabBrowseId(JsonMap watchNextRenderer, int tabId) {
-  final tabRenderer =
-      ((watchNextRenderer['tabs'] as List)[tabId] as JsonMap?)!['tabRenderer']
-          as JsonMap;
+/// Gets the browse IDs in a [watchNextRenderer].
+Map<String, String> getTabBrowseIds(JsonMap watchNextRenderer) {
+  final browseIds = <String, String>{};
 
-  if (!tabRenderer.containsKey('unselectable')) {
-    return ((tabRenderer['endpoint'] as JsonMap)['browseEndpoint']
-            as JsonMap)['browseId']
-        as String;
-  } else {
-    return null;
+  for (final tab in List<JsonMap>.from(watchNextRenderer['tabs'] as List)) {
+    if ((tab['tabRenderer'] as JsonMap).containsKey('unselectable')) {
+      continue;
+    }
+
+    final browseEndpoint =
+        nav(tab, [
+              'tabRenderer',
+              'endpoint',
+              'browseEndpoint',
+            ], nullIfAbsent: true)
+            as JsonMap?;
+
+    if (browseEndpoint != null) {
+      final pageType = nav(browseEndpoint, PAGE_TYPE) as String;
+
+      browseIds[pageType] = browseEndpoint['browseId'] as String;
+    }
   }
+
+  return browseIds;
 }

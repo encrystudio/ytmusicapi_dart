@@ -32,7 +32,9 @@ class YtAlbum extends YtBaseObject {
       albumType:
           type ??
           YtAlbumType.fromValue(
-            jsonData['type'] as String? ?? jsonData['resultType'] as String,
+            jsonData['type'] as String? ??
+                jsonData['resultType'] as String? ??
+                'Album',
           ),
       id: jsonData['browseId'] as String,
       title: jsonData['title'] as String,
@@ -47,7 +49,8 @@ class YtAlbum extends YtBaseObject {
       isExplicit: jsonData['isExplicit'] as bool?,
       playlistId:
           jsonData['playlistId'] as String? ??
-          jsonData['audioPlaylistId'] as String,
+          jsonData['audioPlaylistId'] as String? ??
+          '',
       year:
           ((jsonData['year'] is String)
               ? (int.tryParse(jsonData['year'] as String))

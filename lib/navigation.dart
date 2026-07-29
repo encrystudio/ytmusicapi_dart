@@ -146,6 +146,7 @@ const List HEADER_SIDE = [...HEADER, 'musicSideAlignedItemRenderer'];
 const List HEADER_MUSIC_VISUAL = [...HEADER, 'musicVisualHeaderRenderer'];
 const List DESCRIPTION_SHELF = ['musicDescriptionShelfRenderer'];
 const List DESCRIPTION = ['description', ...RUN_TEXT];
+const List DESCRIPTION_RUN_LIST = ['description', 'runs'];
 const List CAROUSEL = ['musicCarouselShelfRenderer'];
 const List IMMERSIVE_CAROUSEL = ['musicImmersiveCarouselShelfRenderer'];
 const List CAROUSEL_CONTENTS = [...CAROUSEL, 'contents'];
@@ -153,6 +154,13 @@ const List CAROUSEL_TITLE = [
   ...HEADER,
   'musicCarouselShelfBasicHeaderRenderer',
   ...TITLE,
+];
+const List CAROUSEL_STRAPLINE = [
+  ...HEADER,
+  'musicCarouselShelfBasicHeaderRenderer',
+  'strapline',
+  'runs',
+  0,
 ];
 const List CARD_SHELF_TITLE = [
   ...HEADER,
@@ -173,6 +181,22 @@ const List TIMESTAMPED_LYRICS = [
   'model',
   'timedLyricsModel',
   'lyricsData',
+];
+const List ENGAGEMENT_BAR = [
+  'engagementBar',
+  'engagementBarViewModel',
+  'actions',
+  0,
+  'votingViewModel',
+  'initialState',
+];
+const List CREDITS_SECTIONS = [
+  'onResponseReceivedActions',
+  0,
+  'openPopupAction',
+  'popup',
+  'dismissableDialogRenderer',
+  'sections',
 ];
 
 /// Access a nested object in root by item sequence.

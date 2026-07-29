@@ -10,6 +10,14 @@ const List<String> CONTINUATION_TOKEN = [
 ];
 
 // ignore: public_member_api_docs
+const List<String> COMMAND_EXECUTOR_COMMANDS = [
+  'continuationItemRenderer',
+  'continuationEndpoint',
+  'commandExecutorCommand',
+  'commands',
+];
+
+// ignore: public_member_api_docs
 const List CONTINUATION_ITEMS = [
   'onResponseReceivedActions',
   0,
@@ -19,7 +27,26 @@ const List CONTINUATION_ITEMS = [
 
 /// Get the token used for continuations.
 String? getContinuationToken(List results) {
-  return nav(results.last, CONTINUATION_TOKEN, nullIfAbsent: true) as String?;
+  final lastResult = results.last;
+  final token =
+      nav(lastResult, CONTINUATION_TOKEN, nullIfAbsent: true) as String?;
+
+  if (token != null) {
+    return token;
+  }
+  // continuation tokens may be nested in a commandExecutorCommand list
+  //  (alongside playlistVotingRefreshPopupCommand, for example)
+  final commands =
+      nav(lastResult, COMMAND_EXECUTOR_COMMANDS, nullIfAbsent: true) as List? ??
+      [];
+
+  for (final command in commands) {
+    if (nav(command, ['continuationCommand', 'request'], nullIfAbsent: true) ==
+        'CONTINUATION_REQUEST_TYPE_BROWSE') {}
+    return nav(command, ['continuationCommand', 'token']) as String;
+  }
+
+  return null;
 }
 
 /// Get the continuations in the format of 2025.

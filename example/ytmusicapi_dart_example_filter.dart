@@ -7,7 +7,7 @@ Future<void> main() async {
   final ytmusic = await YTMusic.create();
   final results = await ytmusic.search(
     'search term',
-    filter: SearchFilter.songs,
+    filter: SearchFilterType.songs,
   );
   print(results);
   ytmusic.close();

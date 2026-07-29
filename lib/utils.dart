@@ -14,3 +14,11 @@ class Tuple3<T1, T2, T3> {
   final T3 item3;
   Tuple3(this.item1, this.item2, this.item3);
 }
+
+extension StringNumericExtension on String {
+  bool isNumeric() => int.tryParse(this) != null;
+}
+
+extension StringAsciiExtension on String {
+  bool get isAscii => codeUnits.every((c) => c <= 0x7F);
+}

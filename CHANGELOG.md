@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.4.0
+
+- Applied changes from [upstream](https://github.com/sigma67/ytmusicapi)
+- Some names changed, please refer to the code for new names. Example:
+- `SearchFilter` -> `SearchFilterType`
+
 ## 2.3.0
 
 - Added `YtSong.isAvailable` and `YtVideo.isAvailable` fields to indicate if the content is currently available.

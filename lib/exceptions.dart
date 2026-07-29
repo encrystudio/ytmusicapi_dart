@@ -28,3 +28,12 @@ class YTMusicServerError extends YTMusicError {
   @override
   String toString() => message ?? 'YTMusicServerError';
 }
+
+/// The YouTube Music backend did not perform a request and asked for interaction with a dialog
+class YTMusicGatedError extends YTMusicError {
+  /// Create new [YTMusicGatedError].
+  YTMusicGatedError([super.message]);
+
+  @override
+  String toString() => message ?? 'YTMusicGatedError';
+}
