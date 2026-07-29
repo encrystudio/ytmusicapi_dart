@@ -72,8 +72,8 @@
       <h2>Functions</h2>
       <dl class="callables">
           <dt id="decodeEscapes" class="callable">
-  <span class="name"><a href="../mixins_utils/decodeEscapes.html">decodeEscapes</a></span><span class="signature">(<wbr><span class="parameter" id="decodeEscapes-param-input"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/String-class.html">String</a></span> <span class="parameter-name">input</span>, {</span><span class="parameter" id="decodeEscapes-param-replaceQuot"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">replaceQuot</span> = <span class="default-value">false</span></span>})
-    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/3.9.4/dart-core/String-class.html">String</a></span>
+  <span class="name"><a href="../mixins_utils/decodeEscapes.html">decodeEscapes</a></span><span class="signature">(<wbr><span class="parameter" id="decodeEscapes-param-input"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.12.2/dart-core/String-class.html">String</a></span> <span class="parameter-name">input</span>, {</span><span class="parameter" id="decodeEscapes-param-replaceQuot"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.12.2/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">replaceQuot</span> = <span class="default-value">false</span></span>})
+    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/3.12.2/dart-core/String-class.html">String</a></span>
   </span>
   
 
@@ -86,7 +86,7 @@
 
           <dt id="getDatestamp" class="callable">
   <span class="name"><a href="../mixins_utils/getDatestamp.html">getDatestamp</a></span><span class="signature">(<wbr>)
-    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/3.9.4/dart-core/int-class.html">int</a></span>
+    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/3.12.2/dart-core/int-class.html">int</a></span>
   </span>
   
 
@@ -98,8 +98,8 @@
 </dd>
 
           <dt id="htmlToTxt" class="callable">
-  <span class="name"><a href="../mixins_utils/htmlToTxt.html">htmlToTxt</a></span><span class="signature">(<wbr><span class="parameter" id="htmlToTxt-param-htmlText"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/String-class.html">String</a></span> <span class="parameter-name">htmlText</span></span>)
-    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/3.9.4/dart-core/String-class.html">String</a></span>
+  <span class="name"><a href="../mixins_utils/htmlToTxt.html">htmlToTxt</a></span><span class="signature">(<wbr><span class="parameter" id="htmlToTxt-param-htmlText"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.12.2/dart-core/String-class.html">String</a></span> <span class="parameter-name">htmlText</span></span>)
+    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/3.12.2/dart-core/String-class.html">String</a></span>
   </span>
   
 
@@ -112,7 +112,7 @@
 
           <dt id="prepareLikeEndpoint" class="callable">
   <span class="name"><a href="../mixins_utils/prepareLikeEndpoint.html">prepareLikeEndpoint</a></span><span class="signature">(<wbr><span class="parameter" id="prepareLikeEndpoint-param-rating"><span class="type-annotation">dynamic</span> <span class="parameter-name">rating</span></span>)
-    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/3.9.4/dart-core/String-class.html">String</a></span>
+    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/3.12.2/dart-core/String-class.html">String</a></span>
   </span>
   
 
@@ -125,7 +125,7 @@
 
           <dt id="prepareOrderParams" class="callable">
   <span class="name"><a href="../mixins_utils/prepareOrderParams.html">prepareOrderParams</a></span><span class="signature">(<wbr><span class="parameter" id="prepareOrderParams-param-order"><span class="type-annotation"><a href="../mixins_utils/LibraryOrderType.html">LibraryOrderType</a></span> <span class="parameter-name">order</span></span>)
-    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/3.9.4/dart-core/String-class.html">String</a></span>
+    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/3.12.2/dart-core/String-class.html">String</a></span>
   </span>
   
 
@@ -149,6 +149,21 @@
 
 </dd>
 
+          <dt id="validateWriteResponse" class="callable">
+  <span class="name"><a href="../mixins_utils/validateWriteResponse.html">validateWriteResponse</a></span><span class="signature">(<wbr><span class="parameter" id="validateWriteResponse-param-response"><span class="type-annotation"><a href="../type_alias/JsonMap.html">JsonMap</a></span> <span class="parameter-name">response</span></span>)
+    <span class="returntype parameter">&#8594; void</span>
+  </span>
+  
+
+</dt>
+<dd>
+  Check that YTM performed a write request instead of answering with a dialog.
+A gated request returns HTTP 200 with only a <code>showEngagementPanelEndpoint</code> action carrying the
+original request, for the web client to replay once the user has dealt with the dialog.
+  
+
+</dd>
+
       </dl>
     </section>
 
@@ -158,7 +173,7 @@
           
   <dt id="LibraryOrderType" class="">
   <span class="name"><a href="../mixins_utils/LibraryOrderType.html">LibraryOrderType</a></span>
-    = <a href="https://api.dart.dev/stable/3.9.4/dart-core/String-class.html">String</a>
+    = <a href="https://api.dart.dev/stable/3.12.2/dart-core/String-class.html">String</a>
   </span>
   
 
@@ -213,6 +228,7 @@
       <li><a href="../mixins_utils/">mixins/utils</a></li>
       <li><a href="../mixins_watch/">mixins/watch</a></li>
       <li><a href="../models_content_enums/">models/content/enums</a></li>
+      <li><a href="../models_content_text_run/">models/content/text_run</a></li>
       <li><a href="../models_lyrics/">models/lyrics</a></li>
       <li><a href="../models_objects_album/">models/objects/album</a></li>
       <li><a href="../models_objects_artist/">models/objects/artist</a></li>
@@ -222,6 +238,7 @@
       <li><a href="../models_objects_video/">models/objects/video</a></li>
       <li><a href="../navigation/">navigation</a></li>
       <li><a href="../parsers_albums/">parsers/albums</a></li>
+      <li><a href="../parsers_artists/">parsers/artists</a></li>
       <li><a href="../parsers_browsing/">parsers/browsing</a></li>
       <li><a href="../parsers_constants/">parsers/constants</a></li>
       <li><a href="../parsers_explore/">parsers/explore</a></li>
@@ -247,7 +264,7 @@
 <footer>
   <span class="no-break">
     ytmusicapi_dart
-      2.3.0
+      2.4.1
   </span>
   
 </footer>

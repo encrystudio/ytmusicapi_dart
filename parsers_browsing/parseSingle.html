@@ -71,31 +71,13 @@
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
   <pre class="language-dart"><code class="language-dart">JsonMap parseSingle(JsonMap result) {
-  final JsonMap realResult;
-  if (result.containsKey(MTRIR)) {
-    realResult = nav(result, [MTRIR]) as JsonMap;
-  } else {
-    realResult = result;
-  }
-  return {
-    &#39;title&#39;: nav(realResult, TITLE_TEXT),
-    &#39;type&#39;: nav(realResult, SUBTITLE, nullIfAbsent: true),
-    &#39;year&#39;: nav(realResult, SUBTITLE2, nullIfAbsent: true),
-    &#39;browseId&#39;: nav(realResult, [...TITLE, ...NAVIGATION_BROWSE_ID]),
-    &#39;audioPlaylistId&#39;: parseAlbumPlaylistIdIfExists(
-      nav(realResult, THUMBNAIL_OVERLAY_NAVIGATION, nullIfAbsent: true)
-          as JsonMap?,
-    ),
-    &#39;artists&#39;:
-        List&lt;JsonMap&gt;.from(
-              (nav(realResult, [&#39;subtitle&#39;, &#39;runs&#39;], nullIfAbsent: true) ?? [])
-                  as List,
-            ) &#47;&#47; TODO should nullIfAbsent be true?
-            .where((x) =&gt; x.containsKey(&#39;navigationEndpoint&#39;))
-            .map((x) =&gt; parseIdName(x as JsonMap?))
-            .toList(),
-    &#39;thumbnails&#39;: nav(realResult, THUMBNAIL_RENDERER),
+  final single = &lt;String, dynamic&gt;{
+    &#39;title&#39;: nav(result, TITLE_TEXT),
+    &#39;browseId&#39;: nav(result, [...TITLE, ...NAVIGATION_BROWSE_ID]),
+    &#39;thumbnails&#39;: nav(result, THUMBNAIL_RENDERER),
   };
+
+  return parseAlbumSingleSubtitle(result, single);
 }</code></pre>
 </section>
 
@@ -123,7 +105,7 @@
 <footer>
   <span class="no-break">
     ytmusicapi_dart
-      2.3.0
+      2.4.1
   </span>
   
 </footer>

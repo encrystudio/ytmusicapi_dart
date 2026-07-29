@@ -54,12 +54,12 @@
 
     <section class="multi-line-signature">
       
-<span class="returntype"><a href="https://api.dart.dev/stable/3.9.4/dart-core/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../../type_alias/JsonMap.html">JsonMap</a></span>&gt;</span></span>
-<span class="name ">getWatchPlaylist</span>(<wbr>{<ol class="parameter-list"> <li><span class="parameter" id="getWatchPlaylist-param-videoId"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">videoId</span>, </span></li>
-<li><span class="parameter" id="getWatchPlaylist-param-playlistId"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">playlistId</span>, </span></li>
-<li><span class="parameter" id="getWatchPlaylist-param-limit"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/int-class.html">int</a></span> <span class="parameter-name">limit</span> = <span class="default-value">25</span>, </span></li>
-<li><span class="parameter" id="getWatchPlaylist-param-radio"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">radio</span> = <span class="default-value">false</span>, </span></li>
-<li><span class="parameter" id="getWatchPlaylist-param-shuffle"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">shuffle</span> = <span class="default-value">false</span>, </span></li>
+<span class="returntype"><a href="https://api.dart.dev/stable/3.12.2/dart-async/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../../type_alias/JsonMap.html">JsonMap</a></span>&gt;</span></span>
+<span class="name ">getWatchPlaylist</span>(<wbr>{<ol class="parameter-list"> <li><span class="parameter" id="getWatchPlaylist-param-videoId"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.12.2/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">videoId</span>, </span></li>
+<li><span class="parameter" id="getWatchPlaylist-param-playlistId"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.12.2/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">playlistId</span>, </span></li>
+<li><span class="parameter" id="getWatchPlaylist-param-limit"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.12.2/dart-core/int-class.html">int</a></span> <span class="parameter-name">limit</span> = <span class="default-value">25</span>, </span></li>
+<li><span class="parameter" id="getWatchPlaylist-param-radio"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.12.2/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">radio</span> = <span class="default-value">false</span>, </span></li>
+<li><span class="parameter" id="getWatchPlaylist-param-shuffle"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.12.2/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">shuffle</span> = <span class="default-value">false</span>, </span></li>
 </ol>})
 
       
@@ -96,9 +96,15 @@ only appears if a song has a corresponding video counterpart (UI song/video swit
           "height": 60
         }...
       ],
+      "inLibrary": false,
       "feedbackTokens": {
         "add": "AB9zfpIGg9XN4u2iJ...",
         "remove": "AB9zfpJdzWLcdZtC..."
+      },
+      "pinnedToListenAgain": true,
+      "listenAgainFeedbackTokens": {
+        "pin": "AB9zfpK8kP5mQ7rT...",
+        "unpin": "AB9zfpLy3L9vB2xN..."
       },
       "likeStatus": "INDIFFERENT",
       "videoType": "MUSIC_VIDEO_TYPE_ATV",
@@ -215,8 +221,9 @@ only appears if a song has a corresponding video counterpart (UI song/video swit
     &#39;watchNextTabbedResultsRenderer&#39;,
   ]);
 
-  final lyricsBrowseId = getTabBrowseId(watchNextRenderer as JsonMap, 1);
-  final relatedBrowseId = getTabBrowseId(watchNextRenderer, 2);
+  final browseIds = getTabBrowseIds(watchNextRenderer as JsonMap);
+  final lyricsBrowseId = browseIds[&#39;MUSIC_PAGE_TYPE_TRACK_LYRICS&#39;];
+  final relatedBrowseId = browseIds[&#39;MUSIC_PAGE_TYPE_TRACK_RELATED&#39;];
 
   final results =
       nav(watchNextRenderer, [
@@ -306,7 +313,7 @@ only appears if a song has a corresponding video counterpart (UI song/video swit
 <footer>
   <span class="no-break">
     ytmusicapi_dart
-      2.3.0
+      2.4.1
   </span>
   
 </footer>

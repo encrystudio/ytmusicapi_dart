@@ -56,7 +56,7 @@
       
   <div>
     <ol class="annotation-list">
-        <li>@<a href="https://api.dart.dev/stable/3.9.4/dart-core/override-constant.html">override</a></li>
+        <li>@<a href="https://api.dart.dev/stable/3.12.2/dart-core/override-constant.html">override</a></li>
     </ol>
   </div>
 <span class="returntype"><a href="../../type_alias/JsonMap.html">JsonMap</a></span>
@@ -79,6 +79,8 @@ JsonMap toJson() =&gt; {
   ...super.toJson(),
   if (expiresAt != null) &#39;expires_at&#39;: expiresAt,
   if (refreshToken != null) &#39;refresh_token&#39;: refreshToken,
+  if (refreshTokenExpiresIn != null)
+    &#39;refresh_token_expires_in&#39;: refreshTokenExpiresIn,
 };</code></pre>
 </section>
 
@@ -107,7 +109,7 @@ JsonMap toJson() =&gt; {
 <footer>
   <span class="no-break">
     ytmusicapi_dart
-      2.3.0
+      2.4.1
   </span>
   
 </footer>

@@ -72,8 +72,8 @@
       <h2>Functions</h2>
       <dl class="callables">
           <dt id="getAuthorization" class="callable">
-  <span class="name"><a href="../helpers/getAuthorization.html">getAuthorization</a></span><span class="signature">(<wbr><span class="parameter" id="getAuthorization-param-auth"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/String-class.html">String</a></span> <span class="parameter-name">auth</span></span>)
-    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/3.9.4/dart-core/String-class.html">String</a></span>
+  <span class="name"><a href="../helpers/getAuthorization.html">getAuthorization</a></span><span class="signature">(<wbr><span class="parameter" id="getAuthorization-param-auth"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.12.2/dart-core/String-class.html">String</a></span> <span class="parameter-name">auth</span></span>)
+    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/3.12.2/dart-core/String-class.html">String</a></span>
   </span>
   
 
@@ -85,8 +85,8 @@
 </dd>
 
           <dt id="getVisitorId" class="callable">
-  <span class="name"><a href="../helpers/getVisitorId.html">getVisitorId</a></span><span class="signature">(<wbr><span class="parameter" id="getVisitorId-param-requestFunc"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://pub.dev/documentation/dio/5.9.0/dio/Response-class.html">Response</a></span>&gt;</span></span> <span class="parameter-name">requestFunc</span>(<span class="parameter" id="param-url"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/String-class.html">String</a></span> <span class="parameter-name">url</span></span>)</span>)
-    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/3.9.4/dart-core/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.dart.dev/stable/3.9.4/dart-core/Map-class.html">Map</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.dart.dev/stable/3.9.4/dart-core/String-class.html">String</a></span>, <span class="type-parameter"><a href="https://api.dart.dev/stable/3.9.4/dart-core/String-class.html">String</a></span>&gt;</span></span>&gt;</span></span>
+  <span class="name"><a href="../helpers/getVisitorId.html">getVisitorId</a></span><span class="signature">(<wbr><span class="parameter" id="getVisitorId-param-requestFunc"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.12.2/dart-async/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://pub.dev/documentation/dio/5.11.0/dio/Response-class.html">Response</a></span>&gt;</span></span> <span class="parameter-name">requestFunc</span>(<span class="parameter" id="param-url"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.12.2/dart-core/String-class.html">String</a></span> <span class="parameter-name">url</span></span>)</span>)
+    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/3.12.2/dart-async/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.dart.dev/stable/3.12.2/dart-core/Map-class.html">Map</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.dart.dev/stable/3.12.2/dart-core/String-class.html">String</a></span>, <span class="type-parameter"><a href="https://api.dart.dev/stable/3.12.2/dart-core/String-class.html">String</a></span>&gt;</span></span>&gt;</span></span>
   </span>
   
 
@@ -112,7 +112,7 @@
 
           <dt id="initializeHeaders" class="callable">
   <span class="name"><a href="../helpers/initializeHeaders.html">initializeHeaders</a></span><span class="signature">(<wbr>)
-    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/3.9.4/dart-core/Map-class.html">Map</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.dart.dev/stable/3.9.4/dart-core/String-class.html">String</a></span>, <span class="type-parameter"><a href="https://api.dart.dev/stable/3.9.4/dart-core/String-class.html">String</a></span>&gt;</span></span>
+    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/3.12.2/dart-core/Map-class.html">Map</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.dart.dev/stable/3.12.2/dart-core/String-class.html">String</a></span>, <span class="type-parameter"><a href="https://api.dart.dev/stable/3.12.2/dart-core/String-class.html">String</a></span>&gt;</span></span>
   </span>
   
 
@@ -123,9 +123,22 @@
 
 </dd>
 
+          <dt id="parseDescriptionRuns" class="callable">
+  <span class="name"><a href="../helpers/parseDescriptionRuns.html">parseDescriptionRuns</a></span><span class="signature">(<wbr><span class="parameter" id="parseDescriptionRuns-param-descriptionRunsList"><span class="type-annotation">dynamic</span> <span class="parameter-name">descriptionRunsList</span></span>)
+    <span class="returntype parameter">&#8594; (<span class="field"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.12.2/dart-core/String-class.html">String</a></span>, </span><span class="field"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.12.2/dart-core/List-class.html">List</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../models_content_text_run/TextRun-class.html">TextRun</a></span>&gt;</span></span></span>)</span>
+  </span>
+  
+
+</dt>
+<dd>
+  Parses a descriptionRuns section
+  
+
+</dd>
+
           <dt id="sapisidFromCookie" class="callable">
-  <span class="name"><a href="../helpers/sapisidFromCookie.html">sapisidFromCookie</a></span><span class="signature">(<wbr><span class="parameter" id="sapisidFromCookie-param-rawCookie"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/String-class.html">String</a></span> <span class="parameter-name">rawCookie</span></span>)
-    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/3.9.4/dart-core/String-class.html">String</a></span>
+  <span class="name"><a href="../helpers/sapisidFromCookie.html">sapisidFromCookie</a></span><span class="signature">(<wbr><span class="parameter" id="sapisidFromCookie-param-rawCookie"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.12.2/dart-core/String-class.html">String</a></span> <span class="parameter-name">rawCookie</span></span>)
+    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/3.12.2/dart-core/String-class.html">String</a></span>
   </span>
   
 
@@ -138,7 +151,7 @@
 
           <dt id="sumTotalDuration" class="callable">
   <span class="name"><a href="../helpers/sumTotalDuration.html">sumTotalDuration</a></span><span class="signature">(<wbr><span class="parameter" id="sumTotalDuration-param-item"><span class="type-annotation"><a href="../type_alias/JsonMap.html">JsonMap</a></span> <span class="parameter-name">item</span></span>)
-    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/3.9.4/dart-core/int-class.html">int</a></span>
+    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/3.12.2/dart-core/int-class.html">int</a></span>
   </span>
   
 
@@ -150,8 +163,8 @@
 </dd>
 
           <dt id="toInt" class="callable">
-  <span class="name"><a href="../helpers/toInt.html">toInt</a></span><span class="signature">(<wbr><span class="parameter" id="toInt-param-input"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/String-class.html">String</a></span> <span class="parameter-name">input</span>, {</span><span class="parameter" id="toInt-param-locale"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/String-class.html">String</a></span> <span class="parameter-name">locale</span> = <span class="default-value">&#39;en_US&#39;</span></span>})
-    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/3.9.4/dart-core/int-class.html">int</a></span>
+  <span class="name"><a href="../helpers/toInt.html">toInt</a></span><span class="signature">(<wbr><span class="parameter" id="toInt-param-input"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.12.2/dart-core/String-class.html">String</a></span> <span class="parameter-name">input</span>, {</span><span class="parameter" id="toInt-param-locale"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.12.2/dart-core/String-class.html">String</a></span> <span class="parameter-name">locale</span> = <span class="default-value">&#39;en_US&#39;</span></span>})
+    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/3.12.2/dart-core/int-class.html">int</a></span>
   </span>
   
 
@@ -206,6 +219,7 @@
       <li><a href="../mixins_utils/">mixins/utils</a></li>
       <li><a href="../mixins_watch/">mixins/watch</a></li>
       <li><a href="../models_content_enums/">models/content/enums</a></li>
+      <li><a href="../models_content_text_run/">models/content/text_run</a></li>
       <li><a href="../models_lyrics/">models/lyrics</a></li>
       <li><a href="../models_objects_album/">models/objects/album</a></li>
       <li><a href="../models_objects_artist/">models/objects/artist</a></li>
@@ -215,6 +229,7 @@
       <li><a href="../models_objects_video/">models/objects/video</a></li>
       <li><a href="../navigation/">navigation</a></li>
       <li><a href="../parsers_albums/">parsers/albums</a></li>
+      <li><a href="../parsers_artists/">parsers/artists</a></li>
       <li><a href="../parsers_browsing/">parsers/browsing</a></li>
       <li><a href="../parsers_constants/">parsers/constants</a></li>
       <li><a href="../parsers_explore/">parsers/explore</a></li>
@@ -240,7 +255,7 @@
 <footer>
   <span class="no-break">
     ytmusicapi_dart
-      2.3.0
+      2.4.1
   </span>
   
 </footer>

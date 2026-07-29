@@ -54,8 +54,8 @@
 
     <section class="multi-line-signature">
       
-<span class="returntype"><a href="https://api.dart.dev/stable/3.9.4/dart-core/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../../type_alias/JsonMap.html">JsonMap</a></span>&gt;</span></span>
-<span class="name ">getLikedSongs</span>(<wbr>{<ol class="parameter-list"> <li><span class="parameter" id="getLikedSongs-param-limit"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/int-class.html">int</a></span> <span class="parameter-name">limit</span> = <span class="default-value">100</span>, </span></li>
+<span class="returntype"><a href="https://api.dart.dev/stable/3.12.2/dart-async/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../../type_alias/JsonMap.html">JsonMap</a></span>&gt;</span></span>
+<span class="name ">getLikedSongs</span>(<wbr>{<ol class="parameter-list"> <li><span class="parameter" id="getLikedSongs-param-limit"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.12.2/dart-core/int-class.html">int</a></span> <span class="parameter-name">limit</span> = <span class="default-value">100</span>, </span></li>
 </ol>})
 
       
@@ -74,8 +74,10 @@
     
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
-  <pre class="language-dart"><code class="language-dart">Future&lt;JsonMap&gt; getLikedSongs({int limit = 100}) =&gt;
-    getPlaylist(&#39;LM&#39;, limit: limit);</code></pre>
+  <pre class="language-dart"><code class="language-dart">Future&lt;JsonMap&gt; getLikedSongs({int limit = 100}) {
+  checkAuth();
+  return getPlaylist(&#39;LM&#39;, limit: limit);
+}</code></pre>
 </section>
 
 
@@ -103,7 +105,7 @@
 <footer>
   <span class="no-break">
     ytmusicapi_dart
-      2.3.0
+      2.4.1
   </span>
   
 </footer>

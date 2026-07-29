@@ -93,7 +93,7 @@
     if ((subtitle[&#39;runs&#39;] as List).length == 3 &amp;&amp;
         RegExp(r&#39;\d+ &#39;).hasMatch(nav(realData, SUBTITLE2) as String)) {
       playlist[&#39;count&#39;] = (nav(realData, SUBTITLE2) as String).split(&#39; &#39;)[0];
-      playlist[&#39;author&#39;] = parseSongArtistsRuns(
+      playlist[&#39;author&#39;] = parseArtistsRuns(
         (subtitle[&#39;runs&#39;] as List).sublist(0, 1),
       );
     }
@@ -127,7 +127,7 @@
 <footer>
   <span class="no-break">
     ytmusicapi_dart
-      2.3.0
+      2.4.1
   </span>
   
 </footer>

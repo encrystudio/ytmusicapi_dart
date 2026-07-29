@@ -85,17 +85,15 @@
       return {&#39;type&#39;: &#39;artist&#39;, &#39;data&#39;: item};
     }
   } else {
-    &#47;&#47; note: YT uses non-breaking space \xa0 to separate number and magnitude
-    final viewsReg = RegExp(r&#39;^\d([^ ])* [^ ]*$&#39;);
     final durationReg = RegExp(r&#39;^(\d+:)*\d+:\d+$&#39;);
     final yearReg = RegExp(r&#39;^\d{4}$&#39;);
 
-    if (viewsReg.hasMatch(text as String)) {
-      return {&#39;type&#39;: &#39;views&#39;, &#39;data&#39;: text.split(&#39; &#39;)[0]};
-    } else if (durationReg.hasMatch(text)) {
+    if (durationReg.hasMatch(text as String)) {
       return {&#39;type&#39;: &#39;duration&#39;, &#39;data&#39;: text};
     } else if (yearReg.hasMatch(text)) {
       return {&#39;type&#39;: &#39;year&#39;, &#39;data&#39;: text};
+    } else if (parseViews(text) != null) {
+      return {&#39;type&#39;: &#39;views&#39;, &#39;data&#39;: parseViews(text)};
     } else if (!API_RESULT_TYPES.contains(text.toLowerCase())) {
       return {
         &#39;type&#39;: &#39;artist&#39;,
@@ -132,7 +130,7 @@
 <footer>
   <span class="no-break">
     ytmusicapi_dart
-      2.3.0
+      2.4.1
   </span>
   
 </footer>

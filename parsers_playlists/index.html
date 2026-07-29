@@ -72,8 +72,8 @@
       <h2>Functions</h2>
       <dl class="callables">
           <dt id="parseAudioPlaylist" class="callable">
-  <span class="name"><a href="../parsers_playlists/parseAudioPlaylist.html">parseAudioPlaylist</a></span><span class="signature">(<wbr><span class="parameter" id="parseAudioPlaylist-param-response"><span class="type-annotation"><a href="../type_alias/JsonMap.html">JsonMap</a></span> <span class="parameter-name">response</span>, </span><span class="parameter" id="parseAudioPlaylist-param-limit"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/int-class.html">int</a>?</span> <span class="parameter-name">limit</span>, </span><span class="parameter" id="parseAudioPlaylist-param-requestFunc"><span class="type-annotation"><a href="../type_alias/RequestFuncBodyType.html">RequestFuncBodyType</a></span> <span class="parameter-name">requestFunc</span></span>)
-    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/3.9.4/dart-core/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../type_alias/JsonMap.html">JsonMap</a></span>&gt;</span></span>
+  <span class="name"><a href="../parsers_playlists/parseAudioPlaylist.html">parseAudioPlaylist</a></span><span class="signature">(<wbr><span class="parameter" id="parseAudioPlaylist-param-response"><span class="type-annotation"><a href="../type_alias/JsonMap.html">JsonMap</a></span> <span class="parameter-name">response</span>, </span><span class="parameter" id="parseAudioPlaylist-param-limit"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.12.2/dart-core/int-class.html">int</a>?</span> <span class="parameter-name">limit</span>, </span><span class="parameter" id="parseAudioPlaylist-param-requestFunc"><span class="type-annotation"><a href="../type_alias/RequestFuncBodyType.html">RequestFuncBodyType</a></span> <span class="parameter-name">requestFunc</span></span>)
+    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/3.12.2/dart-async/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../type_alias/JsonMap.html">JsonMap</a></span>&gt;</span></span>
   </span>
   
 
@@ -111,7 +111,7 @@
 </dd>
 
           <dt id="parsePlaylistItem" class="callable">
-  <span class="name"><a href="../parsers_playlists/parsePlaylistItem.html">parsePlaylistItem</a></span><span class="signature">(<wbr><span class="parameter" id="parsePlaylistItem-param-data"><span class="type-annotation"><a href="../type_alias/JsonMap.html">JsonMap</a></span> <span class="parameter-name">data</span>, {</span><span class="parameter" id="parsePlaylistItem-param-menuEntries"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/List-class.html">List</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.dart.dev/stable/3.9.4/dart-core/List-class.html">List</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.dart.dev/stable/3.9.4/dart-core/String-class.html">String</a></span>&gt;</span></span>&gt;</span>?</span> <span class="parameter-name">menuEntries</span>, </span><span class="parameter" id="parsePlaylistItem-param-isAlbum"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">isAlbum</span> = <span class="default-value">false</span></span>})
+  <span class="name"><a href="../parsers_playlists/parsePlaylistItem.html">parsePlaylistItem</a></span><span class="signature">(<wbr><span class="parameter" id="parsePlaylistItem-param-data"><span class="type-annotation"><a href="../type_alias/JsonMap.html">JsonMap</a></span> <span class="parameter-name">data</span>, {</span><span class="parameter" id="parsePlaylistItem-param-isAlbum"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.12.2/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">isAlbum</span> = <span class="default-value">false</span>, </span><span class="parameter" id="parsePlaylistItem-param-isCollaborative"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.12.2/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">isCollaborative</span> = <span class="default-value">false</span></span>})
     <span class="returntype parameter">&#8594; <a href="../type_alias/JsonMap.html">JsonMap</a>?</span>
   </span>
   
@@ -124,8 +124,8 @@
 </dd>
 
           <dt id="parsePlaylistItems" class="callable">
-  <span class="name"><a href="../parsers_playlists/parsePlaylistItems.html">parsePlaylistItems</a></span><span class="signature">(<wbr><span class="parameter" id="parsePlaylistItems-param-results"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/List-class.html">List</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../type_alias/JsonMap.html">JsonMap</a></span>&gt;</span></span> <span class="parameter-name">results</span>, {</span><span class="parameter" id="parsePlaylistItems-param-menuEntries"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/List-class.html">List</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.dart.dev/stable/3.9.4/dart-core/List-class.html">List</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.dart.dev/stable/3.9.4/dart-core/String-class.html">String</a></span>&gt;</span></span>&gt;</span>?</span> <span class="parameter-name">menuEntries</span>, </span><span class="parameter" id="parsePlaylistItems-param-isAlbum"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">isAlbum</span> = <span class="default-value">false</span></span>})
-    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/3.9.4/dart-core/List-class.html">List</a></span>
+  <span class="name"><a href="../parsers_playlists/parsePlaylistItems.html">parsePlaylistItems</a></span><span class="signature">(<wbr><span class="parameter" id="parsePlaylistItems-param-results"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.12.2/dart-core/List-class.html">List</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../type_alias/JsonMap.html">JsonMap</a></span>&gt;</span></span> <span class="parameter-name">results</span>, {</span><span class="parameter" id="parsePlaylistItems-param-isAlbum"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.12.2/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">isAlbum</span> = <span class="default-value">false</span>, </span><span class="parameter" id="parsePlaylistItems-param-isCollaborative"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.12.2/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">isCollaborative</span> = <span class="default-value">false</span></span>})
+    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/3.12.2/dart-core/List-class.html">List</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../type_alias/JsonMap.html">JsonMap</a></span>&gt;</span></span>
   </span>
   
 
@@ -137,8 +137,8 @@
 </dd>
 
           <dt id="validatePlaylistId" class="callable">
-  <span class="name"><a href="../parsers_playlists/validatePlaylistId.html">validatePlaylistId</a></span><span class="signature">(<wbr><span class="parameter" id="validatePlaylistId-param-playlistId"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/String-class.html">String</a></span> <span class="parameter-name">playlistId</span></span>)
-    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/3.9.4/dart-core/String-class.html">String</a></span>
+  <span class="name"><a href="../parsers_playlists/validatePlaylistId.html">validatePlaylistId</a></span><span class="signature">(<wbr><span class="parameter" id="validatePlaylistId-param-playlistId"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.12.2/dart-core/String-class.html">String</a></span> <span class="parameter-name">playlistId</span></span>)
+    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/3.12.2/dart-core/String-class.html">String</a></span>
   </span>
   
 
@@ -193,6 +193,7 @@
       <li><a href="../mixins_utils/">mixins/utils</a></li>
       <li><a href="../mixins_watch/">mixins/watch</a></li>
       <li><a href="../models_content_enums/">models/content/enums</a></li>
+      <li><a href="../models_content_text_run/">models/content/text_run</a></li>
       <li><a href="../models_lyrics/">models/lyrics</a></li>
       <li><a href="../models_objects_album/">models/objects/album</a></li>
       <li><a href="../models_objects_artist/">models/objects/artist</a></li>
@@ -202,6 +203,7 @@
       <li><a href="../models_objects_video/">models/objects/video</a></li>
       <li><a href="../navigation/">navigation</a></li>
       <li><a href="../parsers_albums/">parsers/albums</a></li>
+      <li><a href="../parsers_artists/">parsers/artists</a></li>
       <li><a href="../parsers_browsing/">parsers/browsing</a></li>
       <li><a href="../parsers_constants/">parsers/constants</a></li>
       <li><a href="../parsers_explore/">parsers/explore</a></li>
@@ -227,7 +229,7 @@
 <footer>
   <span class="no-break">
     ytmusicapi_dart
-      2.3.0
+      2.4.1
   </span>
   
 </footer>

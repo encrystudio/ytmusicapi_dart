@@ -55,8 +55,9 @@
     <section class="multi-line-signature">
         
 <span class="returntype"><a href="../type_alias/JsonMap.html">JsonMap</a></span>
-<span class="name ">parseRanking</span>(<wbr><ol class="parameter-list single-line"> <li><span class="parameter" id="parseRanking-param-data"><span class="type-annotation"><a href="../type_alias/JsonMap.html">JsonMap</a></span> <span class="parameter-name">data</span></span></li>
-</ol>)
+<span class="name ">parseRanking</span>(<wbr><ol class="parameter-list"> <li><span class="parameter" id="parseRanking-param-data"><span class="type-annotation"><a href="../type_alias/JsonMap.html">JsonMap</a></span> <span class="parameter-name">data</span>, {</span></li>
+<li><span class="parameter" id="parseRanking-param-nullIfAbsent"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.12.2/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">nullIfAbsent</span> = <span class="default-value">false</span>, </span></li>
+</ol>})
 
         
 
@@ -70,19 +71,20 @@
     
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
-  <pre class="language-dart"><code class="language-dart">JsonMap parseRanking(JsonMap data) {
+  <pre class="language-dart"><code class="language-dart">JsonMap parseRanking(JsonMap data, {bool nullIfAbsent = false}) {
+  final trendIconType = nav(data, [
+    &#39;customIndexColumn&#39;,
+    &#39;musicCustomIndexColumnRenderer&#39;,
+    ...ICON_TYPE,
+  ], nullIfAbsent: nullIfAbsent);
+
   return {
     &#39;rank&#39;: nav(data, [
       &#39;customIndexColumn&#39;,
       &#39;musicCustomIndexColumnRenderer&#39;,
       ...TEXT_RUN_TEXT,
-    ]),
-    &#39;trend&#39;:
-        TRENDS[nav(data, [
-          &#39;customIndexColumn&#39;,
-          &#39;musicCustomIndexColumnRenderer&#39;,
-          ...ICON_TYPE,
-        ])],
+    ], nullIfAbsent: nullIfAbsent),
+    &#39;trend&#39;: trendIconType != null ? TRENDS[trendIconType] : null,
   };
 }</code></pre>
 </section>
@@ -111,7 +113,7 @@
 <footer>
   <span class="no-break">
     ytmusicapi_dart
-      2.3.0
+      2.4.1
   </span>
   
 </footer>

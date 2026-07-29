@@ -54,11 +54,11 @@
 
     <section class="multi-line-signature">
       
-<span class="returntype"><a href="https://api.dart.dev/stable/3.9.4/dart-core/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../../type_alias/JsonMap.html">JsonMap</a></span>&gt;</span></span>
-<span class="name ">getPlaylist</span>(<wbr><ol class="parameter-list"> <li><span class="parameter" id="getPlaylist-param-playlistId"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/String-class.html">String</a></span> <span class="parameter-name">playlistId</span>, {</span></li>
-<li><span class="parameter" id="getPlaylist-param-limit"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/int-class.html">int</a>?</span> <span class="parameter-name">limit</span> = <span class="default-value">100</span>, </span></li>
-<li><span class="parameter" id="getPlaylist-param-related"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">related</span> = <span class="default-value">false</span>, </span></li>
-<li><span class="parameter" id="getPlaylist-param-suggestionsLimit"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/int-class.html">int</a></span> <span class="parameter-name">suggestionsLimit</span> = <span class="default-value">0</span>, </span></li>
+<span class="returntype"><a href="https://api.dart.dev/stable/3.12.2/dart-async/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../../type_alias/JsonMap.html">JsonMap</a></span>&gt;</span></span>
+<span class="name ">getPlaylist</span>(<wbr><ol class="parameter-list"> <li><span class="parameter" id="getPlaylist-param-playlistId"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.12.2/dart-core/String-class.html">String</a></span> <span class="parameter-name">playlistId</span>, {</span></li>
+<li><span class="parameter" id="getPlaylist-param-limit"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.12.2/dart-core/int-class.html">int</a>?</span> <span class="parameter-name">limit</span> = <span class="default-value">100</span>, </span></li>
+<li><span class="parameter" id="getPlaylist-param-related"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.12.2/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">related</span> = <span class="default-value">false</span>, </span></li>
+<li><span class="parameter" id="getPlaylist-param-suggestionsLimit"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.12.2/dart-core/int-class.html">int</a></span> <span class="parameter-name">suggestionsLimit</span> = <span class="default-value">0</span>, </span></li>
 </ol>})
 
       
@@ -149,10 +149,22 @@ The key <code>tracks</code> contains a List of <code>playlistItem</code> Maps</p
       "isAvailable": true,
       "isExplicit": false,
       "videoType": "MUSIC_VIDEO_TYPE_OMV",
+      "inLibrary": false,
       "feedbackTokens": {
         "add": "AB9zfpJxtvrU...",
         "remove": "AB9zfpKTyZ..."
-      }
+  },
+  "pinnedToListenAgain": false,
+  "listenAgainFeedbackTokens": {
+    "pin": "AB9zfpImL2k...",
+    "unpin": "AB9zfpJt6pA..."
+  },
+  "communityVoteStatus": {
+    "netVoteValue": 12,
+    "status": "VOTE_STATUS_UPVOTED"
+  }
+}
+  "creditsBrowseId": "MPTCekz1IJ9I0sw"
     }
   ]
 }
@@ -160,6 +172,21 @@ The key <code>tracks</code> contains a List of <code>playlistItem</code> Maps</p
 </code></pre>
 <p>The <code>setVideoId</code> is the unique id of this playlist item and
 needed for moving/removing playlist items.</p>
+<p>Note that communityVoteStatus can be null if the information is not available (i.e. playlist does not have that setting enabled, the request is not authenticated, ...)</p>
+<p>Collaborative playlists replace <code>author</code> with limited data about <code>collaborators</code>:
+  {
+    "collaborators": {
+      "text": "by Sample Author and 1 other",
+      "avatars": <code>
+        {
+          "url": "https://yt3.ggpht.com/sample-author-photo"
+        },
+        {
+          "url": "https://yt3.ggpht.com/sample-collaborator-photo"
+        }
+      </code>
+    }
+  }</p>
 </section>
 
 
@@ -184,7 +211,16 @@ needed for moving/removing playlist items.</p>
   Future&lt;JsonMap&gt; requestFuncContinuations(JsonMap body) =&gt;
       sendRequest(endpoint, body);
 
-  if (playlistId.startsWith(&#39;OLA&#39;) || playlistId.startsWith(&#39;VLOLA&#39;)) {
+  final isOla =
+      playlistId.startsWith(&#39;OLA&#39;) || playlistId.startsWith(&#39;VLOLA&#39;);
+  final hasPlaylistHeader =
+      nav(response, [
+        ...TWO_COLUMN_RENDERER,
+        ...TAB_CONTENT,
+        ...SECTION_LIST_ITEM,
+      ], nullIfAbsent: true) !=
+      null;
+  if (isOla &amp;&amp; !hasPlaylistHeader) {
     return parseAudioPlaylist(response, limit, requestFuncContinuations);
   }
 
@@ -246,6 +282,7 @@ needed for moving/removing playlist items.</p>
           : null;
 
   playlist.addAll(parsePlaylistHeaderMeta(header));
+  final isCollaborative = playlist.containsKey(&#39;collaborators&#39;);
 
   playlist.addAll(
     parseSongRuns(
@@ -312,9 +349,12 @@ needed for moving/removing playlist items.</p>
   if (contentData.containsKey(&#39;contents&#39;)) {
     playlist[&#39;tracks&#39;] = parsePlaylistItems(
       List&lt;JsonMap&gt;.from(contentData[&#39;contents&#39;] as List),
+      isCollaborative: isCollaborative,
     );
-    List parseFunc(contents) =&gt;
-        parsePlaylistItems(List&lt;JsonMap&gt;.from(contents as List));
+    List parseFunc(contents) =&gt; parsePlaylistItems(
+      List&lt;JsonMap&gt;.from(contents as List),
+      isCollaborative: isCollaborative,
+    );
     (playlist[&#39;tracks&#39;] as List).addAll(
       List&lt;JsonMap&gt;.from(
         await getContinuations2025(
@@ -358,7 +398,7 @@ needed for moving/removing playlist items.</p>
 <footer>
   <span class="no-break">
     ytmusicapi_dart
-      2.3.0
+      2.4.1
   </span>
   
 </footer>

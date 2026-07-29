@@ -54,8 +54,8 @@
 
     <section class="multi-line-signature">
       
-<span class="returntype"><a href="https://api.dart.dev/stable/3.9.4/dart-core/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../../type_alias/JsonMap.html">JsonMap</a></span>&gt;</span></span>
-<span class="name ">getCharts</span>(<wbr>{<ol class="parameter-list"> <li><span class="parameter" id="getCharts-param-country"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/String-class.html">String</a></span> <span class="parameter-name">country</span> = <span class="default-value">&#39;ZZ&#39;</span>, </span></li>
+<span class="returntype"><a href="https://api.dart.dev/stable/3.12.2/dart-async/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../../type_alias/JsonMap.html">JsonMap</a></span>&gt;</span></span>
+<span class="name ">getCharts</span>(<wbr>{<ol class="parameter-list"> <li><span class="parameter" id="getCharts-param-country"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.12.2/dart-core/String-class.html">String</a></span> <span class="parameter-name">country</span> = <span class="default-value">&#39;ZZ&#39;</span>, </span></li>
 </ol>})
 
       
@@ -63,13 +63,14 @@
     </section>
     
 <section class="desc markdown">
-  <p>Get latest charts data from YouTube Music: Artists and playlists of top videos.</p>
-<p>US charts have an extra Genres section with some Genre charts.</p>
+  <p>Get latest charts data from YouTube Music: Artists and playlists of top videos.
+Unauthenticated requests return unranked artists with "rank" and "trend" set to null.</p>
+<p>US charts have an extra Genres section, IN charts an extra Languages section.</p>
 <ul>
 <li><code>country</code> ISO 3166-1 Alpha-2 country code. (Default: <code>ZZ</code> = Global).</li>
 </ul>
 <p>Returns Map containing chart video playlists (with separate daily/weekly charts if authenticated with a premium account),
-chart genres (US-only), and chart artists.</p>
+chart genres (US-only, not returned by every response), chart languages (IN-only) and chart artists.</p>
 <p>Example:</p>
 <pre class="language-json"><code class="language-json">{
   "countries": {
@@ -145,34 +146,62 @@ chart genres (US-only), and chart artists.</p>
           ], nullIfAbsent: true),
       ].where((e) =&gt; e != null).toList();
 
-  final chartsCategories = &lt;Tuple3&lt;String, RequestFuncBodyType, String&gt;&gt;[
-    Tuple3(&#39;videos&#39;, parseChartPlaylist, MTRIR),
-    if (country == &#39;US&#39;) Tuple3(&#39;genres&#39;, parseChartPlaylist, MTRIR),
-    Tuple3(&#39;artists&#39;, parseChartArtist, MRLIR),
-  ];
+  &#47;&#47; Carousels carry no machine-readable identity, so recognize them by their
+  &#47;&#47; contents. Ignore anything else (some regions add an album chart) instead
+  &#47;&#47; of shifting the categories that come after it.
+  final carousels = &lt;List&lt;JsonMap&gt;&gt;[];
 
-  &#47;&#47; use result length to determine if the daily&#47;weekly chart categories are present
-  if ((results.length - 1) &gt; chartsCategories.length) {
-    &#47;&#47; daily and weekly replace the &quot;videos&quot; playlist carousel
-    final dailyWeekly = [
-      Tuple3(&#39;daily&#39;, parseChartPlaylist, MTRIR),
-      Tuple3(&#39;weekly&#39;, parseChartPlaylist, MTRIR),
-    ];
-    chartsCategories
-      ..removeAt(0)
-      ..insertAll(0, dailyWeekly);
+  for (final section in results.skip(1)) {
+    final contents = nav(section, CAROUSEL_CONTENTS, nullIfAbsent: true);
+    if (contents != null) {
+      carousels.add(List&lt;JsonMap&gt;.from(contents as List));
+    }
   }
 
-  for (var i = 0; i &lt; chartsCategories.length; i++) {
-    final name = chartsCategories[i].item1;
-    final parseFunc = chartsCategories[i].item2;
-    final key = chartsCategories[i].item3;
-    charts[name] = parseContentList(
-      List&lt;JsonMap&gt;.from(nav(results[1 + i], CAROUSEL_CONTENTS) as List),
-      parseFunc,
-      key: key,
+  final playlistCarousels =
+      carousels.where((c) =&gt; isPlaylistCarousel(c)).toList();
+
+  final artistCarousels =
+      carousels.where((c) =&gt; isArtistCarousel(c)).toList();
+
+  final playlistNames = &lt;String&gt;[&#39;videos&#39;];
+
+  if (COUNTRY_EXTRA_CATEGORY.containsKey(country)) {
+    playlistNames.add(COUNTRY_EXTRA_CATEGORY[country]!);
+  }
+
+  &#47;&#47; Premium sessions get daily and weekly carousels in place of the &quot;videos&quot; one.
+  &#47;&#47; Could also be done via an isPremium attribute on YTMusic instance
+  if (playlistCarousels.length &gt; playlistNames.length) {
+    playlistNames
+      ..clear()
+      ..addAll([
+        &#39;daily&#39;,
+        &#39;weekly&#39;,
+        if (COUNTRY_EXTRA_CATEGORY.containsKey(country))
+          COUNTRY_EXTRA_CATEGORY[country]!,
+      ]);
+  }
+
+  &#47;&#47; leaves trailing names unused: YTM omits categories unpredictably,
+  &#47;&#47; e.g. &quot;genres&quot; is missing from some US responses
+  final count = min(playlistNames.length, playlistCarousels.length);
+
+  for (var i = 0; i &lt; count; i++) {
+    charts[playlistNames[i]] = parseContentList(
+      playlistCarousels[i],
+      parseChartPlaylist,
     );
   }
+
+  if (artistCarousels.isNotEmpty) {
+    charts[&#39;artists&#39;] = parseContentList(
+      artistCarousels.first,
+      parseChartArtist,
+      key: MRLIR,
+    );
+  }
+
   return charts;
 }</code></pre>
 </section>
@@ -202,7 +231,7 @@ chart genres (US-only), and chart artists.</p>
 <footer>
   <span class="no-break">
     ytmusicapi_dart
-      2.3.0
+      2.4.1
   </span>
   
 </footer>

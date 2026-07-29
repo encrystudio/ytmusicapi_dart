@@ -84,9 +84,22 @@
 
 </dd>
 
+          <dt id="parseAlbumSingleSubtitle" class="callable">
+  <span class="name"><a href="../parsers_browsing/parseAlbumSingleSubtitle.html">parseAlbumSingleSubtitle</a></span><span class="signature">(<wbr><span class="parameter" id="parseAlbumSingleSubtitle-param-result"><span class="type-annotation"><a href="../type_alias/JsonMap.html">JsonMap</a></span> <span class="parameter-name">result</span>, </span><span class="parameter" id="parseAlbumSingleSubtitle-param-albumOrSingle"><span class="type-annotation"><a href="../type_alias/JsonMap.html">JsonMap</a></span> <span class="parameter-name">albumOrSingle</span></span>)
+    <span class="returntype parameter">&#8594; <a href="../type_alias/JsonMap.html">JsonMap</a></span>
+  </span>
+  
+
+</dt>
+<dd>
+  Parses album or single subtitles
+  
+
+</dd>
+
           <dt id="parseContentList" class="callable">
-  <span class="name"><a href="../parsers_browsing/parseContentList.html">parseContentList</a></span><span class="signature">(<wbr><span class="parameter" id="parseContentList-param-results"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/List-class.html">List</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../type_alias/JsonMap.html">JsonMap</a></span>&gt;</span></span> <span class="parameter-name">results</span>, </span><span class="parameter" id="parseContentList-param-parseFunc"><span class="type-annotation"><a href="../type_alias/RequestFuncBodyType.html">RequestFuncBodyType</a></span> <span class="parameter-name">parseFunc</span>, {</span><span class="parameter" id="parseContentList-param-key"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/String-class.html">String</a></span> <span class="parameter-name">key</span> = <span class="default-value">MTRIR</span></span>})
-    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/3.9.4/dart-core/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.dart.dev/stable/3.9.4/dart-core/List-class.html">List</a></span>&gt;</span></span>
+  <span class="name"><a href="../parsers_browsing/parseContentList.html">parseContentList</a></span><span class="signature">(<wbr><span class="parameter" id="parseContentList-param-results"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.12.2/dart-core/List-class.html">List</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../type_alias/JsonMap.html">JsonMap</a></span>&gt;</span></span> <span class="parameter-name">results</span>, </span><span class="parameter" id="parseContentList-param-parseFunc"><span class="type-annotation"><a href="../type_alias/RequestFuncBodyType.html">RequestFuncBodyType</a></span> <span class="parameter-name">parseFunc</span>, {</span><span class="parameter" id="parseContentList-param-key"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.12.2/dart-core/String-class.html">String</a></span> <span class="parameter-name">key</span> = <span class="default-value">MTRIR</span></span>})
+    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/3.12.2/dart-async/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.dart.dev/stable/3.12.2/dart-core/List-class.html">List</a></span>&gt;</span></span>
   </span>
   
 
@@ -98,8 +111,8 @@
 </dd>
 
           <dt id="parseMixedContent" class="callable">
-  <span class="name"><a href="../parsers_browsing/parseMixedContent.html">parseMixedContent</a></span><span class="signature">(<wbr><span class="parameter" id="parseMixedContent-param-rows"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/List-class.html">List</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../type_alias/JsonMap.html">JsonMap</a></span>&gt;</span></span> <span class="parameter-name">rows</span></span>)
-    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/3.9.4/dart-core/List-class.html">List</a></span>
+  <span class="name"><a href="../parsers_browsing/parseMixedContent.html">parseMixedContent</a></span><span class="signature">(<wbr><span class="parameter" id="parseMixedContent-param-rows"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.12.2/dart-core/List-class.html">List</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../type_alias/JsonMap.html">JsonMap</a></span>&gt;</span></span> <span class="parameter-name">rows</span></span>)
+    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/3.12.2/dart-core/List-class.html">List</a></span>
   </span>
   
 
@@ -163,7 +176,7 @@
 </dd>
 
           <dt id="parseSongFlat" class="callable">
-  <span class="name"><a href="../parsers_browsing/parseSongFlat.html">parseSongFlat</a></span><span class="signature">(<wbr><span class="parameter" id="parseSongFlat-param-data"><span class="type-annotation"><a href="../type_alias/JsonMap.html">JsonMap</a></span> <span class="parameter-name">data</span></span>)
+  <span class="name"><a href="../parsers_browsing/parseSongFlat.html">parseSongFlat</a></span><span class="signature">(<wbr><span class="parameter" id="parseSongFlat-param-data"><span class="type-annotation"><a href="../type_alias/JsonMap.html">JsonMap</a></span> <span class="parameter-name">data</span>, {</span><span class="parameter" id="parseSongFlat-param-withPlaylistId"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.12.2/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">withPlaylistId</span> = <span class="default-value">false</span></span>})
     <span class="returntype parameter">&#8594; <a href="../type_alias/JsonMap.html">JsonMap</a></span>
   </span>
   
@@ -245,6 +258,7 @@
       <li><a href="../mixins_utils/">mixins/utils</a></li>
       <li><a href="../mixins_watch/">mixins/watch</a></li>
       <li><a href="../models_content_enums/">models/content/enums</a></li>
+      <li><a href="../models_content_text_run/">models/content/text_run</a></li>
       <li><a href="../models_lyrics/">models/lyrics</a></li>
       <li><a href="../models_objects_album/">models/objects/album</a></li>
       <li><a href="../models_objects_artist/">models/objects/artist</a></li>
@@ -254,6 +268,7 @@
       <li><a href="../models_objects_video/">models/objects/video</a></li>
       <li><a href="../navigation/">navigation</a></li>
       <li><a href="../parsers_albums/">parsers/albums</a></li>
+      <li><a href="../parsers_artists/">parsers/artists</a></li>
       <li><a href="../parsers_browsing/">parsers/browsing</a></li>
       <li><a href="../parsers_constants/">parsers/constants</a></li>
       <li><a href="../parsers_explore/">parsers/explore</a></li>
@@ -279,7 +294,7 @@
 <footer>
   <span class="no-break">
     ytmusicapi_dart
-      2.3.0
+      2.4.1
   </span>
   
 </footer>

@@ -56,7 +56,7 @@
         
 <span class="returntype"><a href="../type_alias/JsonMap.html">JsonMap</a></span>
 <span class="name ">parseTopResult</span>(<wbr><ol class="parameter-list single-line"> <li><span class="parameter" id="parseTopResult-param-data"><span class="type-annotation"><a href="../type_alias/JsonMap.html">JsonMap</a></span> <span class="parameter-name">data</span>, </span></li>
-<li><span class="parameter" id="parseTopResult-param-searchResultTypes"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/List-class.html">List</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.dart.dev/stable/3.9.4/dart-core/String-class.html">String</a></span>&gt;</span></span> <span class="parameter-name">searchResultTypes</span></span></li>
+<li><span class="parameter" id="parseTopResult-param-searchResultTypes"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.12.2/dart-core/List-class.html">List</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.dart.dev/stable/3.12.2/dart-core/String-class.html">String</a></span>&gt;</span></span> <span class="parameter-name">searchResultTypes</span></span></li>
 </ol>)
 
         
@@ -146,12 +146,13 @@
   if (resultType == &#39;playlist&#39;) {
     searchResult[&#39;playlistId&#39;] = nav(data, MENU_PLAYLIST_ID);
     searchResult[&#39;title&#39;] = nav(data, TITLE_TEXT);
-    searchResult[&#39;author&#39;] = parseSongArtistsRuns(
+    searchResult[&#39;author&#39;] = parseArtistsRuns(
       (nav(data, [&#39;subtitle&#39;, &#39;runs&#39;]) as List).sublist(2),
     );
   }
 
   if (resultType == &#39;episode&#39;) {
+    searchResult[&#39;title&#39;] = nav(data, TITLE_TEXT);
     searchResult[&#39;videoId&#39;] = nav(data, [
       ...THUMBNAIL_OVERLAY_NAVIGATION,
       ...WATCH_VIDEO_ID,
@@ -194,7 +195,7 @@
 <footer>
   <span class="no-break">
     ytmusicapi_dart
-      2.3.0
+      2.4.1
   </span>
   
 </footer>

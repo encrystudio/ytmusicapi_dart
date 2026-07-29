@@ -83,47 +83,79 @@
   };
 
   if (header.containsKey(&#39;facepile&#39;)) {
-    playlistMeta[&#39;author&#39;] = {
-      &#39;name&#39;: nav(header, [
-        &#39;facepile&#39;,
-        &#39;avatarStackViewModel&#39;,
-        &#39;text&#39;,
-        &#39;content&#39;,
-      ]),
-      &#39;id&#39;: nav(header, [
-        &#39;facepile&#39;,
-        &#39;avatarStackViewModel&#39;,
-        &#39;rendererContext&#39;,
-        &#39;commandContext&#39;,
-        &#39;onTap&#39;,
-        &#39;innertubeCommand&#39;,
-        &#39;browseEndpoint&#39;,
-        &#39;browseId&#39;,
-      ], nullIfAbsent: true),
-    };
+    final avatarRenderer = nav(header, [
+      &#39;facepile&#39;,
+      &#39;avatarStackViewModel&#39;,
+      &#39;rendererContext&#39;,
+    ]);
+
+    final avatarCommand = nav(avatarRenderer, [
+      &#39;commandContext&#39;,
+      &#39;onTap&#39;,
+      &#39;innertubeCommand&#39;,
+    ], nullIfAbsent: true);
+
+    if (nav(avatarCommand, [
+          &#39;showEngagementPanelEndpoint&#39;,
+          &#39;identifier&#39;,
+          &#39;tag&#39;,
+        ], nullIfAbsent: true) ==
+        &#39;PAplaylist_collaborate&#39;) {
+      final avatars = List&lt;JsonMap&gt;.from(
+        nav(header, [&#39;facepile&#39;, &#39;avatarStackViewModel&#39;, &#39;avatars&#39;]) as List,
+      );
+
+      playlistMeta[&#39;collaborators&#39;] = {
+        &#39;text&#39;: nav(avatarRenderer, [&#39;accessibilityContext&#39;, &#39;label&#39;]),
+        &#39;avatars&#39;: [
+          for (final avatar in avatars)
+            (((avatar[&#39;avatarViewModel&#39;] as JsonMap)[&#39;image&#39;]
+                    as JsonMap)[&#39;sources&#39;]
+                as List)[0],
+        ],
+      };
+    } else {
+      playlistMeta[&#39;author&#39;] = {
+        &#39;name&#39;: nav(header, [
+          &#39;facepile&#39;,
+          &#39;avatarStackViewModel&#39;,
+          &#39;text&#39;,
+          &#39;content&#39;,
+        ]),
+        &#39;id&#39;: nav(avatarCommand, [
+          &#39;browseEndpoint&#39;,
+          &#39;browseId&#39;,
+        ], nullIfAbsent: true),
+      };
+    }
   }
 
-  if (((header[&#39;secondSubtitle&#39;] as JsonMap?)?[&#39;runs&#39;] as List?) != null) {
-    final secondSubtitleRuns =
-        (header[&#39;secondSubtitle&#39;] as JsonMap)[&#39;runs&#39;] as List;
-    final hasViews = (secondSubtitleRuns.length &gt; 3) ? 2 : 0;
-    final hasDuration = (secondSubtitleRuns.length &gt; 1) ? 2 : 0;
+  final secondSubtitleRuns =
+      nav(header, [&#39;secondSubtitle&#39;, &#39;runs&#39;], nullIfAbsent: true) as List?;
 
+  if (secondSubtitleRuns != null) {
+    final hasViews = secondSubtitleRuns.length &gt; 3 ? 2 : 0;
     playlistMeta[&#39;views&#39;] =
         hasViews == 0
             ? null
             : toInt((secondSubtitleRuns[0] as JsonMap)[&#39;text&#39;] as String);
+
+    final hasDuration = secondSubtitleRuns.length &gt; 1 ? 2 : 0;
     playlistMeta[&#39;duration&#39;] =
         hasDuration == 0
             ? null
             : (secondSubtitleRuns[hasViews + hasDuration] as JsonMap)[&#39;text&#39;];
 
     final songCountText =
-        (secondSubtitleRuns[hasViews + 0] as JsonMap)[&#39;text&#39;] as String;
+        (secondSubtitleRuns[hasViews] as JsonMap)[&#39;text&#39;] as String;
+
     final songCountSearch =
-        RegExp(r&#39;\d+&#39;).allMatches(songCountText).map((m) =&gt; m[0]).join();
+        RegExp(
+          r&#39;\d+&#39;,
+        ).allMatches(songCountText).map((match) =&gt; match.group(0)!).toList();
+
     playlistMeta[&#39;trackCount&#39;] =
-        songCountSearch.isEmpty ? null : toInt(songCountSearch);
+        songCountSearch.isNotEmpty ? toInt(songCountSearch.join()) : null;
   }
 
   return playlistMeta;
@@ -154,7 +186,7 @@
 <footer>
   <span class="no-break">
     ytmusicapi_dart
-      2.3.0
+      2.4.1
   </span>
   
 </footer>

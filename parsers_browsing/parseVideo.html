@@ -95,7 +95,7 @@
   return {
     &#39;title&#39;: nav(realResult, TITLE_TEXT),
     &#39;videoId&#39;: videoId,
-    &#39;artists&#39;: parseSongArtistsRuns(runs.sublist(0, artistsLen)),
+    &#39;artists&#39;: parseArtistsRuns(runs.sublist(0, artistsLen)),
     &#39;playlistId&#39;: nav(realResult, NAVIGATION_PLAYLIST_ID, nullIfAbsent: true),
     &#39;thumbnails&#39;: nav(realResult, THUMBNAIL_RENDERER, nullIfAbsent: true),
     &#39;views&#39;: (List&lt;JsonMap&gt;.from(runs).last[&#39;text&#39;] as String).split(&#39; &#39;)[0],
@@ -127,7 +127,7 @@
 <footer>
   <span class="no-break">
     ytmusicapi_dart
-      2.3.0
+      2.4.1
   </span>
   
 </footer>

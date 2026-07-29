@@ -76,7 +76,11 @@
   episode[&#39;podcast&#39;] = parseIdName(
     nav(data, [&#39;secondTitle&#39;, &#39;runs&#39;, 0]) as JsonMap?,
   );
-  episode[&#39;duration&#39;] = nav(data, SUBTITLE2, nullIfAbsent: true);
+  episode[&#39;duration&#39;] = nav(data, [
+    &#39;playbackProgress&#39;,
+    ...PROGRESS_RENDERER,
+    ...DURATION_TEXT,
+  ], nullIfAbsent: true);
   return episode;
 }</code></pre>
 </section>
@@ -105,7 +109,7 @@
 <footer>
   <span class="no-break">
     ytmusicapi_dart
-      2.3.0
+      2.4.1
   </span>
   
 </footer>

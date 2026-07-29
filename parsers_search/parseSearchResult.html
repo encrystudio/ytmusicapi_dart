@@ -56,8 +56,8 @@
         
 <span class="returntype"><a href="../type_alias/JsonMap.html">JsonMap</a></span>
 <span class="name ">parseSearchResult</span>(<wbr><ol class="parameter-list single-line"> <li><span class="parameter" id="parseSearchResult-param-data"><span class="type-annotation"><a href="../type_alias/JsonMap.html">JsonMap</a></span> <span class="parameter-name">data</span>, </span></li>
-<li><span class="parameter" id="parseSearchResult-param-resultType"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">resultType</span>, </span></li>
-<li><span class="parameter" id="parseSearchResult-param-category"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">category</span></span></li>
+<li><span class="parameter" id="parseSearchResult-param-resultType"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.12.2/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">resultType</span>, </span></li>
+<li><span class="parameter" id="parseSearchResult-param-category"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.12.2/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">category</span></span></li>
 </ol>)
 
         
@@ -135,17 +135,24 @@
     );
   } else if (realResultType == &#39;playlist&#39;) {
     final flexItem = nav(getFlexColumnItem(data, 1), TEXT_RUNS) as List;
+
     final hasAuthor = flexItem.length == defaultOffset + 3;
+
+    final itemInfoText =
+        (getItemText(data, 1, runIndex: hasAuthor ? 2 : 0) ?? &#39;&#39;).split(&#39; &#39;);
+
     searchResult[&#39;itemCount&#39;] =
-        (getItemText(data, 1, runIndex: defaultOffset + (hasAuthor ? 2 : 0)) ??
-                &#39;&#39;)
-            .split(&#39; &#39;)[0];
+        itemInfoText.length &gt;= 2 &amp;&amp; itemInfoText[1] == &#39;songs&#39;
+            ? itemInfoText[0]
+            : null;
+
     if (searchResult[&#39;itemCount&#39;] != null &amp;&amp;
-        (num.tryParse(searchResult[&#39;itemCount&#39;] as String) != null)) {
+        (searchResult[&#39;itemCount&#39;] as String).isNumeric()) {
       searchResult[&#39;itemCount&#39;] = toInt(searchResult[&#39;itemCount&#39;] as String);
     }
+
     searchResult[&#39;author&#39;] =
-        hasAuthor ? getItemText(data, 1, runIndex: defaultOffset) : null;
+        !hasAuthor ? null : getItemText(data, 1, runIndex: defaultOffset);
   } else if (realResultType == &#39;station&#39;) {
     searchResult[&#39;videoId&#39;] = nav(data, NAVIGATION_VIDEO_ID);
     searchResult[&#39;playlistId&#39;] = nav(data, NAVIGATION_PLAYLIST_ID);
@@ -158,16 +165,7 @@
     );
   } else if (realResultType == &#39;song&#39;) {
     searchResult[&#39;album&#39;] = null;
-    if (data.containsKey(&#39;menu&#39;)) {
-      final toggleMenu = findObjectByKey(
-        nav(data, MENU_ITEMS) as List,
-        TOGGLE_MENU,
-      );
-      if (toggleMenu != null) {
-        searchResult[&#39;inLibrary&#39;] = parseSongLibraryStatus(toggleMenu);
-        searchResult[&#39;feedbackTokens&#39;] = parseSongMenuTokens(toggleMenu);
-      }
-    }
+    searchResult.addAll(parseSongMenuData(data));
   } else if (realResultType == &#39;upload&#39;) {
     final browseId = nav(data, NAVIGATION_BROWSE_ID, nullIfAbsent: true);
     if (browseId == null) {
@@ -229,7 +227,10 @@
     searchResult[&#39;duration&#39;] = null;
     searchResult[&#39;year&#39;] = null;
     final flexItem = getFlexColumnItem(data, 1);
-    final runs = (flexItem![&#39;text&#39;] as JsonMap)[&#39;runs&#39;] as List;
+    if (flexItem == null) {
+      throw YTMusicError(&#39;Expected flex column item at index 1&#39;);
+    }
+    final runs = (flexItem[&#39;text&#39;] as JsonMap)[&#39;runs&#39;] as List;
     final flexItem2 = getFlexColumnItem(data, 2);
     if (flexItem2 != null) {
       runs.addAll([
@@ -300,7 +301,7 @@
 <footer>
   <span class="no-break">
     ytmusicapi_dart
-      2.3.0
+      2.4.1
   </span>
   
 </footer>

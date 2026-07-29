@@ -79,6 +79,7 @@
             ...RESPONSIVE_HEADER,
           ])
           as JsonMap;
+
   final album = &lt;String, dynamic&gt;{
     &#39;title&#39;: nav(header, TITLE_TEXT),
     &#39;type&#39;: nav(header, SUBTITLE),
@@ -86,18 +87,31 @@
     &#39;isExplicit&#39;: nav(header, SUBTITLE_BADGE_LABEL, nullIfAbsent: true) != null,
   };
 
-  album[&#39;description&#39;] = nav(header, [
-    &#39;description&#39;,
-    ...DESCRIPTION_SHELF,
-    ...DESCRIPTION,
-  ], nullIfAbsent: true);
+  final (description, descriptionRuns) = parseDescriptionRuns(
+    nav(header, [
+      &#39;description&#39;,
+      ...DESCRIPTION_SHELF,
+      ...DESCRIPTION_RUN_LIST,
+    ], nullIfAbsent: true),
+  );
+
+  album[&#39;description&#39;] = description;
+  album[&#39;descriptionRuns&#39;] = descriptionRuns;
 
   final albumInfo = parseSongRuns(
     ((header[&#39;subtitle&#39;] as JsonMap)[&#39;runs&#39;] as List).sublist(2),
   );
-  final baseAuthor = parseBaseHeader(header)[&#39;author&#39;];
-  albumInfo[&#39;artists&#39;] = baseAuthor != null ? [baseAuthor] : null;
+
+  final straplineRuns = nav(header, [
+    &#39;straplineTextOne&#39;,
+    &#39;runs&#39;,
+  ], nullIfAbsent: true);
+
+  albumInfo[&#39;artists&#39;] =
+      straplineRuns != null ? parseArtistsRuns(straplineRuns as List) : null;
+
   album.addAll(albumInfo);
+
   if (((header[&#39;secondSubtitle&#39;] as JsonMap)[&#39;runs&#39;] as List).length &gt; 1) {
     album[&#39;trackCount&#39;] = toInt(
       (((header[&#39;secondSubtitle&#39;] as JsonMap)[&#39;runs&#39;] as List)[0]
@@ -172,7 +186,7 @@
 <footer>
   <span class="no-break">
     ytmusicapi_dart
-      2.3.0
+      2.4.1
   </span>
   
 </footer>

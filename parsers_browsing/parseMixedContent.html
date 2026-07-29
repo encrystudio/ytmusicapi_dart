@@ -54,8 +54,8 @@
 
     <section class="multi-line-signature">
         
-<span class="returntype"><a href="https://api.dart.dev/stable/3.9.4/dart-core/List-class.html">List</a></span>
-<span class="name ">parseMixedContent</span>(<wbr><ol class="parameter-list single-line"> <li><span class="parameter" id="parseMixedContent-param-rows"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/List-class.html">List</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../type_alias/JsonMap.html">JsonMap</a></span>&gt;</span></span> <span class="parameter-name">rows</span></span></li>
+<span class="returntype"><a href="https://api.dart.dev/stable/3.12.2/dart-core/List-class.html">List</a></span>
+<span class="name ">parseMixedContent</span>(<wbr><ol class="parameter-list single-line"> <li><span class="parameter" id="parseMixedContent-param-rows"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.12.2/dart-core/List-class.html">List</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../type_alias/JsonMap.html">JsonMap</a></span>&gt;</span></span> <span class="parameter-name">rows</span></span></li>
 </ol>)
 
         
@@ -86,7 +86,10 @@
       if (!(results as JsonMap).containsKey(&#39;contents&#39;)) {
         continue;
       }
-      title = nav(results, [...CAROUSEL_TITLE, &#39;text&#39;]);
+      &#47;&#47; some carousel headers only carry a strapline (e.g. &quot;MORE FROM&quot;) instead of a title
+      title =
+          nav(results, [...CAROUSEL_TITLE, &#39;text&#39;], nullIfAbsent: true) ??
+          nav(results, [...CAROUSEL_STRAPLINE, &#39;text&#39;], nullIfAbsent: true);
       contents = [];
 
       for (final result in results[&#39;contents&#39;] as Iterable) {
@@ -106,7 +109,8 @@
             } else {
               content = parseSong(data as JsonMap);
             }
-          } else if (pageType == &#39;MUSIC_PAGE_TYPE_ALBUM&#39;) {
+          } else if (pageType == &#39;MUSIC_PAGE_TYPE_ALBUM&#39; ||
+              pageType == &#39;MUSIC_PAGE_TYPE_AUDIOBOOK&#39;) {
             content = parseAlbum(data as JsonMap);
           } else if (pageType == &#39;MUSIC_PAGE_TYPE_ARTIST&#39; ||
               pageType == &#39;MUSIC_PAGE_TYPE_USER_CHANNEL&#39;) {
@@ -165,7 +169,7 @@
 <footer>
   <span class="no-break">
     ytmusicapi_dart
-      2.3.0
+      2.4.1
   </span>
   
 </footer>

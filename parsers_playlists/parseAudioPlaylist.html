@@ -54,9 +54,9 @@
 
     <section class="multi-line-signature">
         
-<span class="returntype"><a href="https://api.dart.dev/stable/3.9.4/dart-core/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../type_alias/JsonMap.html">JsonMap</a></span>&gt;</span></span>
+<span class="returntype"><a href="https://api.dart.dev/stable/3.12.2/dart-async/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../type_alias/JsonMap.html">JsonMap</a></span>&gt;</span></span>
 <span class="name ">parseAudioPlaylist</span>(<wbr><ol class="parameter-list single-line"> <li><span class="parameter" id="parseAudioPlaylist-param-response"><span class="type-annotation"><a href="../type_alias/JsonMap.html">JsonMap</a></span> <span class="parameter-name">response</span>, </span></li>
-<li><span class="parameter" id="parseAudioPlaylist-param-limit"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/int-class.html">int</a>?</span> <span class="parameter-name">limit</span>, </span></li>
+<li><span class="parameter" id="parseAudioPlaylist-param-limit"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.12.2/dart-core/int-class.html">int</a>?</span> <span class="parameter-name">limit</span>, </span></li>
 <li><span class="parameter" id="parseAudioPlaylist-param-requestFunc"><span class="type-annotation"><a href="../type_alias/RequestFuncBodyType.html">RequestFuncBodyType</a></span> <span class="parameter-name">requestFunc</span></span></li>
 </ol>)
 
@@ -99,13 +99,8 @@
   ]);
 
   playlist[&#39;id&#39;] = nav(contentData, [
-    ...CONTENT,
-    MRLIR,
-    ...PLAY_BUTTON,
-    &#39;playNavigationEndpoint&#39;,
-    ...WATCH_PLAYLIST_ID,
+    [&#39;targetId&#39;],
   ]);
-  playlist[&#39;trackCount&#39;] = nav(contentData, [&#39;collapsedItemCount&#39;]);
 
   playlist[&#39;tracks&#39;] = [];
 
@@ -122,6 +117,8 @@
       ),
     );
   }
+
+  playlist[&#39;trackCount&#39;] = (playlist[&#39;tracks&#39;] as List).length;
 
   try {
     playlist[&#39;title&#39;] =
@@ -164,7 +161,7 @@
 <footer>
   <span class="no-break">
     ytmusicapi_dart
-      2.3.0
+      2.4.1
   </span>
   
 </footer>

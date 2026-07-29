@@ -56,8 +56,8 @@
         
 <span class="returntype"><a href="../type_alias/JsonMap.html">JsonMap</a>?</span>
 <span class="name ">parsePlaylistItem</span>(<wbr><ol class="parameter-list"> <li><span class="parameter" id="parsePlaylistItem-param-data"><span class="type-annotation"><a href="../type_alias/JsonMap.html">JsonMap</a></span> <span class="parameter-name">data</span>, {</span></li>
-<li><span class="parameter" id="parsePlaylistItem-param-menuEntries"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/List-class.html">List</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.dart.dev/stable/3.9.4/dart-core/List-class.html">List</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.dart.dev/stable/3.9.4/dart-core/String-class.html">String</a></span>&gt;</span></span>&gt;</span>?</span> <span class="parameter-name">menuEntries</span>, </span></li>
-<li><span class="parameter" id="parsePlaylistItem-param-isAlbum"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">isAlbum</span> = <span class="default-value">false</span>, </span></li>
+<li><span class="parameter" id="parsePlaylistItem-param-isAlbum"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.12.2/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">isAlbum</span> = <span class="default-value">false</span>, </span></li>
+<li><span class="parameter" id="parsePlaylistItem-param-isCollaborative"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.12.2/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">isCollaborative</span> = <span class="default-value">false</span>, </span></li>
 </ol>})
 
         
@@ -74,19 +74,20 @@
   <h2><span>Implementation</span></h2>
   <pre class="language-dart"><code class="language-dart">JsonMap? parsePlaylistItem(
   JsonMap data, {
-  List&lt;List&lt;String&gt;&gt;? menuEntries,
   bool isAlbum = false,
+  bool isCollaborative = false,
 }) {
   String? videoId;
   String? setVideoId;
-  dynamic like;
-  dynamic feedbackTokens;
-  dynamic libraryStatus;
+  String? creditsBrowseId;
+  String? like;
 
+  &#47;&#47; If the item has a menu, find its setVideoId
   if (data.containsKey(&#39;menu&#39;)) {
     for (final item in List&lt;JsonMap&gt;.from(nav(data, MENU_ITEMS) as List)) {
       if (item.containsKey(&#39;menuServiceItemRenderer&#39;)) {
         final menuService = nav(item, MENU_SERVICE) as JsonMap;
+
         if (menuService.containsKey(&#39;playlistEditEndpoint&#39;)) {
           setVideoId =
               nav(menuService, [
@@ -96,6 +97,7 @@
                     &#39;setVideoId&#39;,
                   ], nullIfAbsent: true)
                   as String?;
+
           videoId =
               nav(menuService, [
                     &#39;playlistEditEndpoint&#39;,
@@ -105,54 +107,89 @@
                   ], nullIfAbsent: true)
                   as String?;
         }
-      }
-      if (item.containsKey(TOGGLE_MENU)) {
-        feedbackTokens = parseSongMenuTokens(item);
-        libraryStatus = parseSongLibraryStatus(item);
-      }
-    }
-  }
+      } else if (item.containsKey(MNIR)) {
+        final maybeCreditsBrowseId =
+            nav(item, [MNIR, ...NAVIGATION_BROWSE_ID], nullIfAbsent: true)
+                as String?;
 
-  if (nav(data, PLAY_BUTTON, nullIfAbsent: true) != null) {
-    final playBtn = nav(data, PLAY_BUTTON) as JsonMap;
-    if (playBtn.containsKey(&#39;playNavigationEndpoint&#39;)) {
-      videoId =
-          ((playBtn[&#39;playNavigationEndpoint&#39;] as JsonMap)[&#39;watchEndpoint&#39;]
-                  as JsonMap)[&#39;videoId&#39;]
-              as String?;
-      if (data.containsKey(&#39;menu&#39;)) {
-        like = nav(data, MENU_LIKE_STATUS, nullIfAbsent: true);
+        if (maybeCreditsBrowseId != null &amp;&amp;
+            maybeCreditsBrowseId.startsWith(&#39;MPTC&#39;)) {
+          creditsBrowseId = maybeCreditsBrowseId;
+        }
       }
     }
   }
 
-  final isAvailable =
-      !(data[&#39;musicItemRendererDisplayPolicy&#39;] ==
-          &#39;MUSIC_ITEM_RENDERER_DISPLAY_POLICY_GREY_OUT&#39;);
+  final songMenuData = &lt;String, dynamic&gt;{
+    &#39;inLibrary&#39;: null,
+    &#39;pinnedToListenAgain&#39;: null,
+    ...parseSongMenuData(data),
+  };
 
-  final usePresetColumns = !isAvailable || isAlbum ? true : null;
+  final playButton = nav(data, PLAY_BUTTON, nullIfAbsent: true) as JsonMap?;
+
+  if (playButton != null &amp;&amp; playButton.containsKey(&#39;playNavigationEndpoint&#39;)) {
+    videoId =
+        nav(data, [
+              ...PLAY_BUTTON,
+              &#39;playNavigationEndpoint&#39;,
+              &#39;watchEndpoint&#39;,
+              &#39;videoId&#39;,
+            ])
+            as String;
+
+    if (data.containsKey(&#39;menu&#39;)) {
+      like = nav(data, MENU_LIKE_STATUS, nullIfAbsent: true) as String?;
+    }
+  }
+
+  var isAvailable = true;
+
+  if (data.containsKey(&#39;musicItemRendererDisplayPolicy&#39;)) {
+    isAvailable =
+        data[&#39;musicItemRendererDisplayPolicy&#39;] !=
+        &#39;MUSIC_ITEM_RENDERER_DISPLAY_POLICY_GREY_OUT&#39;;
+  }
+
+  final usePresetColumns = (!isAvailable || isAlbum) ? true : null;
 
   int? titleIndex = usePresetColumns == true ? 0 : null;
   int? artistIndex = usePresetColumns == true ? 1 : null;
-  int? albumIndex = usePresetColumns == true ? 2 : null;
+  int? durationIndex;
+  int? albumIndex = isCollaborative ? 3 : (usePresetColumns == true ? 2 : null);
+
   final userChannelIndexes = &lt;int&gt;[];
   int? unrecognizedIndex;
 
-  for (var index = 0; index &lt; (data[&#39;flexColumns&#39;] as List).length; index++) {
+  final flexColumns = data[&#39;flexColumns&#39;] as List;
+
+  for (var index = 0; index &lt; flexColumns.length; index++) {
     final flexColumnItem = getFlexColumnItem(data, index);
-    final navigationEndpoint = nav(flexColumnItem, [
-      ...TEXT_RUN,
-      &#39;navigationEndpoint&#39;,
-    ], nullIfAbsent: true);
+
+    final navigationEndpoint =
+        nav(flexColumnItem, [
+              ...TEXT_RUN,
+              &#39;navigationEndpoint&#39;,
+            ], nullIfAbsent: true)
+            as JsonMap?;
 
     if (navigationEndpoint == null) {
-      if (nav(flexColumnItem, TEXT_RUN_TEXT, nullIfAbsent: true) != null) {
-        unrecognizedIndex ??= index;
+      final run = nav(flexColumnItem, TEXT_RUN, nullIfAbsent: true) as JsonMap?;
+
+      if (run != null &amp;&amp; run.containsKey(&#39;text&#39;)) {
+        final parsed = parseSongRun(run);
+
+        if (parsed[&#39;type&#39;] == &#39;duration&#39;) {
+          durationIndex = index;
+        } else {
+          unrecognizedIndex ??= index;
+        }
       }
+
       continue;
     }
 
-    if ((navigationEndpoint as Map).containsKey(&#39;watchEndpoint&#39;)) {
+    if (navigationEndpoint.containsKey(&#39;watchEndpoint&#39;)) {
       titleIndex = index;
     } else if (navigationEndpoint.containsKey(&#39;browseEndpoint&#39;)) {
       final pageType = nav(navigationEndpoint, [
@@ -165,7 +202,8 @@
       if (pageType == &#39;MUSIC_PAGE_TYPE_ARTIST&#39; ||
           pageType == &#39;MUSIC_PAGE_TYPE_UNKNOWN&#39;) {
         artistIndex = index;
-      } else if (pageType == &#39;MUSIC_PAGE_TYPE_ALBUM&#39;) {
+      } else if (pageType == &#39;MUSIC_PAGE_TYPE_ALBUM&#39; ||
+          pageType == &#39;MUSIC_PAGE_TYPE_AUDIOBOOK&#39;) {
         albumIndex = index;
       } else if (pageType == &#39;MUSIC_PAGE_TYPE_USER_CHANNEL&#39;) {
         userChannelIndexes.add(index);
@@ -176,30 +214,41 @@
   }
 
   artistIndex ??= unrecognizedIndex;
+
   if (artistIndex == null &amp;&amp; userChannelIndexes.isNotEmpty) {
     artistIndex = userChannelIndexes.last;
   }
 
   final title = titleIndex != null ? getItemText(data, titleIndex) : null;
-  if (title == &#39;Song deleted&#39;) return null;
+
+  if (title == &#39;Song deleted&#39;) {
+    return null;
+  }
 
   final artists =
       artistIndex != null ? parseSongArtists(data, artistIndex) : null;
+
   final album = albumIndex != null ? parseSongAlbum(data, albumIndex) : null;
+
   final views = isAlbum ? getItemText(data, 2) : null;
 
-  String? duration;
+  String? duration =
+      durationIndex != null ? getItemText(data, durationIndex) : null;
+
   if (data.containsKey(&#39;fixedColumns&#39;)) {
-    final firstColumn = getFixedColumnItem(data, 0);
-    duration =
-        ((firstColumn?[&#39;text&#39;] as JsonMap?)?[&#39;simpleText&#39;] ??
-                nav(firstColumn, [&#39;text&#39;, &#39;simpleText&#39;]) ??
-                nav(firstColumn, TEXT_RUN_TEXT))
-            as String?;
+    final fixedColumn = getFixedColumnItem(data, 0);
+
+    if (nav(fixedColumn, [&#39;text&#39;, &#39;simpleText&#39;], nullIfAbsent: true) != null) {
+      duration = nav(fixedColumn, [&#39;text&#39;, &#39;simpleText&#39;]) as String;
+    } else {
+      duration = nav(fixedColumn, TEXT_RUN_TEXT) as String;
+    }
   }
 
   final thumbnails = nav(data, THUMBNAILS, nullIfAbsent: true);
+
   final isExplicit = nav(data, BADGE_LABEL, nullIfAbsent: true) != null;
+
   final videoType = nav(data, [
     ...MENU_ITEMS,
     0,
@@ -208,18 +257,30 @@
     ...NAVIGATION_VIDEO_TYPE,
   ], nullIfAbsent: true);
 
+  final votingStatus =
+      nav(data, ENGAGEMENT_BAR, nullIfAbsent: true) as JsonMap?;
+
+  final communityVoteStatus =
+      votingStatus == null
+          ? null
+          : {
+            &#39;netVoteValue&#39;: votingStatus[&#39;votes&#39;],
+            &#39;status&#39;: VoteStatus.fromValue(votingStatus[&#39;status&#39;] as String),
+          };
+
   final song = &lt;String, dynamic&gt;{
     &#39;videoId&#39;: videoId,
     &#39;title&#39;: title,
     &#39;artists&#39;: artists,
     &#39;album&#39;: album,
     &#39;likeStatus&#39;: like,
-    &#39;inLibrary&#39;: libraryStatus,
+    ...songMenuData,
     &#39;thumbnails&#39;: thumbnails,
     &#39;isAvailable&#39;: isAvailable,
     &#39;isExplicit&#39;: isExplicit,
     &#39;videoType&#39;: videoType,
     &#39;views&#39;: views,
+    &#39;communityVoteStatus&#39;: communityVoteStatus,
   };
 
   if (isAlbum) {
@@ -228,21 +289,18 @@
             ? int.parse(nav(data, [&#39;index&#39;, &#39;runs&#39;, 0, &#39;text&#39;]) as String)
             : null;
   }
-  if (duration != null) {
+
+  if (duration != null &amp;&amp; duration.isNotEmpty) {
     song[&#39;duration&#39;] = duration;
     song[&#39;duration_seconds&#39;] = parseDuration(duration);
   }
-  if (setVideoId != null) song[&#39;setVideoId&#39;] = setVideoId;
-  if (feedbackTokens != null) song[&#39;feedbackTokens&#39;] = feedbackTokens;
 
-  if (menuEntries != null) {
-    final menuItems = nav(data, MENU_ITEMS);
-    for (final menuEntry in menuEntries) {
-      final items = findObjectsByKey(menuItems as List, menuEntry[0]);
-      song[menuEntry.last] = items
-          .map((itm) =&gt; nav(itm, menuEntry, nullIfAbsent: true))
-          .firstWhere((x) =&gt; x != null, orElse: () =&gt; null);
-    }
+  if (setVideoId != null) {
+    song[&#39;setVideoId&#39;] = setVideoId;
+  }
+
+  if (creditsBrowseId != null) {
+    song[&#39;creditsBrowseId&#39;] = creditsBrowseId;
   }
 
   return song;
@@ -273,7 +331,7 @@
 <footer>
   <span class="no-break">
     ytmusicapi_dart
-      2.3.0
+      2.4.1
   </span>
   
 </footer>

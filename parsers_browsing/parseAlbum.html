@@ -71,54 +71,25 @@
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
   <pre class="language-dart"><code class="language-dart">JsonMap parseAlbum(JsonMap result) {
-  final JsonMap realResult;
-  if (result.containsKey(MTRIR)) {
-    realResult = nav(result, [MTRIR]) as JsonMap;
-  } else {
-    realResult = result;
-  }
-  final artists =
-      List&lt;JsonMap&gt;.from(
-            (nav(realResult, [&#39;subtitle&#39;, &#39;runs&#39;], nullIfAbsent: true) ?? [])
-                as List,
-          ) &#47;&#47; TODO should nullIfAbsent be true?
-          .where((x) =&gt; x.containsKey(&#39;navigationEndpoint&#39;))
-          .map((x) =&gt; parseIdName(x as JsonMap?))
-          .toList();
+  final subtitleRuns = List&lt;JsonMap&gt;.from(
+    (nav(result, [&#39;subtitle&#39;, &#39;runs&#39;], nullIfAbsent: true) ?? []) as List,
+  );
 
   final album = &lt;String, dynamic&gt;{
-    &#39;title&#39;: nav(realResult, TITLE_TEXT),
-    &#39;type&#39;: &#39;Album&#39;,
-    &#39;artists&#39;: artists,
-    &#39;browseId&#39;: nav(realResult, [...TITLE, ...NAVIGATION_BROWSE_ID]),
+    &#39;title&#39;: nav(result, TITLE_TEXT),
+    &#39;artists&#39;: [
+      for (final x in subtitleRuns)
+        if (x.containsKey(&#39;navigationEndpoint&#39;)) parseIdName(x),
+    ],
+    &#39;browseId&#39;: nav(result, [...TITLE, ...NAVIGATION_BROWSE_ID]),
     &#39;audioPlaylistId&#39;: parseAlbumPlaylistIdIfExists(
-      nav(realResult, THUMBNAIL_OVERLAY_NAVIGATION, nullIfAbsent: true)
-          as JsonMap?,
+      nav(result, THUMBNAIL_OVERLAY_NAVIGATION, nullIfAbsent: true) as JsonMap,
     ),
-    &#39;thumbnails&#39;: nav(realResult, THUMBNAIL_RENDERER),
-    &#39;isExplicit&#39;:
-        nav(realResult, SUBTITLE_BADGE_LABEL, nullIfAbsent: true) != null,
+    &#39;thumbnails&#39;: nav(result, THUMBNAIL_RENDERER),
+    &#39;isExplicit&#39;: nav(result, SUBTITLE_BADGE_LABEL, nullIfAbsent: true) != null,
   };
 
-  const validTypes = {&#39;Album&#39;, &#39;Single&#39;, &#39;EP&#39;};
-  final yearRegex = RegExp(r&#39;^\d+$&#39;);
-
-  final subtitle = nav(realResult, SUBTITLE, nullIfAbsent: true) as String?;
-  final subtitle2 = nav(realResult, SUBTITLE2, nullIfAbsent: true) as String?;
-
-  final type = [
-    subtitle,
-    subtitle2,
-  ].firstWhere((s) =&gt; s != null &amp;&amp; validTypes.contains(s), orElse: () =&gt; null);
-  if (type != null) album[&#39;type&#39;] = type;
-
-  final year = [
-    subtitle,
-    subtitle2,
-  ].firstWhere((s) =&gt; s != null &amp;&amp; yearRegex.hasMatch(s), orElse: () =&gt; null);
-  if (year != null) album[&#39;year&#39;] = year;
-
-  return album;
+  return parseAlbumSingleSubtitle(result, album);
 }</code></pre>
 </section>
 
@@ -146,7 +117,7 @@
 <footer>
   <span class="no-break">
     ytmusicapi_dart
-      2.3.0
+      2.4.1
   </span>
   
 </footer>

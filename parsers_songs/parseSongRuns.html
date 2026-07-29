@@ -55,8 +55,8 @@
     <section class="multi-line-signature">
         
 <span class="returntype"><a href="../type_alias/JsonMap.html">JsonMap</a></span>
-<span class="name ">parseSongRuns</span>(<wbr><ol class="parameter-list"> <li><span class="parameter" id="parseSongRuns-param-runs"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/List-class.html">List</a></span> <span class="parameter-name">runs</span>, {</span></li>
-<li><span class="parameter" id="parseSongRuns-param-skipTypeSpec"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">skipTypeSpec</span> = <span class="default-value">false</span>, </span></li>
+<span class="name ">parseSongRuns</span>(<wbr><ol class="parameter-list"> <li><span class="parameter" id="parseSongRuns-param-runs"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.12.2/dart-core/List-class.html">List</a></span> <span class="parameter-name">runs</span>, {</span></li>
+<li><span class="parameter" id="parseSongRuns-param-skipTypeSpec"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.12.2/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">skipTypeSpec</span> = <span class="default-value">false</span>, </span></li>
 </ol>})
 
         
@@ -77,9 +77,15 @@
   final List realRuns;
   if (skipTypeSpec &amp;&amp;
       runs.length &gt; 2 &amp;&amp;
+      !(runs.first as JsonMap).containsKey(&#39;navigationEndpoint&#39;) &amp;&amp;
       parseSongRun(runs[0] as JsonMap)[&#39;type&#39;] == &#39;artist&#39; &amp;&amp;
       runs[1] == DOT_SEPARATOR_RUN &amp;&amp;
-      parseSongRun(runs[2] as JsonMap)[&#39;type&#39;] == &#39;artist&#39;) {
+      [
+        &#39;artist&#39;,
+        &#39;duration&#39;,
+        &#39;views&#39;,
+        &#39;year&#39;,
+      ].contains(parseSongRun(runs[2] as JsonMap)[&#39;type&#39;])) {
     realRuns = runs.sublist(2);
   } else {
     realRuns = runs;
@@ -133,7 +139,7 @@
 <footer>
   <span class="no-break">
     ytmusicapi_dart
-      2.3.0
+      2.4.1
   </span>
   
 </footer>

@@ -71,7 +71,7 @@
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
   <pre class="language-dart"><code class="language-dart">JsonMap parseChartSong(JsonMap data) {
-  final parsed = parseSongFlat(data);
+  final parsed = parseSongFlat(data, withPlaylistId: true);
   parsed.addAll(parseRanking(data));
   return parsed;
 }</code></pre>
@@ -101,7 +101,7 @@
 <footer>
   <span class="no-break">
     ytmusicapi_dart
-      2.3.0
+      2.4.1
   </span>
   
 </footer>

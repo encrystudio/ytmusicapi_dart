@@ -54,8 +54,8 @@
 
     <section class="multi-line-signature">
         
-<span class="returntype"><a href="https://api.dart.dev/stable/3.9.4/dart-core/String-class.html">String</a>?</span>
-<span class="name ">getContinuationToken</span>(<wbr><ol class="parameter-list single-line"> <li><span class="parameter" id="getContinuationToken-param-results"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/List-class.html">List</a></span> <span class="parameter-name">results</span></span></li>
+<span class="returntype"><a href="https://api.dart.dev/stable/3.12.2/dart-core/String-class.html">String</a>?</span>
+<span class="name ">getContinuationToken</span>(<wbr><ol class="parameter-list single-line"> <li><span class="parameter" id="getContinuationToken-param-results"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.12.2/dart-core/List-class.html">List</a></span> <span class="parameter-name">results</span></span></li>
 </ol>)
 
         
@@ -71,7 +71,26 @@
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
   <pre class="language-dart"><code class="language-dart">String? getContinuationToken(List results) {
-  return nav(results.last, CONTINUATION_TOKEN, nullIfAbsent: true) as String?;
+  final lastResult = results.last;
+  final token =
+      nav(lastResult, CONTINUATION_TOKEN, nullIfAbsent: true) as String?;
+
+  if (token != null) {
+    return token;
+  }
+  &#47;&#47; continuation tokens may be nested in a commandExecutorCommand list
+  &#47;&#47;  (alongside playlistVotingRefreshPopupCommand, for example)
+  final commands =
+      nav(lastResult, COMMAND_EXECUTOR_COMMANDS, nullIfAbsent: true) as List? ??
+      [];
+
+  for (final command in commands) {
+    if (nav(command, [&#39;continuationCommand&#39;, &#39;request&#39;], nullIfAbsent: true) ==
+        &#39;CONTINUATION_REQUEST_TYPE_BROWSE&#39;) {}
+    return nav(command, [&#39;continuationCommand&#39;, &#39;token&#39;]) as String;
+  }
+
+  return null;
 }</code></pre>
 </section>
 
@@ -99,7 +118,7 @@
 <footer>
   <span class="no-break">
     ytmusicapi_dart
-      2.3.0
+      2.4.1
   </span>
   
 </footer>

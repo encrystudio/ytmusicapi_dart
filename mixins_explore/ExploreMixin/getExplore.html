@@ -54,7 +54,7 @@
 
     <section class="multi-line-signature">
       
-<span class="returntype"><a href="https://api.dart.dev/stable/3.9.4/dart-core/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../../type_alias/JsonMap.html">JsonMap</a></span>&gt;</span></span>
+<span class="returntype"><a href="https://api.dart.dev/stable/3.12.2/dart-async/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../../type_alias/JsonMap.html">JsonMap</a></span>&gt;</span></span>
 <span class="name ">getExplore</span>(<wbr>)
 
       
@@ -89,6 +89,8 @@
       {
         "title": "Outside (Better Days)",
         "videoId": "oT79YlRtXDg",
+        "playlistId": "VLPL4fGSI1pDJn6O1LS0XSdF3RyO0Rq_LDeI",
+        "videoType": "MUSIC_VIDEO_TYPE_ATV",
         "artists": [
           {
             "name": "MO3",
@@ -127,7 +129,7 @@
       "date": "Mar 5, 2024",
       "thumbnails": [...],
       "podcast": {
-        "id": "UCGwuxdEeCf0TIA2RbPOj-8g",
+        "id": "PLxq_lXOUlvQDUNyoBYLkN8aVt5yAwEtG9",
         "name": "Stanford Graduate School of Business"
       }
     }
@@ -138,6 +140,7 @@
       {
         "title": "Permission to Dance",
         "videoId": "CuklIb9d3fI",
+        "videoType": "MUSIC_VIDEO_TYPE_OMV",
         "playlistId": "OLAK5uy_kNWGJvgWVqlt5LsFDL9Sdluly4M8TvGkM",
         "artists": [
           {
@@ -148,6 +151,19 @@
         "thumbnails": [...],
         "isExplicit": false,
         "views": "108M"
+      },
+      {
+        "title": "Stanford GSB Podcasts",
+        "podcast": {
+          "name": "Stanford GSB Podcasts",
+          "id": "PLxq_lXOUlvQDUNyoBYLkN8aVt5yAwEtG9"
+        },
+        "browseId": "MPEDxAEGaW2my7E",
+        "videoId": "xAEGaW2my7E",
+        "videoType": "MUSIC_VIDEO_TYPE_PODCAST_EPISODE",
+        "playlistId": "OLAK5uy_kNWGJvgWVqlt5LsFDL9Sdluly4M8TvGkM",
+        "date": "Mar 5, 2024",
+        "thumbnails": [...]
       }
     ]
   },
@@ -237,7 +253,7 @@
             &#39;playlist&#39;: browseId,
             &#39;items&#39;: parseContentList(
               List&lt;JsonMap&gt;.from(contents as List),
-              parseSongFlat,
+              parseTrendingItem,
               key: MRLIR,
             ),
           };
@@ -274,7 +290,7 @@
 <footer>
   <span class="no-break">
     ytmusicapi_dart
-      2.3.0
+      2.4.1
   </span>
   
 </footer>

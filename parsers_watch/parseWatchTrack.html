@@ -71,19 +71,12 @@
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
   <pre class="language-dart"><code class="language-dart">JsonMap parseWatchTrack(JsonMap data) {
-  JsonMap? feedbackTokens;
   String? likeStatus;
-  bool? libraryStatus;
 
   for (final item in List&lt;JsonMap&gt;.from(nav(data, MENU_ITEMS) as List)) {
     if (item.containsKey(TOGGLE_MENU)) {
-      libraryStatus = parseSongLibraryStatus(item);
       final service =
-          (item[TOGGLE_MENU] as JsonMap?)![&#39;defaultServiceEndpoint&#39;] as JsonMap;
-
-      if (service.containsKey(&#39;feedbackEndpoint&#39;)) {
-        feedbackTokens = parseSongMenuTokens(item);
-      }
+          (item[TOGGLE_MENU] as JsonMap)[&#39;defaultServiceEndpoint&#39;] as JsonMap;
 
       if (service.containsKey(&#39;likeEndpoint&#39;)) {
         likeStatus = parseLikeStatus(service);
@@ -96,16 +89,23 @@
     &#39;title&#39;: nav(data, TITLE_TEXT),
     &#39;length&#39;: nav(data, [&#39;lengthText&#39;, &#39;runs&#39;, 0, &#39;text&#39;], nullIfAbsent: true),
     &#39;thumbnail&#39;: nav(data, THUMBNAIL),
-    &#39;feedbackTokens&#39;: feedbackTokens,
     &#39;likeStatus&#39;: likeStatus,
-    &#39;inLibrary&#39;: libraryStatus,
     &#39;videoType&#39;: nav(data, [
       &#39;navigationEndpoint&#39;,
       ...NAVIGATION_VIDEO_TYPE,
     ], nullIfAbsent: true),
   };
 
+  track.addAll({
+    &#39;inLibrary&#39;: null,
+    &#39;feedbackTokens&#39;: null,
+    &#39;pinnedToListenAgain&#39;: null,
+    &#39;listenAgainFeedbackTokens&#39;: null,
+    ...parseSongMenuData(data),
+  });
+
   final longBylineText = nav(data, [&#39;longBylineText&#39;]) as JsonMap?;
+
   if (longBylineText != null) {
     final songInfo = parseSongRuns(longBylineText[&#39;runs&#39;] as List);
     track.addAll(songInfo);
@@ -139,7 +139,7 @@
 <footer>
   <span class="no-break">
     ytmusicapi_dart
-      2.3.0
+      2.4.1
   </span>
   
 </footer>

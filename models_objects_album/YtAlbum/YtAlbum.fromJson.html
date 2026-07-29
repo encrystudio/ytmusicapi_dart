@@ -72,7 +72,9 @@
     albumType:
         type ??
         YtAlbumType.fromValue(
-          jsonData[&#39;type&#39;] as String? ?? jsonData[&#39;resultType&#39;] as String,
+          jsonData[&#39;type&#39;] as String? ??
+              jsonData[&#39;resultType&#39;] as String? ??
+              &#39;Album&#39;,
         ),
     id: jsonData[&#39;browseId&#39;] as String,
     title: jsonData[&#39;title&#39;] as String,
@@ -87,7 +89,8 @@
     isExplicit: jsonData[&#39;isExplicit&#39;] as bool?,
     playlistId:
         jsonData[&#39;playlistId&#39;] as String? ??
-        jsonData[&#39;audioPlaylistId&#39;] as String,
+        jsonData[&#39;audioPlaylistId&#39;] as String? ??
+        &#39;&#39;,
     year:
         ((jsonData[&#39;year&#39;] is String)
             ? (int.tryParse(jsonData[&#39;year&#39;] as String))
@@ -121,7 +124,7 @@
 <footer>
   <span class="no-break">
     ytmusicapi_dart
-      2.3.0
+      2.4.1
   </span>
   
 </footer>

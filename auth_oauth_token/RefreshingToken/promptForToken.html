@@ -54,10 +54,10 @@
 
     <section class="multi-line-signature">
       
-<span class="returntype"><a href="https://api.dart.dev/stable/3.9.4/dart-core/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../../auth_oauth_token/RefreshingToken-class.html">RefreshingToken</a></span>&gt;</span></span>
+<span class="returntype"><a href="https://api.dart.dev/stable/3.12.2/dart-async/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../../auth_oauth_token/RefreshingToken-class.html">RefreshingToken</a></span>&gt;</span></span>
 <span class="name ">promptForToken</span>(<wbr><ol class="parameter-list"> <li><span class="parameter" id="promptForToken-param-credentials"><span class="type-annotation"><a href="../../auth_oauth_credentials/OAuthCredentials-class.html">OAuthCredentials</a></span> <span class="parameter-name">credentials</span>, {</span></li>
-<li><span class="parameter" id="promptForToken-param-openBrowser"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">openBrowser</span> = <span class="default-value">false</span>, </span></li>
-<li><span class="parameter" id="promptForToken-param-toFile"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">toFile</span>, </span></li>
+<li><span class="parameter" id="promptForToken-param-openBrowser"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.12.2/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">openBrowser</span> = <span class="default-value">false</span>, </span></li>
+<li><span class="parameter" id="promptForToken-param-toFile"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.12.2/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">toFile</span>, </span></li>
 </ol>})
 
       
@@ -95,6 +95,9 @@
   final rawToken = await credentials.tokenFromCode(
     code.toJson()[&#39;device_code&#39;] as String,
   );
+  final refreshTokenExpiresIn =
+      rawToken.refreshTokenExpiresIn ??
+      rawToken.toJson()[&#39;refresh_token_expires_in&#39;] as int;
   final refToken = RefreshingToken(
     credentials: credentials,
     scope: DefaultScope(rawToken.scope),
@@ -102,7 +105,7 @@
     accessToken: rawToken.accessToken!,
     refreshToken: rawToken.refreshToken!,
     expiresAt: rawToken.expiresAt!,
-    expiresIn: rawToken.expiresIn!,
+    expiresIn: refreshTokenExpiresIn,
   );
   refToken.update(refToken.asMap());
   if (toFile != null) refToken.localCache = toFile;
@@ -135,7 +138,7 @@
 <footer>
   <span class="no-break">
     ytmusicapi_dart
-      2.3.0
+      2.4.1
   </span>
   
 </footer>

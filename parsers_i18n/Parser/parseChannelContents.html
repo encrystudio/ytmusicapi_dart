@@ -55,7 +55,7 @@
     <section class="multi-line-signature">
       
 <span class="returntype"><a href="../../type_alias/JsonMap.html">JsonMap</a></span>
-<span class="name ">parseChannelContents</span>(<wbr><ol class="parameter-list single-line"> <li><span class="parameter" id="parseChannelContents-param-results"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/List-class.html">List</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../../type_alias/JsonMap.html">JsonMap</a></span>&gt;</span></span> <span class="parameter-name">results</span></span></li>
+<span class="name ">parseChannelContents</span>(<wbr><ol class="parameter-list single-line"> <li><span class="parameter" id="parseChannelContents-param-results"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.12.2/dart-core/List-class.html">List</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../../type_alias/JsonMap.html">JsonMap</a></span>&gt;</span></span> <span class="parameter-name">results</span></span></li>
 </ol>)
 
       
@@ -72,14 +72,14 @@
   <h2><span>Implementation</span></h2>
   <pre class="language-dart"><code class="language-dart">JsonMap parseChannelContents(List&lt;JsonMap&gt; results) {
   final categories = [
-    [&#39;albums&#39;, t(&#39;albums&#39;), parseAlbum, &#39;MTRIR&#39;],
-    [&#39;singles&#39;, t(&#39;singles &amp; eps&#39;), parseSingle, &#39;MTRIR&#39;],
-    [&#39;shows&#39;, t(&#39;shows&#39;), parseAlbum, &#39;MTRIR&#39;],
-    [&#39;videos&#39;, t(&#39;videos&#39;), parseVideo, &#39;MTRIR&#39;],
-    [&#39;playlists&#39;, t(&#39;playlists&#39;), parsePlaylist, &#39;MTRIR&#39;],
-    [&#39;related&#39;, t(&#39;related&#39;), parseRelatedArtist, &#39;MTRIR&#39;],
-    [&#39;episodes&#39;, t(&#39;episodes&#39;), parseEpisode, &#39;MMRIR&#39;],
-    [&#39;podcasts&#39;, t(&#39;podcasts&#39;), parsePodcast, &#39;MTRIR&#39;],
+    [&#39;albums&#39;, t(&#39;albums&#39;), parseAlbum, MTRIR],
+    [&#39;singles&#39;, t(&#39;singles &amp; eps&#39;), parseSingle, MTRIR],
+    [&#39;shows&#39;, t(&#39;shows&#39;), parseAlbum, MTRIR],
+    [&#39;videos&#39;, t(&#39;videos&#39;), parseVideo, MTRIR],
+    [&#39;playlists&#39;, t(&#39;playlists&#39;), parsePlaylist, MTRIR],
+    [&#39;related&#39;, t(&#39;related&#39;), parseRelatedArtist, MTRIR],
+    [&#39;episodes&#39;, t(&#39;episodes&#39;), parseEpisode, MMRIR],
+    [&#39;podcasts&#39;, t(&#39;podcasts&#39;), parsePodcast, MTRIR],
   ];
 
   final artist = &lt;String, dynamic&gt;{};
@@ -119,7 +119,7 @@
       }
 
       (artist[categoryKey] as JsonMap)[&#39;results&#39;] = parseContentList(
-        data[0][&#39;contents&#39;],
+        List&lt;JsonMap&gt;.from(data[0][&#39;contents&#39;] as List),
         categoryParser,
         key: categoryNavKey,
       );
@@ -155,7 +155,7 @@
 <footer>
   <span class="no-break">
     ytmusicapi_dart
-      2.3.0
+      2.4.1
   </span>
   
 </footer>

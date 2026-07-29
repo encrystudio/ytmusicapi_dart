@@ -55,8 +55,9 @@
     <section class="multi-line-signature">
         
 <span class="returntype"><a href="../type_alias/JsonMap.html">JsonMap</a></span>
-<span class="name ">parseSongFlat</span>(<wbr><ol class="parameter-list single-line"> <li><span class="parameter" id="parseSongFlat-param-data"><span class="type-annotation"><a href="../type_alias/JsonMap.html">JsonMap</a></span> <span class="parameter-name">data</span></span></li>
-</ol>)
+<span class="name ">parseSongFlat</span>(<wbr><ol class="parameter-list"> <li><span class="parameter" id="parseSongFlat-param-data"><span class="type-annotation"><a href="../type_alias/JsonMap.html">JsonMap</a></span> <span class="parameter-name">data</span>, {</span></li>
+<li><span class="parameter" id="parseSongFlat-param-withPlaylistId"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.12.2/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">withPlaylistId</span> = <span class="default-value">false</span>, </span></li>
+</ol>})
 
         
 
@@ -70,11 +71,11 @@
     
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
-  <pre class="language-dart"><code class="language-dart">JsonMap parseSongFlat(JsonMap data) {
-  final columns = List.generate(
-    (data[&#39;flexColumns&#39;] as List).length,
-    (i) =&gt; getFlexColumnItem(data, i),
-  );
+  <pre class="language-dart"><code class="language-dart">JsonMap parseSongFlat(JsonMap data, {bool withPlaylistId = false}) {
+  final columns = [
+    for (var i = 0; i &lt; (data[&#39;flexColumns&#39;] as List).length; i++)
+      getFlexColumnItem(data, i),
+  ];
 
   final song = &lt;String, dynamic&gt;{
     &#39;title&#39;: nav(columns[0], TEXT_RUN_TEXT),
@@ -82,12 +83,25 @@
       ...TEXT_RUN,
       ...NAVIGATION_VIDEO_ID,
     ], nullIfAbsent: true),
+    &#39;videoType&#39;: nav(data, [
+      ...PLAY_BUTTON,
+      &#39;playNavigationEndpoint&#39;,
+      ...NAVIGATION_VIDEO_TYPE,
+    ], nullIfAbsent: true),
     &#39;thumbnails&#39;: nav(data, THUMBNAILS),
     &#39;isExplicit&#39;: nav(data, BADGE_LABEL, nullIfAbsent: true) != null,
   };
 
-  final runs = nav(columns[1], TEXT_RUNS);
-  song.addAll(parseSongRuns(runs as List, skipTypeSpec: true));
+  if (withPlaylistId) {
+    song[&#39;playlistId&#39;] = nav(data, [
+      ...PLAY_BUTTON,
+      &#39;playNavigationEndpoint&#39;,
+      ...WATCH_PLAYLIST_ID,
+    ]);
+  }
+
+  final runs = nav(columns[1], TEXT_RUNS) as List;
+  song.addAll(parseSongRuns(runs, skipTypeSpec: true));
 
   if (columns.length &gt; 2 &amp;&amp;
       columns[2] != null &amp;&amp;
@@ -128,7 +142,7 @@
 <footer>
   <span class="no-break">
     ytmusicapi_dart
-      2.3.0
+      2.4.1
   </span>
   
 </footer>

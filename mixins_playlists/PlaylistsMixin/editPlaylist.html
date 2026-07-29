@@ -54,14 +54,17 @@
 
     <section class="multi-line-signature">
       
-<span class="returntype"><a href="https://api.dart.dev/stable/3.9.4/dart-core/Future-class.html">Future</a></span>
-<span class="name ">editPlaylist</span>(<wbr><ol class="parameter-list"> <li><span class="parameter" id="editPlaylist-param-playlistId"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/String-class.html">String</a></span> <span class="parameter-name">playlistId</span>, {</span></li>
-<li><span class="parameter" id="editPlaylist-param-title"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">title</span>, </span></li>
-<li><span class="parameter" id="editPlaylist-param-description"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">description</span>, </span></li>
-<li><span class="parameter" id="editPlaylist-param-privacyStatus"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">privacyStatus</span>, </span></li>
+<span class="returntype"><a href="https://api.dart.dev/stable/3.12.2/dart-async/Future-class.html">Future</a></span>
+<span class="name ">editPlaylist</span>(<wbr><ol class="parameter-list"> <li><span class="parameter" id="editPlaylist-param-playlistId"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.12.2/dart-core/String-class.html">String</a></span> <span class="parameter-name">playlistId</span>, {</span></li>
+<li><span class="parameter" id="editPlaylist-param-title"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.12.2/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">title</span>, </span></li>
+<li><span class="parameter" id="editPlaylist-param-description"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.12.2/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">description</span>, </span></li>
+<li><span class="parameter" id="editPlaylist-param-privacyStatus"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.12.2/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">privacyStatus</span>, </span></li>
+<li><span class="parameter" id="editPlaylist-param-collaboration"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.12.2/dart-core/bool-class.html">bool</a>?</span> <span class="parameter-name">collaboration</span>, </span></li>
 <li><span class="parameter" id="editPlaylist-param-moveItem"><span class="type-annotation">dynamic</span> <span class="parameter-name">moveItem</span>, </span></li>
-<li><span class="parameter" id="editPlaylist-param-addPlaylistId"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">addPlaylistId</span>, </span></li>
-<li><span class="parameter" id="editPlaylist-param-addToTop"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/bool-class.html">bool</a>?</span> <span class="parameter-name">addToTop</span>, </span></li>
+<li><span class="parameter" id="editPlaylist-param-addPlaylistId"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.12.2/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">addPlaylistId</span>, </span></li>
+<li><span class="parameter" id="editPlaylist-param-sortOrder"><span class="type-annotation"><a href="../../models_content_enums/PlaylistSortOrder.html">PlaylistSortOrder</a>?</span> <span class="parameter-name">sortOrder</span>, </span></li>
+<li><span class="parameter" id="editPlaylist-param-addToTop"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.12.2/dart-core/bool-class.html">bool</a>?</span> <span class="parameter-name">addToTop</span>, </span></li>
+<li><span class="parameter" id="editPlaylist-param-voteOption"><span class="type-annotation"><a href="../../models_content_enums/PlaylistVoteEditOptions.html">PlaylistVoteEditOptions</a>?</span> <span class="parameter-name">voteOption</span>, </span></li>
 </ol>})
 
       
@@ -76,13 +79,26 @@
 <li><code>title</code> Optional. New title for the playlist.</li>
 <li><code>description</code> Optional. New description for the playlist.</li>
 <li><code>privacyStatus</code> Optional. New privacy status for the playlist.</li>
+<li><code>collaboration</code> Optional. Enable or disable collaboration.
+                 If False and collaboration is not enabled, a Forbidden server error is raised.
+                 If True, a new <code>joinCollaborationToken</code> is returned.
+                 Collaborators cannot interact with private playlists.</li>
 <li><code>moveItem</code> Optional. Move one item before another. Items are specified by setVideoId, which is the
            unique id of this playlist item. See <a href="../../mixins_playlists/PlaylistsMixin/getPlaylist.html">getPlaylist</a>.</li>
 <li><code>addPlaylistId</code> Optional. Id of another playlist to add to this playlist.</li>
+<li><code>sortOrder</code> Optional. Change the order tracks are returned in. The default is <code>MANUAL</code>.</li>
 <li><code>addToTop</code> Optional. Change the state of this playlist to add items to the top of the playlist (if <code>true</code>)
            or the bottom of the playlist (if <code>false</code> - this is also the default of a new playlist).</li>
+<li><code>voteOption</code>: Optional. Change who can participate in community voting in this playlist.
+              Note that a bad request will be thrown if voteOption is PlaylistVoteEditOptions.COLLABORATORS_ONLY
+              but the playlist is not enabled for collaboration prior to the edit.</li>
 </ul>
-<p>Returns status String or full response.</p>
+<p>Returns Status String, <code>collaboration</code> dict described below, or full response</p>
+<p>Dictionary returned when <code>collaboration</code> is true and the request is successful</p>
+<p>{
+"status": "STATUS_SUCCEEDED",
+"joinCollaborationToken": "kM9wXdRj2p8v_qL3sHBkTz"
+}</p>
 </section>
 
 
@@ -94,9 +110,12 @@
   String? title,
   String? description,
   String? privacyStatus,
+  bool? collaboration,
   dynamic moveItem,
   String? addPlaylistId,
+  PlaylistSortOrder? sortOrder,
   bool? addToTop,
+  PlaylistVoteEditOptions? voteOption,
 }) async {
   checkAuth();
   final body = &lt;String, dynamic&gt;{
@@ -123,6 +142,15 @@
     });
   }
 
+  if (collaboration != null) {
+    actions.add({&#39;action&#39;: &#39;ACTION_CREATE_COLLABORATION_INVITE_LINK&#39;});
+  } else if (!collaboration!) {
+    actions.add({
+      &#39;action&#39;: &#39;ACTION_SET_CLOSED_TO_CONTRIBUTIONS&#39;,
+      &#39;closedToContributions&#39;: true,
+    });
+  }
+
   if (moveItem != null) {
     final action = {
       &#39;action&#39;: &#39;ACTION_MOVE_VIDEO_BEFORE&#39;,
@@ -141,17 +169,47 @@
       &#39;addedFullListId&#39;: addPlaylistId,
     });
   }
+
+  if (sortOrder != null) {
+    actions.add({
+      &#39;action&#39;: &#39;ACTION_SET_PLAYLIST_VIDEO_ORDER&#39;,
+      &#39;playlistVideoOrder&#39;: sortOrder.value,
+    });
+  }
+
   if (addToTop != null) {
     actions.add({
       &#39;action&#39;: &#39;ACTION_SET_ADD_TO_TOP&#39;,
-      &#39;addToTop&#39;: addToTop.toString(),
+      &#39;addToTop&#39;: addToTop.toString().toLowerCase(),
+    });
+  }
+
+  if (voteOption != null) {
+    actions.add({
+      &#39;action&#39;: &#39;ACTION_SET_ALLOW_ITEM_VOTE&#39;,
+      &#39;itemVotePermission&#39;: voteOption.getArgumentForRequest(),
     });
   }
 
   body[&#39;actions&#39;] = actions;
   const endpoint = &#39;browse&#47;edit_playlist&#39;;
   final response = await sendRequest(endpoint, body);
-  return response.containsKey(&#39;status&#39;) ? response[&#39;status&#39;] : response;
+
+  if (collaboration &amp;&amp; response[&#39;status&#39;] == ResponseStatus.SUCCEEDED) {
+    final inviteLink = nav(response, [&#39;collaborationInviteLink&#39;]);
+
+    return {
+      &#39;status&#39;: response[&#39;status&#39;],
+      &#39;joinCollaborationToken&#39;: nav(
+        Uri.splitQueryString(Uri.parse(inviteLink as String).query),
+        [&#39;jct&#39;, 0],
+      ),
+    };
+  }
+
+  return response.containsKey(&#39;status&#39;)
+      ? response[&#39;status&#39;] as String
+      : response;
 }</code></pre>
 </section>
 
@@ -180,7 +238,7 @@
 <footer>
   <span class="no-break">
     ytmusicapi_dart
-      2.3.0
+      2.4.1
   </span>
   
 </footer>

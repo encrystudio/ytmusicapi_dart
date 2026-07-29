@@ -95,9 +95,11 @@
             ? Duration(seconds: jsonData[&#39;duration_seconds&#39;] as int)
             : null,
     artists:
-        List&lt;JsonMap&gt;.from(jsonData[&#39;artists&#39;] as List)
-            .map((artist) =&gt; YtBaseObject.fromJson(artist, &#39;id&#39;, &#39;name&#39;))
-            .toList(),
+        jsonData[&#39;artists&#39;] is List
+            ? List&lt;JsonMap&gt;.from(jsonData[&#39;artists&#39;] as List)
+                .map((artist) =&gt; YtBaseObject.fromJson(artist, &#39;id&#39;, &#39;name&#39;))
+                .toList()
+            : [],
     views: jsonData[&#39;views&#39;] as String?,
     isExplicit: jsonData[&#39;isExplicit&#39;] as bool,
     year:
@@ -139,7 +141,7 @@
 <footer>
   <span class="no-break">
     ytmusicapi_dart
-      2.3.0
+      2.4.1
   </span>
   
 </footer>

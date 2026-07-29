@@ -54,8 +54,8 @@
 
     <section class="multi-line-signature">
       
-<span class="returntype"><a href="https://api.dart.dev/stable/3.9.4/dart-core/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../../type_alias/JsonMap.html">JsonMap</a></span>&gt;</span></span>
-<span class="name ">getArtist</span>(<wbr><ol class="parameter-list single-line"> <li><span class="parameter" id="getArtist-param-channelId"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.4/dart-core/String-class.html">String</a></span> <span class="parameter-name">channelId</span></span></li>
+<span class="returntype"><a href="https://api.dart.dev/stable/3.12.2/dart-async/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../../type_alias/JsonMap.html">JsonMap</a></span>&gt;</span></span>
+<span class="name ">getArtist</span>(<wbr><ol class="parameter-list single-line"> <li><span class="parameter" id="getArtist-param-channelId"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.12.2/dart-core/String-class.html">String</a></span> <span class="parameter-name">channelId</span></span></li>
 </ol>)
 
       
@@ -96,12 +96,18 @@ It should be used only with <code>subscribeArtist</code>. // TODO subscribeArtis
 <p>Example:</p>
 <pre class="language-json"><code class="language-json">{
   "description": "Oasis were ...",
+  "descriptionRuns": [
+    {
+      "text":"Oasis were ..."
+    }
+  ],
   "views": "3,693,390,359 views",
   "name": "Oasis",
   "channelId": "UCUDVBtnOQi4c7E8jebpjc9Q",
   "shuffleId": "RDAOkjHYJjL1a3xspEyVkhHAsg",
   "radioId": "RDEMkjHYJjL1a3xspEyVkhHAsg",
   "subscribers": "3.86M",
+  "monthlyListeners": "29.1M",
   "subscribed": false,
   "thumbnails": [...],
   "songs": {
@@ -133,6 +139,7 @@ It should be used only with <code>subscribeArtist</code>. // TODO subscribeArtis
       {
         "title": "Stand By Me (Mustique Demo)",
         "thumbnails": [...],
+        "type": "Single",
         "year": "2016",
         "browseId": "MPREb_7MPKLhibN5G"
       }
@@ -168,6 +175,11 @@ It should be used only with <code>subscribeArtist</code>. // TODO subscribeArtis
     ]
   }
 }
+
+ The difference between description and descriptionRuns is that description is just the raw text of the description and does not have any knowledge of the hyperlinks in the description.
+ Whereas descriptionRuns is a list of dictionaries which contains the text runs of the description that is aware of the hyperlinks in the description. There are two types of text runs.
+   1. PlainText: which has format {"text": string}
+   2. HyperLink: which has format {"text": string, "url": string}
 </code></pre>
 </section>
 
@@ -187,17 +199,21 @@ It should be used only with <code>subscribeArtist</code>. // TODO subscribeArtis
   final response = await sendRequest(endpoint, body);
 
   final results = List&lt;JsonMap&gt;.from(
-    nav(response, [...SINGLE_COLUMN_TAB, ...SECTION_LIST]) as List,
+    nav(response, SINGLE_COLUMN_TAB + SECTION_LIST) as List,
   );
-
   final header =
       JsonMap.from(
             response[&#39;header&#39;]! as JsonMap,
           )[&#39;musicImmersiveHeaderRenderer&#39;]
+          as JsonMap? ??
+      JsonMap.from(
+            response[&#39;header&#39;]! as JsonMap,
+          )[&#39;musicVisualHeaderRenderer&#39;]
           as JsonMap;
   final artist = &lt;String, dynamic&gt;{
     &#39;name&#39;: nav(header, TITLE_TEXT),
     &#39;description&#39;: null,
+    &#39;descriptionRuns&#39;: [],
     &#39;views&#39;: null,
   };
 
@@ -208,7 +224,13 @@ It should be used only with <code>subscribeArtist</code>. // TODO subscribeArtis
   );
 
   if (descriptionShelf != null) {
-    artist[&#39;description&#39;] = nav(descriptionShelf, DESCRIPTION);
+    final parsedDescriptionRuns = parseDescriptionRuns(
+      nav(descriptionShelf, DESCRIPTION_RUN_LIST),
+    );
+    final description = parsedDescriptionRuns.$1;
+    final descriptionRuns = parsedDescriptionRuns.$2;
+    artist[&#39;description&#39;] = description;
+    artist[&#39;descriptionRuns&#39;] = descriptionRuns;
     artist[&#39;views&#39;] =
         descriptionShelf.containsKey(&#39;subheader&#39;)
             ? (((descriptionShelf[&#39;subheader&#39;]! as JsonMap)[&#39;runs&#39;]!
@@ -237,6 +259,14 @@ It should be used only with <code>subscribeArtist</code>. // TODO subscribeArtis
     0,
     &#39;text&#39;,
   ], nullIfAbsent: true);
+  artist[&#39;monthlyListeners&#39;] = nav(header, [
+    &#39;monthlyListenerCount&#39;,
+    &#39;runs&#39;,
+    0,
+    &#39;text&#39;,
+  ], nullIfAbsent: true);
+  artist[&#39;monthlyListeners&#39;] = (artist[&#39;monthlyListeners&#39;] as String?)
+      ?.replaceAll(&#39; monthly audience&#39;, &#39;&#39;);
   artist[&#39;subscribed&#39;] = subscriptionButton[&#39;subscribed&#39;];
   artist[&#39;thumbnails&#39;] = nav(header, THUMBNAILS, nullIfAbsent: true);
   artist[&#39;songs&#39;] = JsonMap.from({&#39;browseId&#39;: null});
@@ -287,7 +317,7 @@ It should be used only with <code>subscribeArtist</code>. // TODO subscribeArtis
 <footer>
   <span class="no-break">
     ytmusicapi_dart
-      2.3.0
+      2.4.1
   </span>
   
 </footer>
