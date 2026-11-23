@@ -54,8 +54,8 @@
 
     <section class="multi-line-signature">
       
-<span class="returntype"><a href="https://api.dart.dev/stable/3.12.2/dart-async/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.dart.dev/stable/3.12.2/dart-core/List-class.html">List</a></span>&gt;</span></span>
-<span class="name ">getSongRelated</span>(<wbr><ol class="parameter-list single-line"> <li><span class="parameter" id="getSongRelated-param-browseId"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.12.2/dart-core/String-class.html">String</a></span> <span class="parameter-name">browseId</span></span></li>
+<span class="returntype"><a href="https://api.dart.dev/stable/3.14.1/dart-async/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.dart.dev/stable/3.14.1/dart-core/List-class.html">List</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../../utils/YtNamedRow-class.html">YtNamedRow</a></span>&gt;</span></span>&gt;</span></span>
+<span class="name ">getSongRelated</span>(<wbr><ol class="parameter-list single-line"> <li><span class="parameter" id="getSongRelated-param-browseId"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.14.1/dart-core/String-class.html">String</a></span> <span class="parameter-name">browseId</span></span></li>
 </ol>)
 
       
@@ -68,82 +68,13 @@ shown in the "Related" tab of the watch panel.</p>
 <ul>
 <li><code>browseId</code> The <code>related</code> key  in the <a href="../../mixins_watch/WatchMixin/getWatchPlaylist.html">WatchMixin.getWatchPlaylist</a> response.</li>
 </ul>
-<p>Example:</p>
-<pre class="language-json"><code class="language-json">[
-  {
-    "title": "You might also like",
-    "contents": [
-      {
-        "title": "High And Dry",
-        "videoId": "7fv84nPfTH0",
-        "artists": [
-          {
-            "name": "Radiohead",
-            "id": "UCr_iyUANcn9OX_yy9piYoLw"
-          }
-        ],
-        "thumbnails": [
-          {
-            "url": "https://lh3.googleusercontent.com/TWWT47cHLv3yAugk4h9eOzQ46FHmXc_g-KmBVy2d4sbg_F-Gv6xrPglztRVzp8D_l-yzOnvh-QToM8s=w60-h60-l90-rj",
-            "width": 60,
-            "height": 60
-          }
-        ],
-        "isExplicit": false,
-        "album": {
-          "name": "The Bends",
-          "id": "MPREb_xsmDKhqhQrG"
-        }
-      }
-    ]
-  },
-  {
-    "title": "Recommended playlists",
-    "contents": [
-      {
-        "title": "'90s Alternative Rock Hits",
-        "playlistId": "RDCLAK5uy_m_h-nx7OCFaq9AlyXv78lG0AuloqW_NUA",
-        "thumbnails": [...],
-        "description": "Playlist • YouTube Music"
-      }
-    ]
-  },
-  {
-    "title": "Similar artists",
-    "contents": [
-      {
-        "title": "Noel Gallagher",
-        "browseId": "UCu7yYcX_wIZgG9azR3PqrxA",
-        "subscribers": "302K",
-        "thumbnails": [...]
-      }
-    ]
-  },
-  {
-    "title": "Oasis",
-    "contents": [
-      {
-        "title": "Shakermaker",
-        "year": "2014",
-        "browseId": "MPREb_WNGQWp5czjD",
-        "thumbnails": [...]
-      }
-    ]
-  },
-  {
-    "title": "About the artist",
-    "contents": "Oasis were a rock band consisting of Liam Gallagher, Paul ... (full description shortened for documentation)"
-  }
-]
-
-</code></pre>
 </section>
 
 
     
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
-  <pre class="language-dart"><code class="language-dart">Future&lt;List&gt; getSongRelated(String browseId) async {
+  <pre class="language-dart"><code class="language-dart">Future&lt;List&lt;YtNamedRow&gt;&gt; getSongRelated(String browseId) async {
   if (browseId.isEmpty) throw Exception(&#39;Invalid browseId provided.&#39;);
   final response = await sendRequest(&#39;browse&#39;, {&#39;browseId&#39;: browseId});
   final sections = nav(response, [&#39;contents&#39;, ...SECTION_LIST]);
@@ -176,7 +107,7 @@ shown in the "Related" tab of the watch panel.</p>
 <footer>
   <span class="no-break">
     ytmusicapi_dart
-      2.4.1
+      3.0.0-rc.1
   </span>
   
 </footer>

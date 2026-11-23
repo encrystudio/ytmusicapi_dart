@@ -54,9 +54,9 @@
 
     <section class="multi-line-signature">
         
-<span class="returntype"><a href="../type_alias/JsonMap.html">JsonMap</a></span>
+<span class="returntype"><a href="../models_objects_album/YtAlbum-class.html">YtAlbum</a></span>
 <span class="name ">parseAlbumSingleSubtitle</span>(<wbr><ol class="parameter-list single-line"> <li><span class="parameter" id="parseAlbumSingleSubtitle-param-result"><span class="type-annotation"><a href="../type_alias/JsonMap.html">JsonMap</a></span> <span class="parameter-name">result</span>, </span></li>
-<li><span class="parameter" id="parseAlbumSingleSubtitle-param-albumOrSingle"><span class="type-annotation"><a href="../type_alias/JsonMap.html">JsonMap</a></span> <span class="parameter-name">albumOrSingle</span></span></li>
+<li><span class="parameter" id="parseAlbumSingleSubtitle-param-albumOrSingle"><span class="type-annotation"><a href="../models_objects_album/YtAlbum-class.html">YtAlbum</a></span> <span class="parameter-name">albumOrSingle</span></span></li>
 </ol>)
 
         
@@ -71,19 +71,19 @@
     
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
-  <pre class="language-dart"><code class="language-dart">JsonMap parseAlbumSingleSubtitle(JsonMap result, JsonMap albumOrSingle) {
-  final typeOrYear = nav(result, SUBTITLE, nullIfAbsent: true);
+  <pre class="language-dart"><code class="language-dart">YtAlbum parseAlbumSingleSubtitle(JsonMap result, YtAlbum albumOrSingle) {
+  final typeOrYear = nav(result, SUBTITLE, nullIfAbsent: true) as String?;
 
   if (typeOrYear != null) {
-    if ((typeOrYear as String).isNumeric()) {
-      albumOrSingle[&#39;year&#39;] = typeOrYear;
+    if (typeOrYear.isNumeric()) {
+      albumOrSingle.year = int.tryParse(typeOrYear);
     } else {
-      albumOrSingle[&#39;type&#39;] = typeOrYear;
+      albumOrSingle.albumType = YtAlbumType.tryFromName(typeOrYear);
 
-      final year = nav(result, SUBTITLE2, nullIfAbsent: true);
+      final year = nav(result, SUBTITLE2, nullIfAbsent: true) as String?;
 
-      if (year != null &amp;&amp; (year as String).isNumeric()) {
-        albumOrSingle[&#39;year&#39;] = year;
+      if (year != null &amp;&amp; year.isNumeric()) {
+        albumOrSingle.year = int.tryParse(year);
       }
     }
   }
@@ -116,7 +116,7 @@
 <footer>
   <span class="no-break">
     ytmusicapi_dart
-      2.4.1
+      3.0.0-rc.1
   </span>
   
 </footer>

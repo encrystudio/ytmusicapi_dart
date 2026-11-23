@@ -54,7 +54,7 @@
 
     <section class="multi-line-signature">
         
-<span class="returntype"><a href="../type_alias/JsonMap.html">JsonMap</a></span>
+<span class="returntype"><a href="../models_objects_video/YtVideo-class.html">YtVideo</a></span>
 <span class="name ">parseSong</span>(<wbr><ol class="parameter-list single-line"> <li><span class="parameter" id="parseSong-param-result"><span class="type-annotation"><a href="../type_alias/JsonMap.html">JsonMap</a></span> <span class="parameter-name">result</span></span></li>
 </ol>)
 
@@ -70,16 +70,51 @@
     
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
-  <pre class="language-dart"><code class="language-dart">JsonMap parseSong(JsonMap result) {
-  final song = &lt;String, dynamic&gt;{
-    &#39;title&#39;: nav(result, TITLE_TEXT),
-    &#39;videoId&#39;: nav(result, NAVIGATION_VIDEO_ID),
-    &#39;playlistId&#39;: nav(result, NAVIGATION_PLAYLIST_ID, nullIfAbsent: true),
-    &#39;thumbnails&#39;: nav(result, THUMBNAIL_RENDERER),
-  };
-  song.addAll(
-    parseSongRuns(nav(result, SUBTITLE_RUNS) as List, skipTypeSpec: true),
+  <pre class="language-dart"><code class="language-dart">YtVideo parseSong(JsonMap result) {
+  final song = YtVideo(
+    name: nav(result, TITLE_TEXT) as String,
+    id: nav(result, NAVIGATION_VIDEO_ID) as String,
+    playlistId:
+        nav(result, NAVIGATION_PLAYLIST_ID, nullIfAbsent: true) as String?,
+    videoType: null,
+    views: null,
+    durationRaw: null,
+    duration: null,
+    artists: [],
+    thumbnails: YtThumbnails.fromJson(
+      List&lt;JsonMap&gt;.from(nav(result, THUMBNAIL_RENDERER) as List),
+    ),
+    year: null,
+    isAvailable: null,
+    isSong: true,
+    album: null,
+    isExplicit: null,
+    inLibrary: null,
+    feedbackTokenAdd: null,
+    feedbackTokenRemove: null,
+    trackNumber: null,
+    isEpisode: false,
+    description: null,
   );
+  for (final (songRunsItemType, value) in parseSongRuns(
+    nav(result, SUBTITLE_RUNS) as List,
+    skipTypeSpec: true,
+  )) {
+    switch (songRunsItemType) {
+      case SongRunsItemType.ALBUM:
+        song.album = value as YtBaseObject?;
+      case SongRunsItemType.ARTISTS:
+        song.artists = value as List&lt;YtBaseObject&gt;;
+      case SongRunsItemType.DURATION_RAW:
+        song.durationRaw = value as String?;
+      case SongRunsItemType.DURATION_SECONDS:
+        song.duration = value as Duration?;
+      case SongRunsItemType.VIEWS:
+        song.views = value as String?;
+      case SongRunsItemType.YEAR:
+        song.year = value as int?;
+    }
+  }
   return song;
 }</code></pre>
 </section>
@@ -108,7 +143,7 @@
 <footer>
   <span class="no-break">
     ytmusicapi_dart
-      2.4.1
+      3.0.0-rc.1
   </span>
   
 </footer>

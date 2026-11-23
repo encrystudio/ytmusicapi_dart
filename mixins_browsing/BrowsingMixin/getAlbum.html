@@ -54,8 +54,8 @@
 
     <section class="multi-line-signature">
       
-<span class="returntype"><a href="https://api.dart.dev/stable/3.12.2/dart-async/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../../type_alias/JsonMap.html">JsonMap</a></span>&gt;</span></span>
-<span class="name ">getAlbum</span>(<wbr><ol class="parameter-list"> <li><span class="parameter" id="getAlbum-param-browseId"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.12.2/dart-core/String-class.html">String</a></span> <span class="parameter-name">browseId</span>, {</span></li>
+<span class="returntype"><a href="https://api.dart.dev/stable/3.14.1/dart-async/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../../models_objects_album/YtAlbum-class.html">YtAlbum</a></span>&gt;</span></span>
+<span class="name ">getAlbum</span>(<wbr><ol class="parameter-list"> <li><span class="parameter" id="getAlbum-param-browseId"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.14.1/dart-core/String-class.html">String</a></span> <span class="parameter-name">browseId</span>, {</span></li>
 <li><span class="parameter" id="getAlbum-param-requestData"><span class="type-annotation"><a href="../../type_alias/JsonMap.html">JsonMap</a>?</span> <span class="parameter-name">requestData</span>, </span></li>
 </ol>})
 
@@ -68,80 +68,14 @@
 <ul>
 <li><code>browseId</code> <code>browseId</code> of the album, for example returned by <a href="../../mixins_search/SearchMixin/search.html">SearchMixin.search</a>.</li>
 </ul>
-<p>Returns Map with album and track metadata.</p>
-<p>The result is in the following format:</p>
-<pre class="language-json"><code class="language-json">{
-  "title": "Revival",
-  "type": "Album",
-  "thumbnails": [...],
-  "description": "Revival is the...",
-  "descriptionRuns": [
-    {"text": "Revival is the..."},
-  ],
-  "artists": [
-    {
-      "name": "Eminem",
-      "id": "UCedvOgsKFzcK3hA5taf3KoQ"
-    }
-  ],
-  "year": "2017",
-  "trackCount": 19,
-  "duration": "1 hour, 17 minutes",
-  "audioPlaylistId": "OLAK5uy_nMr9h2VlS-2PULNz3M3XVXQj_P3C2bqaY",
-  "tracks": [
-    {
-      "videoId": "iKLU7z_xdYQ",
-      "title": "Walk On Water (feat. Beyoncé)",
-      "artists": [
-        {
-          "name": "Eminem",
-          "id": "UCedvOgsKFzcK3hA5taf3KoQ"
-        }
-      ],
-      "album": "Revival",
-      "likeStatus": "INDIFFERENT",
-      "thumbnails": null,
-      "isAvailable": true,
-      "isExplicit": true,
-      "duration": "5:03",
-      "duration_seconds": 303,
-      "trackNumber": 0,
-      "inLibrary": false,
-      "feedbackTokens": {
-        "add": "AB9zfpK...",
-        "remove": "AB9zfpK..."
-      },
-                  "pinnedToListenAgain": false,
-     "listenAgainFeedbackTokens": {
-       "pin": "AB9zfpJ...",
-       "unpin": "AB9zfpL..."
-     },
-     "creditsBrowseId": "MPTCiKLU7z_xdYQ"
-     }
-    }
-  ],
-  "other_versions": [
-    {
-      "title": "Revival",
-      "year": "Eminem",
-      "browseId": "MPREb_fefKFOTEZSp",
-      "thumbnails": [...],
-      "isExplicit": false
-    }
-  ],
-  "duration_seconds": 4657
-}
-For the distinction between description and descriptionRuns please refer to getArtist.
-</code></pre>
+<p>For the distinction between description and descriptionRuns please refer to getArtist.</p>
 </section>
 
 
     
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
-  <pre class="language-dart"><code class="language-dart">&#47;&#47;&#47; For the distinction between description and descriptionRuns please refer to getArtist.
-&#47;&#47;&#47; ```
-Future&lt;JsonMap&gt; getAlbum(String browseId, {JsonMap? requestData}) async {
+  <pre class="language-dart"><code class="language-dart">Future&lt;YtAlbum&gt; getAlbum(String browseId, {JsonMap? requestData}) async {
   if (browseId.isEmpty || !browseId.startsWith(&#39;MPRE&#39;)) {
     throw Exception(&#39;Invalid album browseId provided, must start with MPRE.&#39;);
   }
@@ -160,7 +94,7 @@ Future&lt;JsonMap&gt; getAlbum(String browseId, {JsonMap? requestData}) async {
         ])
         as Map,
   );
-  album[&#39;tracks&#39;] = parsePlaylistItems(
+  album.tracks = parsePlaylistItems(
     List&lt;JsonMap&gt;.from(results[&#39;contents&#39;] as List),
     isAlbum: true,
   );
@@ -180,22 +114,30 @@ Future&lt;JsonMap&gt; getAlbum(String browseId, {JsonMap? requestData}) async {
           &#39;COLLECTION_STYLE_ITEM_SIZE_SMALL&#39;: &#39;related_recommendations&#39;,
           &#39;COLLECTION_STYLE_ITEM_SIZE_MEDIUM&#39;: &#39;other_versions&#39;,
         }[carousel[&#39;itemSize&#39;]]!;
-    album[key] = await parseContentList(
-      List&lt;JsonMap&gt;.from(carousel[&#39;contents&#39;] as List),
-      parseAlbum,
-    );
+    if (key == &#39;related_recommendations&#39;) {
+      album.relatedRecommendations = await parseContentList(
+        List&lt;JsonMap&gt;.from(carousel[&#39;contents&#39;] as List),
+        parseAlbum,
+      );
+    } else if (key == &#39;other_versions&#39;) {
+      album.otherVersions = await parseContentList(
+        List&lt;JsonMap&gt;.from(carousel[&#39;contents&#39;] as List),
+        parseAlbum,
+      );
+    }
   }
 
-  album[&#39;duration_seconds&#39;] = sumTotalDuration(album);
-  for (var i = 0; i &lt; (album[&#39;tracks&#39;] as List).length; i++) {
-    List&lt;JsonMap&gt;.from(album[&#39;tracks&#39;] as List)[i][&#39;album&#39;] = album[&#39;title&#39;];
-    List&lt;JsonMap&gt;.from(album[&#39;tracks&#39;] as List)[i][&#39;artists&#39;] =
-        (List&lt;JsonMap&gt;.from(album[&#39;tracks&#39;] as List)[i][&#39;artists&#39;] != null &amp;&amp;
-                (List&lt;JsonMap&gt;.from(album[&#39;tracks&#39;] as List)[i][&#39;artists&#39;]
-                        as List)
-                    .isNotEmpty)
-            ? List&lt;JsonMap&gt;.from(album[&#39;tracks&#39;] as List)[i][&#39;artists&#39;]
-            : album[&#39;artists&#39;];
+  album.duration = Duration(seconds: sumTotalDurationAlbum(album));
+  for (var i = 0; i &lt; album.tracks.length; i++) {
+    album.tracks[i].album = YtBaseObject(
+      id: album.id,
+      name: album.name,
+      type: YtObjectType.OBJECT,
+    );
+    album.tracks[i].artists =
+        album.tracks[i].artists.isNotEmpty
+            ? album.tracks[i].artists
+            : album.artists;
   }
   return album;
 }</code></pre>
@@ -226,7 +168,7 @@ Future&lt;JsonMap&gt; getAlbum(String browseId, {JsonMap? requestData}) async {
 <footer>
   <span class="no-break">
     ytmusicapi_dart
-      2.4.1
+      3.0.0-rc.1
   </span>
   
 </footer>

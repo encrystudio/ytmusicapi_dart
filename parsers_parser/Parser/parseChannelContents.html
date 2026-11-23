@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="description" content="API docs for the parseChannelContents method from the Parser class, for the Dart programming language.">
+  <title>parseChannelContents method - Parser class - parser library - Dart API</title>
+
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../../static-assets/github.css?v1">
+  <link rel="stylesheet" href="../../static-assets/styles.css?v1">
+  <link rel="icon" href="../../static-assets/favicon.png?v1">
+  
+</head>
+
+<body data-base-href="../../" data-using-base-href="false" class="light-theme">
+<div id="overlay-under-drawer"></div>
+<header id="title">
+  <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li><a href="../../index.html">ytmusicapi_dart</a></li>
+    <li><a href="../../parsers_parser/">parsers&#47;parser.dart</a></li>
+    <li><a href="../../parsers_parser/Parser-class.html">Parser</a></li>
+    <li class="self-crumb">parseChannelContents method</li>
+  </ol>
+  <div class="self-name">parseChannelContents</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+  <button class="toggle" id="theme-button" title="Toggle between light and dark mode" aria-label="Light and dark mode toggle">
+    <span id="dark-theme-button" class="material-symbols-outlined" aria-hidden="true">
+      dark_mode
+    </span>
+    <span id="light-theme-button" class="material-symbols-outlined" aria-hidden="true">
+      light_mode
+    </span>
+  </button>
+</header>
+<main>
+<div
+    id="dartdoc-main-content"
+    class="main-content"
+    data-above-sidebar="parsers_parser&#47;Parser-class-sidebar.html"
+    data-below-sidebar="">
+    <div>
+<h1><span class="kind-method">parseChannelContents</span> method 
+</h1></div>
+
+    <section class="multi-line-signature">
+      
+<span class="returntype">void</span>
+<span class="name ">parseChannelContents</span>(<wbr><ol class="parameter-list single-line"> <li><span class="parameter" id="parseChannelContents-param-results"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.14.1/dart-core/List-class.html">List</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../../type_alias/JsonMap.html">JsonMap</a></span>&gt;</span></span> <span class="parameter-name">results</span>, </span></li>
+<li><span class="parameter" id="parseChannelContents-param-artist"><span class="type-annotation"><a href="../../models_objects_artist/YtBrowsedArtist-class.html">YtBrowsedArtist</a></span> <span class="parameter-name">artist</span></span></li>
+</ol>)
+
+      
+
+    </section>
+    
+<section class="desc markdown">
+  <p>Parses content from a channel.</p>
+</section>
+
+
+    
+<section class="summary source-code" id="source">
+  <h2><span>Implementation</span></h2>
+  <pre class="language-dart"><code class="language-dart">void parseChannelContents(List&lt;JsonMap&gt; results, YtBrowsedArtist artist) {
+  final categories = [
+    [&#39;albums&#39;, &#39;albums&#39;, parseAlbum, MTRIR],
+    [&#39;singles&#39;, &#39;singles &amp; eps&#39;, parseSingle, MTRIR],
+    [&#39;shows&#39;, &#39;shows&#39;, parseAlbum, MTRIR],
+    [&#39;videos&#39;, &#39;videos&#39;, parseVideo, MTRIR],
+    [&#39;playlists&#39;, &#39;playlists&#39;, parsePlaylist, MTRIR],
+    [&#39;related&#39;, &#39;related&#39;, parseRelatedArtist, MTRIR],
+    [&#39;episodes&#39;, &#39;episodes&#39;, parseEpisode, MMRIR],
+    [&#39;podcasts&#39;, &#39;podcasts&#39;, parsePodcast, MTRIR],
+  ];
+
+  final artistMap = &lt;String, dynamic&gt;{};
+
+  for (final category in categories) {
+    final categoryKey = category.first as String;
+    final categoryLocal = category[1] as String;
+    final categoryParser = category[2] as dynamic Function(JsonMap);
+    final categoryNavKey = category[3] as String;
+
+    final data =
+        List&lt;JsonMap&gt;.from(
+          results.where(
+            (r) =&gt;
+                r.containsKey(&#39;musicCarouselShelfRenderer&#39;) &amp;&amp;
+                ((nav(r, CAROUSEL + CAROUSEL_TITLE) as JsonMap)[&#39;text&#39;]
+                            as String)
+                        .toLowerCase() ==
+                    categoryLocal.toLowerCase(),
+          ),
+        ).map((r) =&gt; r[&#39;musicCarouselShelfRenderer&#39;] as JsonMap).toList();
+
+    if (data.isNotEmpty) {
+      artistMap[categoryKey] = JsonMap.from({
+        &#39;browseId&#39;: null,
+        &#39;results&#39;: [],
+      });
+
+      final navTitle = nav(data.first, CAROUSEL_TITLE) as JsonMap;
+      if (navTitle.containsKey(&#39;navigationEndpoint&#39;)) {
+        (artistMap[categoryKey] as JsonMap)[&#39;browseId&#39;] = nav(
+          data.first,
+          CAROUSEL_TITLE + NAVIGATION_BROWSE_ID,
+        );
+        (artistMap[categoryKey] as JsonMap)[&#39;params&#39;] = nav(
+          data.first,
+          CAROUSEL_TITLE + NAVIGATION_BROWSE + [&#39;params&#39;],
+          nullIfAbsent: true,
+        );
+      }
+
+      (artistMap[categoryKey] as JsonMap)[&#39;results&#39;] = parseContentList(
+        List&lt;JsonMap&gt;.from(data.first[&#39;contents&#39;] as List),
+        categoryParser,
+        key: categoryNavKey,
+      );
+    }
+  }
+  artist.albumsBrowseId =
+      (artistMap[&#39;albums&#39;] as JsonMap?)?[&#39;browseId&#39;] as String?;
+  artist.albumsParams =
+      (artistMap[&#39;albums&#39;] as JsonMap?)?[&#39;params&#39;] as String?;
+  artist.albumsResults =
+      (artistMap[&#39;albums&#39;] as JsonMap?)?[&#39;results&#39;] is List
+          ? List&lt;YtAlbum&gt;.from(
+            (artistMap[&#39;albums&#39;] as JsonMap)[&#39;results&#39;] as List,
+          )
+          : [];
+  artist.singlesBrowseId =
+      (artistMap[&#39;singles&#39;] as JsonMap?)?[&#39;browseId&#39;] as String?;
+  artist.singlesParams =
+      (artistMap[&#39;singles&#39;] as JsonMap?)?[&#39;params&#39;] as String?;
+  artist.singlesResults =
+      (artistMap[&#39;singles&#39;] as JsonMap?)?[&#39;results&#39;] is List
+          ? List&lt;YtAlbum&gt;.from(
+            (artistMap[&#39;singles&#39;] as JsonMap)[&#39;results&#39;] as List,
+          )
+          : [];
+  artist.showsBrowseId =
+      (artistMap[&#39;shows&#39;] as JsonMap?)?[&#39;browseId&#39;] as String?;
+  artist.videosBrowseId =
+      (artistMap[&#39;videos&#39;] as JsonMap)[&#39;browseId&#39;] as String?;
+  artist.videosResults = List&lt;YtVideo&gt;.from(
+    (artistMap[&#39;videos&#39;] as JsonMap)[&#39;results&#39;] as List,
+  );
+  artist.playlistsBrowseId =
+      (artistMap[&#39;playlists&#39;] as JsonMap?)?[&#39;browseId&#39;] as String?;
+  artist.relatedBrowseId =
+      (artistMap[&#39;related&#39;] as JsonMap?)?[&#39;browseId&#39;] as String?;
+  artist.relatedResults =
+      ((artistMap[&#39;related&#39;] as JsonMap?)?[&#39;results&#39;] is List)
+          ? List&lt;YtArtist&gt;.from(
+            (artistMap[&#39;related&#39;] as JsonMap)[&#39;results&#39;] as List,
+          )
+          : [];
+  artist.episodesBrowseId =
+      (artistMap[&#39;episodes&#39;] as JsonMap?)?[&#39;browseId&#39;] as String?;
+  artist.podcastsBrowseId =
+      (artistMap[&#39;podcasts&#39;] as JsonMap?)?[&#39;browseId&#39;] as String?;
+}</code></pre>
+</section>
+
+
+  </div> <!-- /.main-content -->
+  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+    <!-- The search input and breadcrumbs below are only responsively visible at low resolutions. -->
+<header id="header-search-sidebar" class="hidden-l">
+  <form class="search-sidebar" role="search">
+    <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+<ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+    <li><a href="../../index.html">ytmusicapi_dart</a></li>
+    <li><a href="../../parsers_parser/">parser</a></li>
+    <li><a href="../../parsers_parser/Parser-class.html">Parser</a></li>
+    <li class="self-crumb">parseChannelContents method</li>
+</ol>
+
+    <h5>Parser class</h5>
+    <div id="dartdoc-sidebar-left-content"></div>
+  </div><!--/.sidebar-offcanvas-->
+  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+</div><!--/.sidebar-offcanvas-->
+</main>
+<footer>
+  <span class="no-break">
+    ytmusicapi_dart
+      3.0.0-rc.1
+  </span>
+  
+</footer>
+
+
+<script src="../../static-assets/highlight.pack.js?v1"></script>
+<script src="../../static-assets/docs.dart.js"></script>
+
+</body>
+</html>
+

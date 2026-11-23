@@ -54,8 +54,8 @@
 
     <section class="multi-line-signature">
         
-<span class="returntype"><a href="https://api.dart.dev/stable/3.12.2/dart-core/String-class.html">String</a>?</span>
-<span class="name ">parseViews</span>(<wbr><ol class="parameter-list single-line"> <li><span class="parameter" id="parseViews-param-text"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.12.2/dart-core/String-class.html">String</a></span> <span class="parameter-name">text</span></span></li>
+<span class="returntype"><a href="https://api.dart.dev/stable/3.14.1/dart-core/String-class.html">String</a>?</span>
+<span class="name ">parseViews</span>(<wbr><ol class="parameter-list single-line"> <li><span class="parameter" id="parseViews-param-text"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.14.1/dart-core/String-class.html">String</a></span> <span class="parameter-name">text</span></span></li>
 </ol>)
 
         
@@ -95,7 +95,7 @@
 
   &#47;&#47; note: \xa0 glues number and magnitude (&quot;1,7\xa0Mrd. Aufrufe&quot;), but some locales use
   &#47;&#47; it before the views word too (&quot;88\xa0k\xa0vues&quot;); CJK has no separator (&quot;3406万回視聴&quot;)
-  final head = localText.split(&#39; &#39;)[0].split(&#39;\xa0&#39;);
+  final head = localText.split(&#39; &#39;).first.split(&#39;\xa0&#39;);
 
   return head.take(2).join(&#39;\xa0&#39;);
 }</code></pre>
@@ -125,7 +125,7 @@
 <footer>
   <span class="no-break">
     ytmusicapi_dart
-      2.4.1
+      3.0.0-rc.1
   </span>
   
 </footer>

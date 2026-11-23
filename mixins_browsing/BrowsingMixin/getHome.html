@@ -54,8 +54,8 @@
 
     <section class="multi-line-signature">
       
-<span class="returntype"><a href="https://api.dart.dev/stable/3.12.2/dart-async/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.dart.dev/stable/3.12.2/dart-core/List-class.html">List</a></span>&gt;</span></span>
-<span class="name ">getHome</span>(<wbr>{<ol class="parameter-list"> <li><span class="parameter" id="getHome-param-limit"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.12.2/dart-core/int-class.html">int</a></span> <span class="parameter-name">limit</span> = <span class="default-value">3</span>, </span></li>
+<span class="returntype"><a href="https://api.dart.dev/stable/3.14.1/dart-async/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.dart.dev/stable/3.14.1/dart-core/List-class.html">List</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../../utils/YtNamedRow-class.html">YtNamedRow</a></span>&gt;</span></span>&gt;</span></span>
+<span class="name ">getHome</span>(<wbr>{<ol class="parameter-list"> <li><span class="parameter" id="getHome-param-limit"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.14.1/dart-core/int-class.html">int</a></span> <span class="parameter-name">limit</span> = <span class="default-value">3</span>, </span></li>
 </ol>})
 
       
@@ -69,95 +69,18 @@ Content varies and may contain artist, album, song or playlist suggestions, some
 <ul>
 <li><code>limit</code> Number of rows on the home page to return. (Default: <code>3</code>).</li>
 </ul>
-<p>Returns List of Maps keyed with <code>title</code> text and <code>contents</code> list.</p>
-<p>Example list:</p>
-<pre class="language-json"><code class="language-json">[
-  {
-    "title": "Your morning music",
-    "contents": [
-      { // album result
-        "title": "Sentiment",
-        "browseId": "MPREb_QtqXtd2xZMR",
-        "thumbnails": [...]
-      },
-      { // playlist result
-        "title": "r/EDM top submissions 01/28/2022",
-        "playlistId": "PLz7-xrYmULdSLRZGk-6GKUtaBZcgQNwel",
-        "thumbnails": [...],
-        "description": "redditEDM • 161 songs",
-        "count": "161",
-        "author": [
-          {
-            "name": "redditEDM",
-            "id": "UCaTrZ9tPiIGHrkCe5bxOGwA"
-          }
-        ]
-      }
-    ]
-  },
-  {
-    "title": "Your favorites",
-    "contents": [
-      { // artist result
-        "title": "Chill Satellite",
-        "browseId": "UCrPLFBWdOroD57bkqPbZJog",
-        "subscribers": "374",
-        "thumbnails": [...]
-      },
-      { // album result
-        "title": "Dragon",
-        "year": "Two Steps From Hell",
-        "browseId": "MPREb_M9aDqLRbSeg",
-        "thumbnails": [...]
-      }
-    ]
-  },
-  {
-    "title": "Quick picks",
-    "contents": [
-      { // song quick pick
-        "title": "Gravity",
-        "videoId": "EludZd6lfts",
-        "artists": [
-          {
-            "name": "yetep",
-            "id": "UCSW0r7dClqCoCvQeqXiZBlg"
-          }
-        ],
-        "thumbnails": [...],
-        "album": {
-          "name": "Gravity",
-          "id": "MPREb_D6bICFcuuRY"
-        }
-      },
-      { // video quick pick
-        "title": "Gryffin &amp; Illenium (feat. Daya) - Feel Good (L3V3LS Remix)",
-        "videoId": "bR5l0hJDnX8",
-        "artists": [
-          {
-            "name": "L3V3LS",
-            "id": "UCCVNihbOdkOWw_-ajIYhAbQ"
-          }
-        ],
-        "thumbnails": [...],
-        "views": "10M"
-      }
-    ]
-  }
-]
-</code></pre>
 </section>
 
 
     
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
-  <pre class="language-dart"><code class="language-dart">Future&lt;List&gt; getHome({int limit = 3}) async {
+  <pre class="language-dart"><code class="language-dart">Future&lt;List&lt;YtNamedRow&gt;&gt; getHome({int limit = 3}) async {
   const endpoint = &#39;browse&#39;;
   final body = &lt;String, dynamic&gt;{&#39;browseId&#39;: &#39;FEmusic_home&#39;};
   final response = await sendRequest(endpoint, body);
 
-  final results = nav(response, [...SINGLE_COLUMN_TAB, ...SECTION_LIST]);
+  final results = nav(response, SINGLE_COLUMN_TAB + SECTION_LIST);
   final home = parseMixedContent(List&lt;JsonMap&gt;.from(results as List));
 
   final sectionList =
@@ -206,7 +129,7 @@ Content varies and may contain artist, album, song or playlist suggestions, some
 <footer>
   <span class="no-break">
     ytmusicapi_dart
-      2.4.1
+      3.0.0-rc.1
   </span>
   
 </footer>

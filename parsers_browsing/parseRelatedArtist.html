@@ -54,7 +54,7 @@
 
     <section class="multi-line-signature">
         
-<span class="returntype"><a href="../type_alias/JsonMap.html">JsonMap</a></span>
+<span class="returntype"><a href="../models_objects_artist/YtArtist-class.html">YtArtist</a></span>
 <span class="name ">parseRelatedArtist</span>(<wbr><ol class="parameter-list single-line"> <li><span class="parameter" id="parseRelatedArtist-param-data"><span class="type-annotation"><a href="../type_alias/JsonMap.html">JsonMap</a></span> <span class="parameter-name">data</span></span></li>
 </ol>)
 
@@ -70,23 +70,27 @@
     
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
-  <pre class="language-dart"><code class="language-dart">JsonMap parseRelatedArtist(JsonMap data) {
+  <pre class="language-dart"><code class="language-dart">YtArtist parseRelatedArtist(JsonMap data) {
   final JsonMap realData;
   if (data.containsKey(MTRIR)) {
     realData = nav(data, [MTRIR]) as JsonMap;
   } else {
     realData = data;
   }
-  var subscribers = nav(realData, SUBTITLE, nullIfAbsent: true);
+  var subscribers = nav(realData, SUBTITLE, nullIfAbsent: true) as String?;
   if (subscribers != null) {
-    subscribers = (subscribers as String).split(&#39; &#39;)[0];
+    subscribers = subscribers.split(&#39; &#39;).first;
   }
-  return {
-    &#39;title&#39;: nav(realData, TITLE_TEXT),
-    &#39;browseId&#39;: nav(realData, [...TITLE, ...NAVIGATION_BROWSE_ID]),
-    &#39;subscribers&#39;: subscribers,
-    &#39;thumbnails&#39;: nav(realData, THUMBNAIL_RENDERER),
-  };
+  return YtArtist(
+    name: nav(realData, TITLE_TEXT) as String,
+    id: nav(realData, [...TITLE, ...NAVIGATION_BROWSE_ID]) as String,
+    shuffleId: null,
+    radioId: null,
+    thumbnails: YtThumbnails.fromJson(
+      List&lt;JsonMap&gt;.from(nav(realData, THUMBNAIL_RENDERER) as List),
+    ),
+    subscribers: subscribers,
+  );
 }</code></pre>
 </section>
 
@@ -114,7 +118,7 @@
 <footer>
   <span class="no-break">
     ytmusicapi_dart
-      2.4.1
+      3.0.0-rc.1
   </span>
   
 </footer>

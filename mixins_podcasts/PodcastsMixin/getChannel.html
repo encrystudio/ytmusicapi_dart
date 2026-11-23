@@ -54,8 +54,8 @@
 
     <section class="multi-line-signature">
       
-<span class="returntype"><a href="https://api.dart.dev/stable/3.12.2/dart-async/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../../type_alias/JsonMap.html">JsonMap</a></span>&gt;</span></span>
-<span class="name ">getChannel</span>(<wbr><ol class="parameter-list single-line"> <li><span class="parameter" id="getChannel-param-channelId"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.12.2/dart-core/String-class.html">String</a></span> <span class="parameter-name">channelId</span></span></li>
+<span class="returntype"><a href="https://api.dart.dev/stable/3.14.1/dart-async/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../../models_objects_artist/YtBrowsedArtist-class.html">YtBrowsedArtist</a></span>&gt;</span></span>
+<span class="name ">getChannel</span>(<wbr><ol class="parameter-list single-line"> <li><span class="parameter" id="getChannel-param-channelId"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.14.1/dart-core/String-class.html">String</a></span> <span class="parameter-name">channelId</span></span></li>
 </ol>)
 
       
@@ -69,70 +69,52 @@ episodes can be retrieved via <a href="../../mixins_podcasts/PodcastsMixin/getCh
 <ul>
 <li><code>channelId</code> channel id.</li>
 </ul>
-<p>Returns Map containing channel info.</p>
-<p>Example:</p>
-<pre class="language-json"><code class="language-json">    {
-        "title": 'Stanford Graduate School of Business',
-        "thumbnails": [...]
-        "episodes":
-        {
-            "browseId": "UCGwuxdEeCf0TIA2RbPOj-8g",
-            "results":
-            [
-                {
-                    "index": 0,
-                    "title": "The Brain Gain: The Impact of Immigration on American Innovation with Rebecca Diamond",
-                    "description": "Immigrants' contributions to America ...",
-                    "duration": "24 min",
-                    "videoId": "TS3Ovvk3VAA",
-                    "browseId": "MPEDTS3Ovvk3VAA",
-                    "videoType": "MUSIC_VIDEO_TYPE_PODCAST_EPISODE",
-                    "date": "Mar 6, 2024",
-                    "thumbnails": [...]
-                },
-            ],
-            "params": "6gPiAUdxWUJXcFlCQ3BN..."
-        },
-        "podcasts":
-        {
-            "browseId": null,
-            "results":
-            [
-                {
-                    "title": "Stanford GSB Podcasts",
-                    "channel":
-                    {
-                        "id": "UCGwuxdEeCf0TIA2RbPOj-8g",
-                        "name": "Stanford Graduate School of Business"
-                    },
-                    "browseId": "MPSPPLxq_lXOUlvQDUNyoBYLkN8aVt5yAwEtG9",
-                    "podcastId": "PLxq_lXOUlvQDUNyoBYLkN8aVt5yAwEtG9",
-                    "thumbnails": [...]
-                }
-           ]
-        }
-    }
-</code></pre>
 </section>
 
 
     
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
-  <pre class="language-dart"><code class="language-dart">Future&lt;JsonMap&gt; getChannel(String channelId) async {
+  <pre class="language-dart"><code class="language-dart">Future&lt;YtBrowsedArtist&gt; getChannel(String channelId) async {
   final body = {&#39;browseId&#39;: channelId};
   const endpoint = &#39;browse&#39;;
   final response = await sendRequest(endpoint, body);
 
-  final channel = &lt;String, dynamic&gt;{
-    &#39;title&#39;: nav(response, [...HEADER_MUSIC_VISUAL, ...TITLE_TEXT]),
-    &#39;thumbnails&#39;: nav(response, [...HEADER_MUSIC_VISUAL, ...THUMBNAILS]),
-  };
+  final channel = YtBrowsedArtist(
+    name: nav(response, [...HEADER_MUSIC_VISUAL, ...TITLE_TEXT]) as String,
+    id: null,
+    descriptionRaw: null,
+    descriptionRuns: [],
+    views: null,
+    shuffleId: null,
+    radioId: null,
+    subscribers: null,
+    monthlyListeners: null,
+    thumbnails: YtThumbnails.fromJson(
+      List&lt;JsonMap&gt;.from(
+        nav(response, [...HEADER_MUSIC_VISUAL, ...THUMBNAILS]) as List,
+      ),
+    ),
+    songsBrowseId: null,
+    songsResults: [],
+    albumsBrowseId: null,
+    albumsParams: null,
+    albumsResults: [],
+    singlesBrowseId: null,
+    singlesParams: null,
+    singlesResults: [],
+    showsBrowseId: null,
+    videosBrowseId: null,
+    videosResults: [],
+    playlistsBrowseId: null,
+    episodesBrowseId: null,
+    podcastsBrowseId: null,
+    relatedBrowseId: null,
+    relatedResults: [],
+  );
 
   final results = nav(response, [...SINGLE_COLUMN_TAB, ...SECTION_LIST]);
-  channel.addAll(
-    parser.parseChannelContents(List&lt;JsonMap&gt;.from(results as List)),
-  );
+  parser.parseChannelContents(List&lt;JsonMap&gt;.from(results as List), channel);
 
   return channel;
 }</code></pre>
@@ -163,7 +145,7 @@ episodes can be retrieved via <a href="../../mixins_podcasts/PodcastsMixin/getCh
 <footer>
   <span class="no-break">
     ytmusicapi_dart
-      2.4.1
+      3.0.0-rc.1
   </span>
   
 </footer>

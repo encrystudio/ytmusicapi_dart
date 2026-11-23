@@ -26,7 +26,7 @@
   <ol class="breadcrumbs gt-separated dark hidden-xs">
     <li><a href="../index.html">ytmusicapi_dart</a></li>
     <li><a href="../continuations/">continuations.dart</a></li>
-    <li class="self-crumb">getParsedContinuationItems function</li>
+    <li class="self-crumb">getParsedContinuationItems&lt;<wbr><span class="type-parameter">T</span>&gt; function</li>
   </ol>
   <div class="self-name">getParsedContinuationItems</div>
   <form class="search navbar-right" role="search">
@@ -48,16 +48,17 @@
       data-above-sidebar="continuations&#47;continuations-library-sidebar.html"
       data-below-sidebar="">
       <div>
-<h1><span class="kind-function">getParsedContinuationItems</span> function 
+<h1><span class="kind-function">getParsedContinuationItems&lt;<wbr><span class="type-parameter">T</span>&gt;</span> function 
  
 </h1></div>
 
     <section class="multi-line-signature">
         
 <span class="returntype"><a href="../type_alias/JsonMap.html">JsonMap</a></span>
-<span class="name ">getParsedContinuationItems</span>(<wbr><ol class="parameter-list single-line"> <li><span class="parameter" id="getParsedContinuationItems-param-response"><span class="type-annotation"><a href="../type_alias/JsonMap.html">JsonMap</a></span> <span class="parameter-name">response</span>, </span></li>
-<li><span class="parameter" id="getParsedContinuationItems-param-parseFunc"><span class="type-annotation"><a href="../type_alias/ParseFuncType.html">ParseFuncType</a></span> <span class="parameter-name">parseFunc</span>, </span></li>
-<li><span class="parameter" id="getParsedContinuationItems-param-continuationType"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.12.2/dart-core/String-class.html">String</a></span> <span class="parameter-name">continuationType</span></span></li>
+<span class="name ">getParsedContinuationItems</span>&lt;<wbr><span class="type-parameter">T</span>&gt;(<wbr><ol class="parameter-list single-line"> <li><span class="parameter" id="getParsedContinuationItems-param-response"><span class="type-annotation"><a href="../type_alias/JsonMap.html">JsonMap</a></span> <span class="parameter-name">response</span>, </span></li>
+<li><span class="parameter" id="getParsedContinuationItems-param-parseFunc"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.14.1/dart-async/FutureOr-class.html">FutureOr</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.dart.dev/stable/3.14.1/dart-core/List-class.html">List</a><span class="signature">&lt;<wbr><span class="type-parameter">T</span>&gt;</span></span>&gt;</span></span> <span class="parameter-name">parseFunc</span>(<ol class="parameter-list single-line"> <li><span class="parameter" id="param-"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.14.1/dart-core/List-class.html">List</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../type_alias/JsonMap.html">JsonMap</a></span>&gt;</span></span></span></li>
+</ol>), </span></li>
+<li><span class="parameter" id="getParsedContinuationItems-param-continuationType"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.14.1/dart-core/String-class.html">String</a></span> <span class="parameter-name">continuationType</span></span></li>
 </ol>)
 
         
@@ -72,9 +73,9 @@
     
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
-  <pre class="language-dart"><code class="language-dart">JsonMap getParsedContinuationItems(
+  <pre class="language-dart"><code class="language-dart">JsonMap getParsedContinuationItems&lt;T&gt;(
   JsonMap response,
-  ParseFuncType parseFunc,
+  FutureOr&lt;List&lt;T&gt;&gt; Function(List&lt;JsonMap&gt;) parseFunc,
   String continuationType,
 ) {
   final results =
@@ -99,7 +100,7 @@
 <ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
     <li><a href="../index.html">ytmusicapi_dart</a></li>
     <li><a href="../continuations/">continuations</a></li>
-    <li class="self-crumb">getParsedContinuationItems function</li>
+    <li class="self-crumb">getParsedContinuationItems&lt;<wbr><span class="type-parameter">T</span>&gt; function</li>
 </ol>
 
     <h5>continuations library</h5>
@@ -111,7 +112,7 @@
 <footer>
   <span class="no-break">
     ytmusicapi_dart
-      2.4.1
+      3.0.0-rc.1
   </span>
   
 </footer>

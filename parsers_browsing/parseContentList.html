@@ -26,7 +26,7 @@
   <ol class="breadcrumbs gt-separated dark hidden-xs">
     <li><a href="../index.html">ytmusicapi_dart</a></li>
     <li><a href="../parsers_browsing/">parsers&#47;browsing.dart</a></li>
-    <li class="self-crumb">parseContentList function</li>
+    <li class="self-crumb">parseContentList&lt;<wbr><span class="type-parameter">T</span>&gt; function</li>
   </ol>
   <div class="self-name">parseContentList</div>
   <form class="search navbar-right" role="search">
@@ -48,16 +48,17 @@
       data-above-sidebar="parsers_browsing&#47;parsers_browsing-library-sidebar.html"
       data-below-sidebar="">
       <div>
-<h1><span class="kind-function">parseContentList</span> function 
+<h1><span class="kind-function">parseContentList&lt;<wbr><span class="type-parameter">T</span>&gt;</span> function 
  
 </h1></div>
 
     <section class="multi-line-signature">
         
-<span class="returntype"><a href="https://api.dart.dev/stable/3.12.2/dart-async/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.dart.dev/stable/3.12.2/dart-core/List-class.html">List</a></span>&gt;</span></span>
-<span class="name ">parseContentList</span>(<wbr><ol class="parameter-list"> <li><span class="parameter" id="parseContentList-param-results"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.12.2/dart-core/List-class.html">List</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../type_alias/JsonMap.html">JsonMap</a></span>&gt;</span></span> <span class="parameter-name">results</span>, </span></li>
-<li><span class="parameter" id="parseContentList-param-parseFunc"><span class="type-annotation"><a href="../type_alias/RequestFuncBodyType.html">RequestFuncBodyType</a></span> <span class="parameter-name">parseFunc</span>, {</span></li>
-<li><span class="parameter" id="parseContentList-param-key"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.12.2/dart-core/String-class.html">String</a></span> <span class="parameter-name">key</span> = <span class="default-value">MTRIR</span>, </span></li>
+<span class="returntype"><a href="https://api.dart.dev/stable/3.14.1/dart-async/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.dart.dev/stable/3.14.1/dart-core/List-class.html">List</a><span class="signature">&lt;<wbr><span class="type-parameter">T</span>&gt;</span></span>&gt;</span></span>
+<span class="name ">parseContentList</span>&lt;<wbr><span class="type-parameter">T</span>&gt;(<wbr><ol class="parameter-list"> <li><span class="parameter" id="parseContentList-param-results"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.14.1/dart-core/List-class.html">List</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../type_alias/JsonMap.html">JsonMap</a></span>&gt;</span></span> <span class="parameter-name">results</span>, </span></li>
+<li><span class="parameter" id="parseContentList-param-parseFunc"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.14.1/dart-async/FutureOr-class.html">FutureOr</a><span class="signature">&lt;<wbr><span class="type-parameter">T</span>&gt;</span></span> <span class="parameter-name">parseFunc</span>(<ol class="parameter-list single-line"> <li><span class="parameter" id="param-"><span class="type-annotation"><a href="../type_alias/JsonMap.html">JsonMap</a></span></span></li>
+</ol>), {</span></li>
+<li><span class="parameter" id="parseContentList-param-key"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.14.1/dart-core/String-class.html">String</a></span> <span class="parameter-name">key</span> = <span class="default-value">MTRIR</span>, </span></li>
 </ol>})
 
         
@@ -72,12 +73,12 @@
     
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
-  <pre class="language-dart"><code class="language-dart">Future&lt;List&gt; parseContentList(
+  <pre class="language-dart"><code class="language-dart">Future&lt;List&lt;T&gt;&gt; parseContentList&lt;T&gt;(
   List&lt;JsonMap&gt; results,
-  RequestFuncBodyType parseFunc, {
+  FutureOr&lt;T&gt; Function(JsonMap) parseFunc, {
   String key = MTRIR,
 }) async {
-  final contents = &lt;JsonMap&gt;[];
+  final contents = &lt;T&gt;[];
   for (final result in results) {
     contents.add(await parseFunc(result[key] as JsonMap));
   }
@@ -97,7 +98,7 @@
 <ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
     <li><a href="../index.html">ytmusicapi_dart</a></li>
     <li><a href="../parsers_browsing/">browsing</a></li>
-    <li class="self-crumb">parseContentList function</li>
+    <li class="self-crumb">parseContentList&lt;<wbr><span class="type-parameter">T</span>&gt; function</li>
 </ol>
 
     <h5>browsing library</h5>
@@ -109,7 +110,7 @@
 <footer>
   <span class="no-break">
     ytmusicapi_dart
-      2.4.1
+      3.0.0-rc.1
   </span>
   
 </footer>

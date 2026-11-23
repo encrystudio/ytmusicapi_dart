@@ -54,7 +54,7 @@
 
     <section class="multi-line-signature">
         
-<span class="returntype"><a href="../type_alias/JsonMap.html">JsonMap</a></span>
+<span class="returntype"><a href="../models_objects_video/YtVideo-class.html">YtVideo</a></span>
 <span class="name ">parseEpisodeFlat</span>(<wbr><ol class="parameter-list single-line"> <li><span class="parameter" id="parseEpisodeFlat-param-data"><span class="type-annotation"><a href="../type_alias/JsonMap.html">JsonMap</a></span> <span class="parameter-name">data</span></span></li>
 </ol>)
 
@@ -70,30 +70,44 @@
     
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
-  <pre class="language-dart"><code class="language-dart">JsonMap parseEpisodeFlat(JsonMap data) {
-  return {
-    &#39;title&#39;: nav(getFlexColumnItem(data, 0), TEXT_RUN_TEXT),
-    &#39;podcast&#39;: parseIdName(
-      nav(getFlexColumnItem(data, 1), TEXT_RUN) as JsonMap,
+  <pre class="language-dart"><code class="language-dart">YtVideo parseEpisodeFlat(JsonMap data) {
+  return YtVideo(
+    name: nav(getFlexColumnItem(data, 0), TEXT_RUN_TEXT) as String,
+    id: nav(data, [&#39;playlistItemData&#39;, &#39;videoId&#39;]) as String,
+    playlistId:
+        nav(data, [
+              ...PLAY_BUTTON,
+              &#39;playNavigationEndpoint&#39;,
+              ...WATCH_PLAYLIST_ID,
+            ])
+            as String,
+    videoType: VideoType.tryFromValue(
+      nav(data, [
+            ...PLAY_BUTTON,
+            &#39;playNavigationEndpoint&#39;,
+            ...NAVIGATION_VIDEO_TYPE,
+          ])
+          as String,
     ),
-    &#39;videoId&#39;: nav(data, [&#39;playlistItemData&#39;, &#39;videoId&#39;]),
-    &#39;browseId&#39;: nav(getFlexColumnItem(data, 0), [
-      ...TEXT_RUN,
-      ...NAVIGATION_BROWSE_ID,
-    ]),
-    &#39;playlistId&#39;: nav(data, [
-      ...PLAY_BUTTON,
-      &#39;playNavigationEndpoint&#39;,
-      ...WATCH_PLAYLIST_ID,
-    ]),
-    &#39;videoType&#39;: nav(data, [
-      ...PLAY_BUTTON,
-      &#39;playNavigationEndpoint&#39;,
-      ...NAVIGATION_VIDEO_TYPE,
-    ]),
-    &#39;date&#39;: nav(getFlexColumnItem(data, 2), TEXT_RUN_TEXT),
-    &#39;thumbnails&#39;: nav(data, THUMBNAILS),
-  };
+    views: null,
+    durationRaw: null,
+    duration: null,
+    artists: [],
+    thumbnails: YtThumbnails.fromJson(
+      List&lt;JsonMap&gt;.from(nav(data, THUMBNAILS) as List),
+    ),
+    year: null,
+    isAvailable: null,
+    isEpisode: true,
+    isSong: false,
+    album: parseIdName(nav(getFlexColumnItem(data, 1), TEXT_RUN) as JsonMap),
+    trackNumber: null,
+    isExplicit: null,
+    inLibrary: null,
+    feedbackTokenAdd: null,
+    feedbackTokenRemove: null,
+    description: null,
+  );
 }</code></pre>
 </section>
 
@@ -121,7 +135,7 @@
 <footer>
   <span class="no-break">
     ytmusicapi_dart
-      2.4.1
+      3.0.0-rc.1
   </span>
   
 </footer>

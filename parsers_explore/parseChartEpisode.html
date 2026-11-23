@@ -54,7 +54,7 @@
 
     <section class="multi-line-signature">
         
-<span class="returntype"><a href="../type_alias/JsonMap.html">JsonMap</a></span>
+<span class="returntype"><a href="../models_objects_video/YtVideo-class.html">YtVideo</a></span>
 <span class="name ">parseChartEpisode</span>(<wbr><ol class="parameter-list single-line"> <li><span class="parameter" id="parseChartEpisode-param-data"><span class="type-annotation"><a href="../type_alias/JsonMap.html">JsonMap</a></span> <span class="parameter-name">data</span></span></li>
 </ol>)
 
@@ -70,17 +70,19 @@
     
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
-  <pre class="language-dart"><code class="language-dart">JsonMap parseChartEpisode(JsonMap data) {
+  <pre class="language-dart"><code class="language-dart">YtVideo parseChartEpisode(JsonMap data) {
   final episode = parseEpisode(data);
-  episode.remove(&#39;index&#39;);
-  episode[&#39;podcast&#39;] = parseIdName(
+  episode.trackNumber = null;
+  episode.album = parseIdName(
     nav(data, [&#39;secondTitle&#39;, &#39;runs&#39;, 0]) as JsonMap?,
   );
-  episode[&#39;duration&#39;] = nav(data, [
-    &#39;playbackProgress&#39;,
-    ...PROGRESS_RENDERER,
-    ...DURATION_TEXT,
-  ], nullIfAbsent: true);
+  episode.durationRaw =
+      nav(data, [
+            &#39;playbackProgress&#39;,
+            ...PROGRESS_RENDERER,
+            ...DURATION_TEXT,
+          ], nullIfAbsent: true)
+          as String?;
   return episode;
 }</code></pre>
 </section>
@@ -109,7 +111,7 @@
 <footer>
   <span class="no-break">
     ytmusicapi_dart
-      2.4.1
+      3.0.0-rc.1
   </span>
   
 </footer>

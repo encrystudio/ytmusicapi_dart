@@ -54,9 +54,8 @@
 
     <section class="multi-line-signature">
         
-<span class="returntype"><a href="../type_alias/JsonMap.html">JsonMap</a></span>
-<span class="name ">parseTopResult</span>(<wbr><ol class="parameter-list single-line"> <li><span class="parameter" id="parseTopResult-param-data"><span class="type-annotation"><a href="../type_alias/JsonMap.html">JsonMap</a></span> <span class="parameter-name">data</span>, </span></li>
-<li><span class="parameter" id="parseTopResult-param-searchResultTypes"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.12.2/dart-core/List-class.html">List</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.dart.dev/stable/3.12.2/dart-core/String-class.html">String</a></span>&gt;</span></span> <span class="parameter-name">searchResultTypes</span></span></li>
+<span class="returntype"><a href="../utils/YtTopResult-class.html">YtTopResult</a>?</span>
+<span class="name ">parseTopResult</span>(<wbr><ol class="parameter-list single-line"> <li><span class="parameter" id="parseTopResult-param-data"><span class="type-annotation"><a href="../type_alias/JsonMap.html">JsonMap</a></span> <span class="parameter-name">data</span></span></li>
 </ol>)
 
         
@@ -71,102 +70,204 @@
     
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
-  <pre class="language-dart"><code class="language-dart">JsonMap parseTopResult(JsonMap data, List&lt;String&gt; searchResultTypes) {
-  final resultType = getSearchResultType(
-    nav(data, SUBTITLE) as String?,
-    searchResultTypes,
-  );
+  <pre class="language-dart"><code class="language-dart">YtTopResult? parseTopResult(JsonMap data) {
+  final resultType = getSearchResultType(nav(data, SUBTITLE) as String?);
+  if (resultType == null) {
+    return null;
+  }
   final category =
-      nav(data, CARD_SHELF_TITLE, nullIfAbsent: true) ?? &#39;Top result&#39;;
-  final searchResult = &lt;String, dynamic&gt;{
-    &#39;category&#39;: category,
-    &#39;resultType&#39;: resultType,
-  };
-  if ([&#39;song&#39;, &#39;album&#39;].contains(resultType)) {
-    searchResult[&#39;isExplicit&#39;] =
-        nav(data, SUBTITLE_BADGE_LABEL, nullIfAbsent: true) != null;
+      nav(data, CARD_SHELF_TITLE, nullIfAbsent: true) as String? ??
+      &#39;Top result&#39;;
+  final thumbnails =
+      nav(data, THUMBNAILS, nullIfAbsent: true) != null
+          ? YtThumbnails.fromJson(
+            List&lt;JsonMap&gt;.from(
+              nav(data, THUMBNAILS, nullIfAbsent: true) as List,
+            ),
+          )
+          : null;
+
+  YtBaseObject? resultObject;
+
+  switch (resultType) {
+    case YtResultType.ALBUM || YtResultType.EP || YtResultType.SINGLE:
+      final buttonCommand = nav(data, [
+        &#39;buttons&#39;,
+        0,
+        &#39;buttonRenderer&#39;,
+        &#39;command&#39;,
+      ], nullIfAbsent: true);
+      final runs = nav(data, [&#39;subtitle&#39;, &#39;runs&#39;]) as List;
+      List&lt;(SongRunsItemType, dynamic)&gt; songInfo;
+      if (runs.length &gt;= 2) {
+        songInfo = parseSongRuns(runs.sublist(2));
+      } else {
+        songInfo = parseSongRuns(runs);
+      }
+      resultObject = YtAlbum(
+        name: nav(data, TITLE_TEXT) as String,
+        id:
+            nav(data, TITLE + NAVIGATION_BROWSE_ID, nullIfAbsent: true)
+                as String?,
+        playlistId: parseAlbumPlaylistIdIfExists(buttonCommand as JsonMap?),
+        albumType: YtAlbumType.tryFromName(resultType.name),
+        thumbnails: thumbnails!,
+        artists: [],
+        tracks: [],
+        durationRaw: null,
+        duration: null,
+        isExplicit: nav(data, SUBTITLE_BADGE_LABEL, nullIfAbsent: true) != null,
+        year: null,
+        trackCount: null,
+        description: null,
+        likeStatus: null,
+        relatedRecommendations: [],
+        otherVersions: [],
+      );
+      resultObject as YtAlbum;
+      for (final (songRunsItemType, value) in songInfo) {
+        switch (songRunsItemType) {
+          case SongRunsItemType.ALBUM:
+            continue;
+          case SongRunsItemType.ARTISTS:
+            resultObject.artists = value as List&lt;YtBaseObject&gt;;
+          case SongRunsItemType.DURATION_RAW:
+            resultObject.durationRaw = value as String?;
+          case SongRunsItemType.DURATION_SECONDS:
+            resultObject.duration = value as Duration?;
+          case SongRunsItemType.VIEWS:
+            continue;
+          case SongRunsItemType.YEAR:
+            resultObject.year = value as int?;
+        }
+      }
+    case YtResultType.ARTIST:
+      final subscribers = nav(data, SUBTITLE2, nullIfAbsent: true) as String?;
+      &#47;&#47; TODO
+      resultObject = YtArtist(
+        name: &#39;&#39;,
+        id: null,
+        shuffleId: null,
+        radioId: null,
+        thumbnails: thumbnails!,
+        subscribers: subscribers?.split(&#39; &#39;).first,
+      );
+
+    case YtResultType.PLAYLIST:
+      resultObject = YtPlaylist(
+        name: nav(data, TITLE_TEXT) as String,
+        id: nav(data, MENU_PLAYLIST_ID) as String,
+        playlistType: null,
+        authors: parseArtistsRuns(
+          (nav(data, [&#39;subtitle&#39;, &#39;runs&#39;]) as List).sublist(2),
+        ),
+        owned: null,
+        privacy: null,
+        thumbnails: thumbnails,
+        description: null,
+        durationRaw: null,
+        duration: null,
+        year: null,
+        itemCount: null,
+        views: null,
+        items: [],
+        related: [],
+        suggestions: [],
+      );
+    case YtResultType.SONG || YtResultType.VIDEO || YtResultType.EPISODE:
+      final runs = nav(data, [&#39;subtitle&#39;, &#39;runs&#39;]) as List;
+      List&lt;(SongRunsItemType, dynamic)&gt; songInfo;
+      if (runs.length &gt;= 2) {
+        songInfo = parseSongRuns(runs.sublist(2));
+      } else {
+        songInfo = parseSongRuns(runs);
+      }
+      final onTap = data[&#39;onTap&#39;];
+      resultObject = YtVideo(
+        name: nav(data, TITLE_TEXT) as String,
+        id:
+            resultType == YtResultType.EPISODE
+                ? nav(data, [
+                      ...THUMBNAIL_OVERLAY_NAVIGATION,
+                      ...WATCH_VIDEO_ID,
+                    ])
+                    as String
+                : (onTap != null ? nav(onTap, WATCH_VIDEO_ID) as String : null),
+        playlistId: null,
+        videoType:
+            resultType == YtResultType.EPISODE
+                ? VideoType.tryFromValue(
+                  nav(data, [
+                        ...THUMBNAIL_OVERLAY_NAVIGATION,
+                        ...NAVIGATION_VIDEO_TYPE,
+                      ])
+                      as String,
+                )
+                : (onTap != null
+                    ? VideoType.tryFromValue(
+                      nav(onTap, NAVIGATION_VIDEO_TYPE) as String,
+                    )
+                    : null),
+        views: null,
+        durationRaw: null,
+        duration: null,
+        artists:
+            resultType == YtResultType.EPISODE
+                ? [
+                  parseIdName(
+                    (nav(data, SUBTITLE_RUNS) as List).sublist(2)[2]
+                        as JsonMap?,
+                  ),
+                ]
+                : [],
+        thumbnails: thumbnails,
+        year: null,
+        isAvailable: null,
+        isEpisode: resultType == YtResultType.EPISODE,
+        isSong: resultType == YtResultType.SONG,
+        album: null,
+        trackNumber: null,
+        isExplicit: nav(data, SUBTITLE_BADGE_LABEL, nullIfAbsent: true) != null,
+        inLibrary: null,
+        feedbackTokenAdd: null,
+        feedbackTokenRemove: null,
+        description: null,
+      );
+      resultObject as YtVideo;
+      for (final (songRunsItemType, value) in songInfo) {
+        switch (songRunsItemType) {
+          case SongRunsItemType.ALBUM:
+            resultObject.album = value as YtBaseObject?;
+          case SongRunsItemType.ARTISTS:
+            resultObject.artists = value as List&lt;YtBaseObject&gt;;
+          case SongRunsItemType.DURATION_RAW:
+            resultObject.durationRaw = value as String?;
+          case SongRunsItemType.DURATION_SECONDS:
+            resultObject.duration = value as Duration?;
+          case SongRunsItemType.VIEWS:
+            resultObject.views = value as String?;
+          case SongRunsItemType.YEAR:
+            resultObject.year = value as int?;
+        }
+      }
+    case YtResultType.STATION:
+      &#47;&#47; TODO
+      return null;
+    case YtResultType.PROFILE:
+      &#47;&#47; TODO
+      return null;
+    case YtResultType.PODCAST:
+      &#47;&#47; TODO
+      return null;
   }
 
-  if (resultType == &#39;artist&#39;) {
-    final subscribers = nav(data, SUBTITLE2, nullIfAbsent: true) as String?;
-    if (subscribers != null) {
-      searchResult[&#39;subscribers&#39;] = subscribers.split(&#39; &#39;)[0];
-    }
+  final searchResult = YtTopResult(
+    result: YtSearchResult(type: resultType, category: category)
+      ..result = resultObject,
+    undercardsTitle: null, &#47;&#47; TODO
+    undercards: [], &#47;&#47; TODO
+  );
 
-    final artistInfo = parseSongRuns(nav(data, [&#39;title&#39;, &#39;runs&#39;]) as List);
-    searchResult.addAll(artistInfo);
-  }
-
-  if (resultType == &#39;song&#39; || resultType == &#39;video&#39;) {
-    final onTap = data[&#39;onTap&#39;];
-    if (onTap != null) {
-      searchResult[&#39;videoId&#39;] = nav(onTap, WATCH_VIDEO_ID);
-      searchResult[&#39;videoType&#39;] = nav(onTap, NAVIGATION_VIDEO_TYPE);
-    }
-  }
-
-  if ([&#39;song&#39;, &#39;video&#39;, &#39;album&#39;].contains(resultType)) {
-    searchResult[&#39;videoId&#39;] = nav(data, [
-      &#39;onTap&#39;,
-      ...WATCH_VIDEO_ID,
-    ], nullIfAbsent: true);
-    searchResult[&#39;videoType&#39;] = nav(data, [
-      &#39;onTap&#39;,
-      ...NAVIGATION_VIDEO_TYPE,
-    ], nullIfAbsent: true);
-    searchResult[&#39;title&#39;] = nav(data, TITLE_TEXT);
-
-    final runs = nav(data, [&#39;subtitle&#39;, &#39;runs&#39;]) as List;
-    final JsonMap songInfo;
-    if (runs.length &gt;= 2) {
-      songInfo = parseSongRuns(runs.sublist(2));
-    } else {
-      songInfo = parseSongRuns(runs);
-    }
-    searchResult.addAll(songInfo);
-  }
-
-  if (resultType == &#39;album&#39;) {
-    searchResult[&#39;browseId&#39;] = nav(
-      data,
-      TITLE + NAVIGATION_BROWSE_ID,
-      nullIfAbsent: true,
-    );
-    final buttonCommand = nav(data, [
-      &#39;buttons&#39;,
-      0,
-      &#39;buttonRenderer&#39;,
-      &#39;command&#39;,
-    ], nullIfAbsent: true);
-    searchResult[&#39;playlistId&#39;] = parseAlbumPlaylistIdIfExists(
-      buttonCommand as JsonMap?,
-    );
-  }
-
-  if (resultType == &#39;playlist&#39;) {
-    searchResult[&#39;playlistId&#39;] = nav(data, MENU_PLAYLIST_ID);
-    searchResult[&#39;title&#39;] = nav(data, TITLE_TEXT);
-    searchResult[&#39;author&#39;] = parseArtistsRuns(
-      (nav(data, [&#39;subtitle&#39;, &#39;runs&#39;]) as List).sublist(2),
-    );
-  }
-
-  if (resultType == &#39;episode&#39;) {
-    searchResult[&#39;title&#39;] = nav(data, TITLE_TEXT);
-    searchResult[&#39;videoId&#39;] = nav(data, [
-      ...THUMBNAIL_OVERLAY_NAVIGATION,
-      ...WATCH_VIDEO_ID,
-    ]);
-    searchResult[&#39;videoType&#39;] = nav(data, [
-      ...THUMBNAIL_OVERLAY_NAVIGATION,
-      ...NAVIGATION_VIDEO_TYPE,
-    ]);
-    final runs = (nav(data, SUBTITLE_RUNS) as List).sublist(2);
-    searchResult[&#39;date&#39;] = (runs[0] as JsonMap)[&#39;text&#39;];
-    searchResult[&#39;podcast&#39;] = parseIdName(runs[2] as JsonMap?);
-  }
-
-  searchResult[&#39;thumbnails&#39;] = nav(data, THUMBNAILS, nullIfAbsent: true);
   return searchResult;
 }</code></pre>
 </section>
@@ -195,7 +296,7 @@
 <footer>
   <span class="no-break">
     ytmusicapi_dart
-      2.4.1
+      3.0.0-rc.1
   </span>
   
 </footer>

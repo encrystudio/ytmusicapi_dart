@@ -54,8 +54,8 @@
 
     <section class="multi-line-signature">
       
-<span class="returntype"><a href="https://api.dart.dev/stable/3.12.2/dart-async/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../../type_alias/JsonMap.html">JsonMap</a></span>&gt;</span></span>
-<span class="name ">getSavedEpisodes</span>(<wbr>{<ol class="parameter-list"> <li><span class="parameter" id="getSavedEpisodes-param-limit"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.12.2/dart-core/int-class.html">int</a></span> <span class="parameter-name">limit</span> = <span class="default-value">100</span>, </span></li>
+<span class="returntype"><a href="https://api.dart.dev/stable/3.14.1/dart-async/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../../models_objects_playlist/YtPlaylist-class.html">YtPlaylist</a></span>&gt;</span></span>
+<span class="name ">getSavedEpisodes</span>(<wbr>{<ol class="parameter-list"> <li><span class="parameter" id="getSavedEpisodes-param-limit"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.14.1/dart-core/int-class.html">int</a></span> <span class="parameter-name">limit</span> = <span class="default-value">100</span>, </span></li>
 </ol>})
 
       
@@ -67,14 +67,13 @@
 <ul>
 <li><code>limit</code> How many items to return. (Default: <code>100</code>).</li>
 </ul>
-<p>Returns List of <code>playlistItem</code> Maps. See <a href="../../mixins_playlists/PlaylistsMixin/getPlaylist.html">getPlaylist</a>.</p>
 </section>
 
 
     
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
-  <pre class="language-dart"><code class="language-dart">Future&lt;JsonMap&gt; getSavedEpisodes({int limit = 100}) =&gt;
+  <pre class="language-dart"><code class="language-dart">Future&lt;YtPlaylist&gt; getSavedEpisodes({int limit = 100}) =&gt;
     getPlaylist(&#39;SE&#39;, limit: limit);</code></pre>
 </section>
 
@@ -103,7 +102,7 @@
 <footer>
   <span class="no-break">
     ytmusicapi_dart
-      2.4.1
+      3.0.0-rc.1
   </span>
   
 </footer>

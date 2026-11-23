@@ -54,7 +54,7 @@
 
     <section class="multi-line-signature">
         
-<span class="returntype"><a href="../type_alias/JsonMap.html">JsonMap</a></span>
+<span class="returntype"><a href="../utils/PlaylistHeader-class.html">PlaylistHeader</a></span>
 <span class="name ">parsePlaylistHeader</span>(<wbr><ol class="parameter-list single-line"> <li><span class="parameter" id="parsePlaylistHeader-param-response"><span class="type-annotation"><a href="../type_alias/JsonMap.html">JsonMap</a></span> <span class="parameter-name">response</span></span></li>
 </ol>)
 
@@ -70,26 +70,33 @@
     
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
-  <pre class="language-dart"><code class="language-dart">JsonMap parsePlaylistHeader(JsonMap response) {
-  final playlist = &lt;String, dynamic&gt;{};
-
+  <pre class="language-dart"><code class="language-dart">PlaylistHeader parsePlaylistHeader(JsonMap response) {
   final editableHeader =
       nav(response, [
             ...HEADER,
             ...EDITABLE_PLAYLIST_DETAIL_HEADER,
           ], nullIfAbsent: true)
           as JsonMap?;
-  playlist[&#39;owned&#39;] = editableHeader != null;
-  playlist[&#39;privacy&#39;] = &#39;PUBLIC&#39;;
+
+  final playlist = PlaylistHeader(
+    owned: editableHeader != null,
+    privacy: PrivacyStatus.PUBLIC,
+    thumbnails: null,
+    description: null,
+    year: null,
+  );
 
   JsonMap? header;
 
   if (editableHeader != null) {
     header = nav(editableHeader, HEADER_DETAIL) as JsonMap?;
-    playlist[&#39;privacy&#39;] =
-        ((editableHeader[&#39;editHeader&#39;]
-                as JsonMap)[&#39;musicPlaylistEditHeaderRenderer&#39;]
-            as JsonMap)[&#39;privacy&#39;];
+    playlist.privacy =
+        PrivacyStatus.fromValue(
+          ((editableHeader[&#39;editHeader&#39;]
+                      as JsonMap)[&#39;musicPlaylistEditHeaderRenderer&#39;]
+                  as JsonMap)[&#39;privacy&#39;]
+              as String?,
+        )!;
   } else {
     header = nav(response, HEADER_DETAIL, nullIfAbsent: true) as JsonMap?;
     header ??=
@@ -102,17 +109,21 @@
             as JsonMap?;
   }
 
-  playlist.addAll(parsePlaylistHeaderMeta(header!));
-
-  if (playlist[&#39;thumbnails&#39;] == null) {
-    playlist[&#39;thumbnails&#39;] = nav(header, THUMBNAIL_CROPPED, nullIfAbsent: true);
-  }
-  playlist[&#39;description&#39;] = nav(header, [
-    &#39;description&#39;,
-    ...DESCRIPTION_SHELF,
-    ...DESCRIPTION,
-  ], nullIfAbsent: true);
-  playlist[&#39;year&#39;] = nav(header, SUBTITLE2);
+  playlist.meta = parsePlaylistHeaderMeta(header!);
+  final thumbnails =
+      nav(header, THUMBNAIL_CROPPED, nullIfAbsent: true) as List?;
+  playlist.thumbnails ??=
+      thumbnails != null
+          ? YtThumbnails.fromJson(List&lt;JsonMap&gt;.from(thumbnails))
+          : null;
+  playlist.description =
+      nav(header, [
+            &#39;description&#39;,
+            ...DESCRIPTION_SHELF,
+            ...DESCRIPTION,
+          ], nullIfAbsent: true)
+          as String?;
+  playlist.year = int.tryParse(nav(header, SUBTITLE2) as String);
 
   return playlist;
 }</code></pre>
@@ -142,7 +153,7 @@
 <footer>
   <span class="no-break">
     ytmusicapi_dart
-      2.4.1
+      3.0.0-rc.1
   </span>
   
 </footer>

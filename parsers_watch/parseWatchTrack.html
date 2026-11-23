@@ -54,7 +54,7 @@
 
     <section class="multi-line-signature">
         
-<span class="returntype"><a href="../type_alias/JsonMap.html">JsonMap</a></span>
+<span class="returntype"><a href="../models_objects_video/YtVideo-class.html">YtVideo</a></span>
 <span class="name ">parseWatchTrack</span>(<wbr><ol class="parameter-list single-line"> <li><span class="parameter" id="parseWatchTrack-param-data"><span class="type-annotation"><a href="../type_alias/JsonMap.html">JsonMap</a></span> <span class="parameter-name">data</span></span></li>
 </ol>)
 
@@ -70,8 +70,9 @@
     
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
-  <pre class="language-dart"><code class="language-dart">JsonMap parseWatchTrack(JsonMap data) {
-  String? likeStatus;
+  <pre class="language-dart"><code class="language-dart">YtVideo parseWatchTrack(JsonMap data) {
+  &#47;&#47; TODO
+  &#47;&#47; LikeStatus? likeStatus;
 
   for (final item in List&lt;JsonMap&gt;.from(nav(data, MENU_ITEMS) as List)) {
     if (item.containsKey(TOGGLE_MENU)) {
@@ -79,36 +80,67 @@
           (item[TOGGLE_MENU] as JsonMap)[&#39;defaultServiceEndpoint&#39;] as JsonMap;
 
       if (service.containsKey(&#39;likeEndpoint&#39;)) {
-        likeStatus = parseLikeStatus(service);
+        &#47;&#47; TODO
+        &#47;&#47; likeStatus = parseLikeStatus(service);
       }
     }
   }
 
-  final track = &lt;String, dynamic&gt;{
-    &#39;videoId&#39;: data[&#39;videoId&#39;],
-    &#39;title&#39;: nav(data, TITLE_TEXT),
-    &#39;length&#39;: nav(data, [&#39;lengthText&#39;, &#39;runs&#39;, 0, &#39;text&#39;], nullIfAbsent: true),
-    &#39;thumbnail&#39;: nav(data, THUMBNAIL),
-    &#39;likeStatus&#39;: likeStatus,
-    &#39;videoType&#39;: nav(data, [
-      &#39;navigationEndpoint&#39;,
-      ...NAVIGATION_VIDEO_TYPE,
-    ], nullIfAbsent: true),
-  };
+  final songMenuData = parseSongMenuData(data);
 
-  track.addAll({
-    &#39;inLibrary&#39;: null,
-    &#39;feedbackTokens&#39;: null,
-    &#39;pinnedToListenAgain&#39;: null,
-    &#39;listenAgainFeedbackTokens&#39;: null,
-    ...parseSongMenuData(data),
-  });
+  final track = YtVideo(
+    name: nav(data, TITLE_TEXT) as String,
+    id: data[&#39;videoId&#39;] as String?,
+    playlistId: null,
+    videoType: VideoType.tryFromValue(
+      nav(data, [
+            &#39;navigationEndpoint&#39;,
+            ...NAVIGATION_VIDEO_TYPE,
+          ], nullIfAbsent: true)
+          as String?,
+    ),
+    views: null,
+    durationRaw:
+        nav(data, [&#39;lengthText&#39;, &#39;runs&#39;, 0, &#39;text&#39;], nullIfAbsent: true)
+            as String?,
+    duration: null,
+    artists: [],
+    thumbnails: YtThumbnails.fromJson(
+      List&lt;JsonMap&gt;.from(nav(data, THUMBNAIL) as List),
+    ),
+    year: null,
+    isAvailable: null,
+    isEpisode: null,
+    isSong: null,
+    album: null,
+    trackNumber: null,
+    isExplicit: null,
+    inLibrary: songMenuData.inLibrary,
+    feedbackTokenAdd: songMenuData.feedbackTokenAdd,
+    feedbackTokenRemove: songMenuData.feedbackTokenRemove,
+    description: null,
+  );
 
   final longBylineText = nav(data, [&#39;longBylineText&#39;]) as JsonMap?;
 
   if (longBylineText != null) {
     final songInfo = parseSongRuns(longBylineText[&#39;runs&#39;] as List);
-    track.addAll(songInfo);
+    for (final (songRunsItemType, value) in songInfo) {
+      switch (songRunsItemType) {
+        case SongRunsItemType.ALBUM:
+          track.album = value as YtBaseObject;
+        case SongRunsItemType.ARTISTS:
+          track.artists = value as List&lt;YtBaseObject&gt;;
+        case SongRunsItemType.DURATION_RAW:
+          track.durationRaw = value as String?;
+        case SongRunsItemType.DURATION_SECONDS:
+          track.duration = value as Duration?;
+        case SongRunsItemType.VIEWS:
+          track.views = value as String?;
+        case SongRunsItemType.YEAR:
+          track.year = value as int?;
+      }
+    }
   }
 
   return track;
@@ -139,7 +171,7 @@
 <footer>
   <span class="no-break">
     ytmusicapi_dart
-      2.4.1
+      3.0.0-rc.1
   </span>
   
 </footer>

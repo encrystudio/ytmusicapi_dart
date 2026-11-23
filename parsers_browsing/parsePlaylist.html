@@ -54,7 +54,7 @@
 
     <section class="multi-line-signature">
         
-<span class="returntype"><a href="../type_alias/JsonMap.html">JsonMap</a></span>
+<span class="returntype"><a href="../models_objects_playlist/YtPlaylist-class.html">YtPlaylist</a></span>
 <span class="name ">parsePlaylist</span>(<wbr><ol class="parameter-list single-line"> <li><span class="parameter" id="parsePlaylist-param-data"><span class="type-annotation"><a href="../type_alias/JsonMap.html">JsonMap</a></span> <span class="parameter-name">data</span></span></li>
 </ol>)
 
@@ -70,30 +70,49 @@
     
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
-  <pre class="language-dart"><code class="language-dart">JsonMap parsePlaylist(JsonMap data) {
+  <pre class="language-dart"><code class="language-dart">YtPlaylist parsePlaylist(JsonMap data) {
   final JsonMap realData;
   if (data.containsKey(MTRIR)) {
     realData = nav(data, [MTRIR]) as JsonMap;
   } else {
     realData = data;
   }
-  final playlist = &lt;String, dynamic&gt;{
-    &#39;title&#39;: nav(realData, TITLE_TEXT, nullIfAbsent: true),
-    &#39;playlistId&#39;: (nav(realData, [...TITLE, ...NAVIGATION_BROWSE_ID]) as String)
+
+  final playlist = YtPlaylist(
+    name:
+        nav(realData, TITLE_TEXT, nullIfAbsent: true) as String? ??
+        &#39;(no title)&#39;, &#47;&#47; rare but possible for playlist title to be missing
+    id: (nav(realData, [...TITLE, ...NAVIGATION_BROWSE_ID]) as String)
         .substring(2),
-    &#39;thumbnails&#39;: nav(realData, THUMBNAIL_RENDERER),
-  };
+    playlistType: null,
+    authors: [],
+    thumbnails: YtThumbnails.fromJson(
+      List&lt;JsonMap&gt;.from(nav(realData, THUMBNAIL_RENDERER) as List),
+    ),
+    description: null,
+    duration: null,
+    year: null,
+    itemCount: null,
+    owned: null,
+    privacy: null,
+    durationRaw: null,
+    views: null,
+    items: [],
+    related: [],
+    suggestions: [],
+  );
 
   final subtitle = realData[&#39;subtitle&#39;] as JsonMap;
   if (subtitle.containsKey(&#39;runs&#39;)) {
-    playlist[&#39;description&#39;] =
+    playlist.description =
         (subtitle[&#39;runs&#39;] as List)
             .map((run) =&gt; (run as JsonMap)[&#39;text&#39;])
             .join();
     if ((subtitle[&#39;runs&#39;] as List).length == 3 &amp;&amp;
         RegExp(r&#39;\d+ &#39;).hasMatch(nav(realData, SUBTITLE2) as String)) {
-      playlist[&#39;count&#39;] = (nav(realData, SUBTITLE2) as String).split(&#39; &#39;)[0];
-      playlist[&#39;author&#39;] = parseArtistsRuns(
+      playlist.itemCount =
+          (nav(realData, SUBTITLE2) as String).split(&#39; &#39;).first as int;
+      playlist.authors = parseArtistsRuns(
         (subtitle[&#39;runs&#39;] as List).sublist(0, 1),
       );
     }
@@ -127,7 +146,7 @@
 <footer>
   <span class="no-break">
     ytmusicapi_dart
-      2.4.1
+      3.0.0-rc.1
   </span>
   
 </footer>

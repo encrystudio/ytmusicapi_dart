@@ -54,7 +54,7 @@
 
     <section class="multi-line-signature">
         
-<span class="returntype"><a href="../type_alias/JsonMap.html">JsonMap</a></span>
+<span class="returntype">(<span class="field"><span class="type-annotation"><a href="../models_objects_artist/YtArtist-class.html">YtArtist</a></span>, </span><span class="field"><span class="type-annotation"><a href="../utils/ChartRanking-class.html">ChartRanking</a></span></span>)</span>
 <span class="name ">parseChartArtist</span>(<wbr><ol class="parameter-list single-line"> <li><span class="parameter" id="parseChartArtist-param-data"><span class="type-annotation"><a href="../type_alias/JsonMap.html">JsonMap</a></span> <span class="parameter-name">data</span></span></li>
 </ol>)
 
@@ -70,21 +70,24 @@
     
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
-  <pre class="language-dart"><code class="language-dart">JsonMap parseChartArtist(JsonMap data) {
+  <pre class="language-dart"><code class="language-dart">(YtArtist, ChartRanking) parseChartArtist(JsonMap data) {
   dynamic subscribers = getFlexColumnItem(data, 1);
   if (subscribers != null) {
-    subscribers = (nav(subscribers, TEXT_RUN_TEXT) as String).split(&#39; &#39;)[0];
+    subscribers = (nav(subscribers, TEXT_RUN_TEXT) as String).split(&#39; &#39;).first;
   }
 
-  final parsed = &lt;String, dynamic&gt;{
-    &#39;title&#39;: nav(getFlexColumnItem(data, 0), TEXT_RUN_TEXT),
-    &#39;browseId&#39;: nav(data, NAVIGATION_BROWSE_ID),
-    &#39;subscribers&#39;: subscribers,
-    &#39;thumbnails&#39;: nav(data, THUMBNAILS),
-  };
+  final parsed = YtArtist(
+    name: nav(getFlexColumnItem(data, 0), TEXT_RUN_TEXT) as String,
+    id: nav(data, NAVIGATION_BROWSE_ID) as String,
+    shuffleId: null,
+    radioId: null,
+    thumbnails: YtThumbnails.fromJson(
+      List&lt;JsonMap&gt;.from(nav(data, THUMBNAILS) as List),
+    ),
+    subscribers: subscribers as String?,
+  );
 
-  parsed.addAll(parseRanking(data, nullIfAbsent: true));
-  return parsed;
+  return (parsed, parseRanking(data, nullIfAbsent: true));
 }</code></pre>
 </section>
 
@@ -112,7 +115,7 @@
 <footer>
   <span class="no-break">
     ytmusicapi_dart
-      2.4.1
+      3.0.0-rc.1
   </span>
   
 </footer>

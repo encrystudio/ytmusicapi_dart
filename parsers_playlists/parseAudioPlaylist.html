@@ -54,9 +54,9 @@
 
     <section class="multi-line-signature">
         
-<span class="returntype"><a href="https://api.dart.dev/stable/3.12.2/dart-async/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../type_alias/JsonMap.html">JsonMap</a></span>&gt;</span></span>
+<span class="returntype"><a href="https://api.dart.dev/stable/3.14.1/dart-async/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../models_objects_playlist/YtPlaylist-class.html">YtPlaylist</a></span>&gt;</span></span>
 <span class="name ">parseAudioPlaylist</span>(<wbr><ol class="parameter-list single-line"> <li><span class="parameter" id="parseAudioPlaylist-param-response"><span class="type-annotation"><a href="../type_alias/JsonMap.html">JsonMap</a></span> <span class="parameter-name">response</span>, </span></li>
-<li><span class="parameter" id="parseAudioPlaylist-param-limit"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.12.2/dart-core/int-class.html">int</a>?</span> <span class="parameter-name">limit</span>, </span></li>
+<li><span class="parameter" id="parseAudioPlaylist-param-limit"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.14.1/dart-core/int-class.html">int</a>?</span> <span class="parameter-name">limit</span>, </span></li>
 <li><span class="parameter" id="parseAudioPlaylist-param-requestFunc"><span class="type-annotation"><a href="../type_alias/RequestFuncBodyType.html">RequestFuncBodyType</a></span> <span class="parameter-name">requestFunc</span></span></li>
 </ol>)
 
@@ -72,22 +72,11 @@
     
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
-  <pre class="language-dart"><code class="language-dart">Future&lt;JsonMap&gt; parseAudioPlaylist(
+  <pre class="language-dart"><code class="language-dart">Future&lt;YtPlaylist&gt; parseAudioPlaylist(
   JsonMap response,
   int? limit,
   RequestFuncBodyType requestFunc,
 ) async {
-  final playlist = &lt;String, dynamic&gt;{
-    &#39;owned&#39;: false,
-    &#39;privacy&#39;: &#39;PUBLIC&#39;,
-    &#39;description&#39;: null,
-    &#39;views&#39;: null,
-    &#39;duration&#39;: null,
-    &#39;tracks&#39;: &lt;JsonMap&gt;[],
-    &#39;thumbnails&#39;: &lt;dynamic&gt;[],
-    &#39;related&#39;: &lt;dynamic&gt;[],
-  };
-
   final sectionList = nav(response, [
     ...TWO_COLUMN_RENDERER,
     &#39;secondaryContents&#39;,
@@ -98,40 +87,50 @@
     &#39;musicPlaylistShelfRenderer&#39;,
   ]);
 
-  playlist[&#39;id&#39;] = nav(contentData, [
-    [&#39;targetId&#39;],
-  ]);
-
-  playlist[&#39;tracks&#39;] = [];
+  final playlist = YtPlaylist(
+    name: &#39;&#39;,
+    id:
+        nav(contentData, [
+              [&#39;targetId&#39;],
+            ])
+            as String?,
+    playlistType: null,
+    authors: [],
+    owned: false,
+    privacy: PrivacyStatus.PUBLIC,
+    thumbnails: null,
+    description: null,
+    durationRaw: null,
+    duration: null,
+    year: null,
+    itemCount: null,
+    views: null,
+    items: [],
+    related: [],
+    suggestions: [],
+  );
 
   if ((contentData as JsonMap).containsKey(&#39;contents&#39;)) {
-    playlist[&#39;tracks&#39;] = parsePlaylistItems(
+    playlist.items = parsePlaylistItems(
       List&lt;JsonMap&gt;.from(contentData[&#39;contents&#39;] as List),
     );
 
-    List parseFunc(contents) =&gt;
+    List&lt;YtVideo&gt; parseFunc(contents) =&gt;
         parsePlaylistItems(List&lt;JsonMap&gt;.from(contents as List));
-    (playlist[&#39;tracks&#39;] as List).addAll(
-      List&lt;JsonMap&gt;.from(
-        await getContinuations2025(contentData, limit, requestFunc, parseFunc),
-      ),
+    playlist.items.addAll(
+      await getContinuations2025(contentData, limit, requestFunc, parseFunc),
     );
   }
 
-  playlist[&#39;trackCount&#39;] = (playlist[&#39;tracks&#39;] as List).length;
+  playlist.itemCount = playlist.items.length;
 
   try {
-    playlist[&#39;title&#39;] =
-        (((playlist[&#39;tracks&#39;] as List)[0] as JsonMap)[&#39;album&#39;]
-            as JsonMap)[&#39;name&#39;];
+    playlist.name = playlist.items.first.album!.name;
   } catch (_) {
-    playlist[&#39;title&#39;] =
-        List&lt;JsonMap&gt;.from(
-          ((playlist[&#39;tracks&#39;] as List)[0] as JsonMap)[&#39;artists&#39;] as List,
-        )[0][&#39;name&#39;];
+    playlist.name = playlist.items.first.artists.first.name;
   }
 
-  playlist[&#39;duration_seconds&#39;] = sumTotalDuration(playlist);
+  playlist.duration = Duration(seconds: sumTotalDurationPlaylist(playlist));
 
   return playlist;
 }</code></pre>
@@ -161,7 +160,7 @@
 <footer>
   <span class="no-break">
     ytmusicapi_dart
-      2.4.1
+      3.0.0-rc.1
   </span>
   
 </footer>

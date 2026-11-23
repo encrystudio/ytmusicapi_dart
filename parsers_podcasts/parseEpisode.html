@@ -54,7 +54,7 @@
 
     <section class="multi-line-signature">
         
-<span class="returntype"><a href="../type_alias/JsonMap.html">JsonMap</a></span>
+<span class="returntype"><a href="../models_objects_video/YtVideo-class.html">YtVideo</a></span>
 <span class="name ">parseEpisode</span>(<wbr><ol class="parameter-list single-line"> <li><span class="parameter" id="parseEpisode-param-data"><span class="type-annotation"><a href="../type_alias/JsonMap.html">JsonMap</a></span> <span class="parameter-name">data</span></span></li>
 </ol>)
 
@@ -70,51 +70,64 @@
     
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
-  <pre class="language-dart"><code class="language-dart">JsonMap parseEpisode(JsonMap data) {
+  <pre class="language-dart"><code class="language-dart">YtVideo parseEpisode(JsonMap data) {
   final JsonMap realData;
   if (data.containsKey(MMRIR)) {
     realData = nav(data, [MMRIR]) as JsonMap;
   } else {
     realData = data;
   }
-  final thumbnails = nav(realData, THUMBNAILS);
-  final date = nav(realData, SUBTITLE, nullIfAbsent: true);
-  final duration = nav(realData, [
-    &#39;playbackProgress&#39;,
-    ...PROGRESS_RENDERER,
-    ...DURATION_TEXT,
-  ], nullIfAbsent: true);
-  final title = nav(realData, TITLE_TEXT);
-  final description = nav(realData, DESCRIPTION, nullIfAbsent: true);
-  final videoId = nav(realData, [
-    &#39;onTap&#39;,
-    ...WATCH_VIDEO_ID,
-  ], nullIfAbsent: true);
-  final browseId = nav(realData, [
-    ...TITLE,
-    ...NAVIGATION_BROWSE_ID,
-  ], nullIfAbsent: true);
-  final videoType = nav(realData, [
-    &#39;onTap&#39;,
-    ...NAVIGATION_VIDEO_TYPE,
-  ], nullIfAbsent: true);
-  final index = nav(realData, [
-    &#39;onTap&#39;,
-    &#39;watchEndpoint&#39;,
-    &#39;index&#39;,
-  ], nullIfAbsent: true);
+  final thumbnails = YtThumbnails.fromJson(
+    List&lt;JsonMap&gt;.from(nav(realData, THUMBNAILS) as List),
+  );
+  &#47;&#47; TODO
+  &#47;&#47; final date = nav(realData, SUBTITLE, nullIfAbsent: true);
+  final durationRaw =
+      nav(realData, [
+            &#39;playbackProgress&#39;,
+            ...PROGRESS_RENDERER,
+            ...DURATION_TEXT,
+          ], nullIfAbsent: true)
+          as String?;
+  final title = nav(realData, TITLE_TEXT) as String;
+  final description = nav(realData, DESCRIPTION, nullIfAbsent: true) as String?;
+  final videoId =
+      nav(realData, [&#39;onTap&#39;, ...WATCH_VIDEO_ID], nullIfAbsent: true)
+          as String?;
+  final browseId =
+      nav(realData, [...TITLE, ...NAVIGATION_BROWSE_ID], nullIfAbsent: true)
+          as String?;
+  final videoType = VideoType.tryFromValue(
+    nav(realData, [&#39;onTap&#39;, ...NAVIGATION_VIDEO_TYPE], nullIfAbsent: true)
+        as String?,
+  );
+  final index =
+      nav(realData, [&#39;onTap&#39;, &#39;watchEndpoint&#39;, &#39;index&#39;], nullIfAbsent: true)
+          as String? ??
+      &#39;&#39;;
 
-  return {
-    &#39;index&#39;: index,
-    &#39;title&#39;: title,
-    &#39;description&#39;: description,
-    &#39;duration&#39;: duration,
-    &#39;videoId&#39;: videoId,
-    &#39;browseId&#39;: browseId,
-    &#39;videoType&#39;: videoType,
-    &#39;date&#39;: date,
-    &#39;thumbnails&#39;: thumbnails,
-  };
+  return YtVideo(
+    name: title,
+    id: videoId,
+    playlistId: browseId,
+    videoType: videoType,
+    views: null,
+    durationRaw: durationRaw,
+    duration: null,
+    artists: [],
+    thumbnails: thumbnails,
+    year: null,
+    isAvailable: null,
+    isEpisode: true,
+    isSong: false,
+    album: null,
+    trackNumber: int.tryParse(index),
+    isExplicit: null,
+    inLibrary: null,
+    feedbackTokenAdd: null,
+    feedbackTokenRemove: null,
+    description: description,
+  );
 }</code></pre>
 </section>
 
@@ -142,7 +155,7 @@
 <footer>
   <span class="no-break">
     ytmusicapi_dart
-      2.4.1
+      3.0.0-rc.1
   </span>
   
 </footer>

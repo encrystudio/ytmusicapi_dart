@@ -55,8 +55,8 @@
     <section class="multi-line-signature">
       
       <span class="name ">YtBaseObject.fromJson</span>(<wbr><ol class="parameter-list single-line"> <li><span class="parameter" id="fromJson-param-jsonData"><span class="type-annotation"><a href="../../type_alias/JsonMap.html">JsonMap</a></span> <span class="parameter-name">jsonData</span>, </span></li>
-<li><span class="parameter" id="fromJson-param-id"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.12.2/dart-core/String-class.html">String</a></span> <span class="parameter-name">id</span>, </span></li>
-<li><span class="parameter" id="fromJson-param-title"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.12.2/dart-core/String-class.html">String</a></span> <span class="parameter-name">title</span></span></li>
+<li><span class="parameter" id="fromJson-param-idKey"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.14.1/dart-core/String-class.html">String</a></span> <span class="parameter-name">idKey</span>, </span></li>
+<li><span class="parameter" id="fromJson-param-nameKey"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.14.1/dart-core/String-class.html">String</a></span> <span class="parameter-name">nameKey</span></span></li>
 </ol>)
     </section>
     
@@ -65,10 +65,14 @@
     
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
-  <pre class="language-dart"><code class="language-dart">factory YtBaseObject.fromJson(JsonMap jsonData, String id, String title) {
+  <pre class="language-dart"><code class="language-dart">factory YtBaseObject.fromJson(
+  JsonMap jsonData,
+  String idKey,
+  String nameKey,
+) {
   return YtBaseObject(
-    id: jsonData[id] as String?,
-    title: jsonData[title] as String,
+    id: jsonData[idKey] as String?,
+    name: jsonData[nameKey] as String,
     type: YtObjectType.OBJECT,
   );
 }</code></pre>
@@ -99,7 +103,7 @@
 <footer>
   <span class="no-break">
     ytmusicapi_dart
-      2.4.1
+      3.0.0-rc.1
   </span>
   
 </footer>

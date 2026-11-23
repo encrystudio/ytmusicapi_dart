@@ -54,7 +54,7 @@
 
     <section class="multi-line-signature">
         
-<span class="returntype"><a href="../type_alias/JsonMap.html">JsonMap</a></span>
+<span class="returntype"><a href="../models_objects_base/YtBaseObject-class.html">YtBaseObject</a></span>
 <span class="name ">parseIdName</span>(<wbr><ol class="parameter-list single-line"> <li><span class="parameter" id="parseIdName-param-subRun"><span class="type-annotation"><a href="../type_alias/JsonMap.html">JsonMap</a>?</span> <span class="parameter-name">subRun</span></span></li>
 </ol>)
 
@@ -70,11 +70,12 @@
     
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
-  <pre class="language-dart"><code class="language-dart">JsonMap parseIdName(JsonMap? subRun) {
-  return {
-    &#39;id&#39;: nav(subRun, NAVIGATION_BROWSE_ID, nullIfAbsent: true),
-    &#39;name&#39;: nav(subRun, [&#39;text&#39;], nullIfAbsent: true),
-  };
+  <pre class="language-dart"><code class="language-dart">YtBaseObject parseIdName(JsonMap? subRun) {
+  return YtBaseObject(
+    id: nav(subRun, NAVIGATION_BROWSE_ID, nullIfAbsent: true) as String?,
+    name: nav(subRun, [&#39;text&#39;]) as String,
+    type: YtObjectType.OBJECT,
+  );
 }</code></pre>
 </section>
 
@@ -102,7 +103,7 @@
 <footer>
   <span class="no-break">
     ytmusicapi_dart
-      2.4.1
+      3.0.0-rc.1
   </span>
   
 </footer>

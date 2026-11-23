@@ -54,12 +54,12 @@
 
     <section class="multi-line-signature">
       
-<span class="returntype"><a href="https://api.dart.dev/stable/3.12.2/dart-async/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../../type_alias/JsonMap.html">JsonMap</a></span>&gt;</span></span>
-<span class="name ">getWatchPlaylist</span>(<wbr>{<ol class="parameter-list"> <li><span class="parameter" id="getWatchPlaylist-param-videoId"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.12.2/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">videoId</span>, </span></li>
-<li><span class="parameter" id="getWatchPlaylist-param-playlistId"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.12.2/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">playlistId</span>, </span></li>
-<li><span class="parameter" id="getWatchPlaylist-param-limit"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.12.2/dart-core/int-class.html">int</a></span> <span class="parameter-name">limit</span> = <span class="default-value">25</span>, </span></li>
-<li><span class="parameter" id="getWatchPlaylist-param-radio"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.12.2/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">radio</span> = <span class="default-value">false</span>, </span></li>
-<li><span class="parameter" id="getWatchPlaylist-param-shuffle"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.12.2/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">shuffle</span> = <span class="default-value">false</span>, </span></li>
+<span class="returntype"><a href="https://api.dart.dev/stable/3.14.1/dart-async/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../../type_alias/JsonMap.html">JsonMap</a></span>&gt;</span></span>
+<span class="name ">getWatchPlaylist</span>(<wbr>{<ol class="parameter-list"> <li><span class="parameter" id="getWatchPlaylist-param-videoId"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.14.1/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">videoId</span>, </span></li>
+<li><span class="parameter" id="getWatchPlaylist-param-playlistId"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.14.1/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">playlistId</span>, </span></li>
+<li><span class="parameter" id="getWatchPlaylist-param-limit"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.14.1/dart-core/int-class.html">int</a></span> <span class="parameter-name">limit</span> = <span class="default-value">25</span>, </span></li>
+<li><span class="parameter" id="getWatchPlaylist-param-radio"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.14.1/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">radio</span> = <span class="default-value">false</span>, </span></li>
+<li><span class="parameter" id="getWatchPlaylist-param-shuffle"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.14.1/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">shuffle</span> = <span class="default-value">false</span>, </span></li>
 </ol>})
 
       
@@ -264,7 +264,7 @@ only appears if a song has a corresponding video counterpart (UI song/video swit
       body,
       additionalParams: additionalParams as String,
     );
-    List parseFunc(dynamic contents) =&gt;
+    List&lt;YtVideo&gt; parseFunc(dynamic contents) =&gt;
         parseWatchPlaylist(List&lt;JsonMap&gt;.from(contents as List));
 
     tracks.addAll(
@@ -313,7 +313,7 @@ only appears if a song has a corresponding video counterpart (UI song/video swit
 <footer>
   <span class="no-break">
     ytmusicapi_dart
-      2.4.1
+      3.0.0-rc.1
   </span>
   
 </footer>

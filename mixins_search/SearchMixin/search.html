@@ -54,12 +54,12 @@
 
     <section class="multi-line-signature">
       
-<span class="returntype"><a href="https://api.dart.dev/stable/3.12.2/dart-async/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.dart.dev/stable/3.12.2/dart-core/List-class.html">List</a></span>&gt;</span></span>
-<span class="name ">search</span>(<wbr><ol class="parameter-list"> <li><span class="parameter" id="search-param-query"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.12.2/dart-core/String-class.html">String</a></span> <span class="parameter-name">query</span>, {</span></li>
+<span class="returntype"><a href="https://api.dart.dev/stable/3.14.1/dart-async/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.dart.dev/stable/3.14.1/dart-core/List-class.html">List</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../../models_objects_base/YtBaseObject-class.html">YtBaseObject</a></span>&gt;</span></span>&gt;</span></span>
+<span class="name ">search</span>(<wbr><ol class="parameter-list"> <li><span class="parameter" id="search-param-query"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.14.1/dart-core/String-class.html">String</a></span> <span class="parameter-name">query</span>, {</span></li>
 <li><span class="parameter" id="search-param-filter"><span class="type-annotation"><a href="../../enums/SearchFilterType.html">SearchFilterType</a>?</span> <span class="parameter-name">filter</span>, </span></li>
-<li><span class="parameter" id="search-param-scope"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.12.2/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">scope</span>, </span></li>
-<li><span class="parameter" id="search-param-limit"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.12.2/dart-core/int-class.html">int</a></span> <span class="parameter-name">limit</span> = <span class="default-value">20</span>, </span></li>
-<li><span class="parameter" id="search-param-ignoreSpelling"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.12.2/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">ignoreSpelling</span> = <span class="default-value">false</span>, </span></li>
+<li><span class="parameter" id="search-param-scope"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.14.1/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">scope</span>, </span></li>
+<li><span class="parameter" id="search-param-limit"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.14.1/dart-core/int-class.html">int</a></span> <span class="parameter-name">limit</span> = <span class="default-value">20</span>, </span></li>
+<li><span class="parameter" id="search-param-ignoreSpelling"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.14.1/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">ignoreSpelling</span> = <span class="default-value">false</span>, </span></li>
 </ol>})
 
       
@@ -70,135 +70,46 @@
   <p>Search YouTube music.</p>
 <p>Returns results within the provided category.</p>
 <ul>
-<li><code>query</code> Query string, i.e. 'Oasis Wonderwall'.</li>
-<li><code>filter</code> Filter for item types.
-         (Default: Default search, including all types of items).</li>
-<li><code>scope</code> Search scope. Allowed values: <code>library</code>, <code>uploads</code>.
+<li>
+<p><code>query</code> Query string, i.e. 'Oasis Wonderwall'.</p>
+</li>
+<li>
+<p><code>filter</code> Filter for item types.
+         (Default: Default search, including all types of items).</p>
+</li>
+<li>
+<p><code>scope</code> Search scope. Allowed values: <code>library</code>, <code>uploads</code>.
         (Default: Search the public YouTube Music catalogue).
         Changing scope from the default will reduce the number of settable filters.
         Setting a filter that is not permitted will throw an exception.
         For <code>uploads</code>, no filter can be set.
-        For <code>library</code>, <code>community_playlists</code> and <code>featured_playlists</code> filter cannot be set.</li>
-<li><code>limit</code> Number of search results to return. (Default: <code>20</code>).</li>
-<li><code>ignoreSpelling</code> Whether to ignore YTM spelling suggestions.
+        For <code>library</code>, <code>community_playlists</code> and <code>featured_playlists</code> filter cannot be set.</p>
+</li>
+<li>
+<p><code>limit</code> Number of search results to return. (Default: <code>20</code>).</p>
+</li>
+<li>
+<p><code>ignoreSpelling</code> Whether to ignore YTM spelling suggestions.
                  If <code>true</code>, the exact search term will be searched for,
                  and will not be corrected.
                  This does not have any effect when the filter is set to <code>uploads</code>.
-                 (Default: <code>false</code>, will use YTM's default behavior of autocorrecting the search.</li>
-</ul>
-<p>Returns List of results depending on filter.</p>
-<ul>
-<li><code>resultType</code> specifies the type of item (important for default search).
+                 (Default: <code>false</code>, will use YTM's default behavior of autocorrecting the search.</p>
+</li>
+<li>
+<p><code>resultType</code> specifies the type of item (important for default search).
 Albums, artists and playlists additionally contain a <code>browseId</code>, corresponding to
-<code>albumId</code>, <code>channelId</code> and <code>playlistId</code> (<code>browseId</code>=<code>VL</code>+<code>playlistId</code>).</li>
+<code>albumId</code>, <code>channelId</code> and <code>playlistId</code> (<code>browseId</code>=<code>VL</code>+<code>playlistId</code>).</p>
+</li>
 </ul>
-<p>Example list for default search with one result per <code>resultType</code> for brevity.
-Normally there are 3 results per <code>resultType</code> and an additional <code>thumbnails</code> key:</p>
-<pre class="language-json"><code class="language-json">[
-  {
-    "category": "Top result",
-    "resultType": "video",
-    "videoId": "vU05Eksc_iM",
-    "title": "Wonderwall",
-    "artists": [
-      {
-        "name": "Oasis",
-        "id": "UCmMUZbaYdNH0bEd1PAlAqsA"
-      }
-    ],
-    "views": "1.4M",
-    "videoType": "MUSIC_VIDEO_TYPE_OMV",
-    "duration": "4:38",
-    "duration_seconds": 278
-  },
-  {
-    "category": "Songs",
-    "resultType": "song",
-    "videoId": "ZrOKjDZOtkA",
-    "title": "Wonderwall",
-    "artists": [
-      {
-        "name": "Oasis",
-        "id": "UCmMUZbaYdNH0bEd1PAlAqsA"
-      }
-    ],
-    "album": {
-      "name": "(What's The Story) Morning Glory? (Remastered)",
-      "id": "MPREb_9nqEki4ZDpp"
-    },
-    "duration": "4:19",
-    "duration_seconds": 259,
-    "isExplicit": false,
-    "inLibrary": false,
-    "feedbackTokens": {
-      "add": null,
-      "remove": null
-    },
-    "pinnedToListenAgain": false,
-     "listenAgainFeedbackTokens": {
-       "pin": null,
-        "unpin": null
-    }
-  },
-  {
-    "category": "Albums",
-    "resultType": "album",
-    "browseId": "MPREb_IInSY5QXXrW",
-    "playlistId": "OLAK5uy_kunInnOpcKECWIBQGB0Qj6ZjquxDvfckg",
-    "title": "(What's The Story) Morning Glory?",
-    "type": "Album",
-    "artist": "Oasis",
-    "year": "1995",
-    "isExplicit": false
-  },
-  {
-    "category": "Community playlists",
-    "resultType": "playlist",
-    "browseId": "VLPLK1PkWQlWtnNfovRdGWpKffO1Wdi2kvDx",
-    "title": "Wonderwall - Oasis",
-    "author": "Tate Henderson",
-    "itemCount": "174" // itemCount of a playlist can be null as youtube music does not expose that information for search filtered to community playlist.
-  },
-  {
-    "category": "Videos",
-    "resultType": "video",
-    "videoId": "bx1Bh8ZvH84",
-    "title": "Wonderwall",
-    "artists": [
-      {
-        "name": "Oasis",
-        "id": "UCmMUZbaYdNH0bEd1PAlAqsA"
-      }
-    ],
-    "views": "386M",
-    "duration": "4:38",
-    "duration_seconds": 278
-  },
-  {
-    "category": "Artists",
-    "resultType": "artist",
-    "browseId": "UCmMUZbaYdNH0bEd1PAlAqsA",
-    "artist": "Oasis",
-    "shuffleId": "RDAOkjHYJjL1a3xspEyVkhHAsg",
-    "radioId": "RDEMkjHYJjL1a3xspEyVkhHAsg"
-  },
-  {
-    "category": "Profiles",
-    "resultType": "profile",
-    "title": "Taylor Swift Time",
-    "name": "@TaylorSwiftTime",
-    "browseId": "UCSCRK7XlVQ6fBdEl00kX6pQ",
-    "thumbnails": ...
-  }
-]
-</code></pre>
+<p>Normally there are 3 results per <code>resultType</code>.</p>
 </section>
 
 
     
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
-  <pre class="language-dart"><code class="language-dart">Future&lt;List&gt; search(
+  <pre class="language-dart"><code class="language-dart">&#47;&#47; TODO return a richer object (with titles etc)
+Future&lt;List&lt;YtBaseObject&gt;&gt; search(
   String query, {
   SearchFilterType? filter,
   String? scope,
@@ -207,7 +118,7 @@ Normally there are 3 results per <code>resultType</code> and an additional <code
 }) async {
   final body = &lt;String, dynamic&gt;{&#39;query&#39;: query};
   const endpoint = &#39;search&#39;;
-  final searchResults = &lt;dynamic&gt;[];
+  final searchResults = &lt;YtBaseObject&gt;[];
 
   const filters = [
     &#39;albums&#39;,
@@ -300,9 +211,10 @@ Normally there are 3 results per <code>resultType</code> and an additional <code
     if (res.containsKey(&#39;musicCardShelfRenderer&#39;)) {
       final topResult = parseTopResult(
         res[&#39;musicCardShelfRenderer&#39;] as JsonMap,
-        parser.getSearchResultTypes(),
       );
-      searchResults.add(topResult);
+      if (topResult != null) {
+        searchResults.add(topResult.result.result); &#47;&#47; TODO
+      }
 
       shelfContents = List&lt;JsonMap&gt;.from(
         (nav(res, [
@@ -356,9 +268,10 @@ Normally there are 3 results per <code>resultType</code> and an additional <code
     searchResults.addAll(
       parseSearchResults(
         shelfContents,
-        resultType: resultType,
+        resultType:
+            resultType != null ? YtResultType.fromName(resultType) : null,
         category: category,
-      ),
+      ).map((item) =&gt; item.result),
     );
 
     if (internalFilter != null) {
@@ -368,11 +281,13 @@ Normally there are 3 results per <code>resultType</code> and an additional <code
         body,
         additionalParams: additionalParams as String,
       );
-      List parseFunc(contents) =&gt; parseSearchResults(
-        List&lt;JsonMap&gt;.from(contents as List),
-        resultType: resultType,
-        category: category,
-      );
+      List&lt;YtBaseObject&gt; parseFunc(contents) =&gt;
+          parseSearchResults(
+            List&lt;JsonMap&gt;.from(contents as List),
+            resultType:
+                resultType != null ? YtResultType.fromName(resultType) : null,
+            category: category,
+          ).map((item) =&gt; item.result).toList();
 
       searchResults.addAll(
         await getContinuations(
@@ -415,7 +330,7 @@ Normally there are 3 results per <code>resultType</code> and an additional <code
 <footer>
   <span class="no-break">
     ytmusicapi_dart
-      2.4.1
+      3.0.0-rc.1
   </span>
   
 </footer>

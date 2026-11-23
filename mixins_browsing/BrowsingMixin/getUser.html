@@ -54,8 +54,8 @@
 
     <section class="multi-line-signature">
       
-<span class="returntype"><a href="https://api.dart.dev/stable/3.12.2/dart-async/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../../type_alias/JsonMap.html">JsonMap</a></span>&gt;</span></span>
-<span class="name ">getUser</span>(<wbr><ol class="parameter-list single-line"> <li><span class="parameter" id="getUser-param-channelId"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.12.2/dart-core/String-class.html">String</a></span> <span class="parameter-name">channelId</span></span></li>
+<span class="returntype"><a href="https://api.dart.dev/stable/3.14.1/dart-async/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../../models_objects_artist/YtBrowsedArtist-class.html">YtBrowsedArtist</a></span>&gt;</span></span>
+<span class="name ">getUser</span>(<wbr><ol class="parameter-list single-line"> <li><span class="parameter" id="getUser-param-channelId"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.14.1/dart-core/String-class.html">String</a></span> <span class="parameter-name">channelId</span></span></li>
 </ol>)
 
       
@@ -74,65 +74,48 @@ getUserPlaylists(channelId, result['playlists']['params']);
 <ul>
 <li><code>channelId</code> <code>channelId</code> of the user.</li>
 </ul>
-<p>Returns Map with information about a user.</p>
-<p>Example:</p>
-<pre class="language-json"><code class="language-json">{
-  "name": "4Tune - No Copyright Music",
-  "videos": {
-    "browseId": "UC44hbeRoCZVVMVg5z0FfIww",
-    "results": [
-      {
-        "title": "Epic Music Soundtracks 2019",
-        "videoId": "bJonJjgS2mM",
-        "playlistId": "RDAMVMbJonJjgS2mM",
-        "thumbnails": [
-          {
-            "url": "https://i.ytimg.com/vi/bJon...",
-            "width": 800,
-            "height": 450
-          }
-        ],
-        "views": "19K"
-      }
-    ]
-  },
-  "playlists": {
-    "browseId": "UC44hbeRoCZVVMVg5z0FfIww",
-    "results": [
-      {
-        "title": "♚ Machinimasound | Playlist",
-        "playlistId": "PLRm766YvPiO9ZqkBuEzSTt6Bk4eWIr3gB",
-        "thumbnails": [
-          {
-            "url": "https://i.ytimg.com/vi/...",
-            "width": 400,
-            "height": 225
-          }
-        ]
-      }
-    ],
-    "params": "6gO3AUNvWU..."
-  }
-}
-</code></pre>
 </section>
 
 
     
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
-  <pre class="language-dart"><code class="language-dart">Future&lt;JsonMap&gt; getUser(String channelId) async {
+  <pre class="language-dart"><code class="language-dart">Future&lt;YtBrowsedArtist&gt; getUser(String channelId) async {
   const endpoint = &#39;browse&#39;;
   final body = &lt;String, dynamic&gt;{&#39;browseId&#39;: channelId};
   final response = await sendRequest(endpoint, body);
 
-  final user = {
-    &#39;name&#39;: nav(response, [...HEADER_MUSIC_VISUAL, ...TITLE_TEXT]),
-  };
-  final results = nav(response, [...SINGLE_COLUMN_TAB, ...SECTION_LIST]);
-  user.addAll(
-    parser.parseChannelContents(List&lt;JsonMap&gt;.from(results as List)),
+  final user = YtBrowsedArtist(
+    name: nav(response, [...HEADER_MUSIC_VISUAL, ...TITLE_TEXT]) as String,
+    id: null,
+    descriptionRaw: null,
+    descriptionRuns: [],
+    views: null,
+    shuffleId: null,
+    radioId: null,
+    subscribers: null,
+    monthlyListeners: null,
+    thumbnails: null,
+    songsBrowseId: null,
+    songsResults: [],
+    albumsBrowseId: null,
+    albumsParams: null,
+    albumsResults: [],
+    singlesBrowseId: null,
+    singlesParams: null,
+    singlesResults: [],
+    showsBrowseId: null,
+    videosBrowseId: null,
+    videosResults: [],
+    playlistsBrowseId: null,
+    episodesBrowseId: null,
+    podcastsBrowseId: null,
+    relatedBrowseId: null,
+    relatedResults: [],
   );
+  final results = nav(response, [...SINGLE_COLUMN_TAB, ...SECTION_LIST]);
+  parser.parseChannelContents(List&lt;JsonMap&gt;.from(results as List), user);
+
   return user;
 }</code></pre>
 </section>
@@ -162,7 +145,7 @@ getUserPlaylists(channelId, result['playlists']['params']);
 <footer>
   <span class="no-break">
     ytmusicapi_dart
-      2.4.1
+      3.0.0-rc.1
   </span>
   
 </footer>

@@ -54,15 +54,22 @@
 
     <section class="multi-line-signature">
       
-      <span class="name ">YtAlbum</span>(<wbr>{<ol class="parameter-list"> <li><span class="parameter" id="param-artists"><span>required</span> <span class="type-annotation"><a href="https://api.dart.dev/stable/3.12.2/dart-core/List-class.html">List</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../../models_objects_base/YtBaseObject-class.html">YtBaseObject</a></span>&gt;</span></span> <span class="parameter-name">artists</span>, </span></li>
-<li><span class="parameter" id="param-duration"><span>required</span> <span class="type-annotation"><a href="https://api.dart.dev/stable/3.12.2/dart-core/Duration-class.html">Duration</a>?</span> <span class="parameter-name">duration</span>, </span></li>
-<li><span class="parameter" id="param-isExplicit"><span>required</span> <span class="type-annotation"><a href="https://api.dart.dev/stable/3.12.2/dart-core/bool-class.html">bool</a>?</span> <span class="parameter-name">isExplicit</span>, </span></li>
-<li><span class="parameter" id="param-playlistId"><span>required</span> <span class="type-annotation"><a href="https://api.dart.dev/stable/3.12.2/dart-core/String-class.html">String</a></span> <span class="parameter-name">playlistId</span>, </span></li>
-<li><span class="parameter" id="param-thumbnailData"><span>required</span> <span class="type-annotation"><a href="../../models_objects_base/YtThumbnailData-class.html">YtThumbnailData</a></span> <span class="parameter-name">thumbnailData</span>, </span></li>
-<li><span class="parameter" id="param-albumType"><span>required</span> <span class="type-annotation"><a href="../../models_objects_base/YtAlbumType.html">YtAlbumType</a></span> <span class="parameter-name">albumType</span>, </span></li>
-<li><span class="parameter" id="param-year"><span>required</span> <span class="type-annotation"><a href="https://api.dart.dev/stable/3.12.2/dart-core/int-class.html">int</a>?</span> <span class="parameter-name">year</span>, </span></li>
-<li><span class="parameter" id="param-id"><span>required</span> <span class="type-annotation"><a href="https://api.dart.dev/stable/3.12.2/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">id</span>, </span></li>
-<li><span class="parameter" id="param-title"><span>required</span> <span class="type-annotation"><a href="https://api.dart.dev/stable/3.12.2/dart-core/String-class.html">String</a></span> <span class="parameter-name">title</span>, </span></li>
+      <span class="name ">YtAlbum</span>(<wbr>{<ol class="parameter-list"> <li><span class="parameter" id="param-name"><span>required</span> <span class="type-annotation"><a href="https://api.dart.dev/stable/3.14.1/dart-core/String-class.html">String</a></span> <span class="parameter-name">name</span>, </span></li>
+<li><span class="parameter" id="param-id"><span>required</span> <span class="type-annotation"><a href="https://api.dart.dev/stable/3.14.1/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">id</span>, </span></li>
+<li><span class="parameter" id="param-playlistId"><span>required</span> <span class="type-annotation"><a href="https://api.dart.dev/stable/3.14.1/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">playlistId</span>, </span></li>
+<li><span class="parameter" id="param-albumType"><span>required</span> <span class="type-annotation"><a href="../../enums/YtAlbumType.html">YtAlbumType</a>?</span> <span class="parameter-name">albumType</span>, </span></li>
+<li><span class="parameter" id="param-thumbnails"><span>required</span> <span class="type-annotation"><a href="../../models_objects_base/YtThumbnails-class.html">YtThumbnails</a></span> <span class="parameter-name">thumbnails</span>, </span></li>
+<li><span class="parameter" id="param-artists"><span>required</span> <span class="type-annotation"><a href="https://api.dart.dev/stable/3.14.1/dart-core/List-class.html">List</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../../models_objects_base/YtBaseObject-class.html">YtBaseObject</a></span>&gt;</span></span> <span class="parameter-name">artists</span>, </span></li>
+<li><span class="parameter" id="param-tracks"><span>required</span> <span class="type-annotation"><a href="https://api.dart.dev/stable/3.14.1/dart-core/List-class.html">List</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../../models_objects_video/YtVideo-class.html">YtVideo</a></span>&gt;</span></span> <span class="parameter-name">tracks</span>, </span></li>
+<li><span class="parameter" id="param-durationRaw"><span>required</span> <span class="type-annotation"><a href="https://api.dart.dev/stable/3.14.1/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">durationRaw</span>, </span></li>
+<li><span class="parameter" id="param-duration"><span>required</span> <span class="type-annotation"><a href="https://api.dart.dev/stable/3.14.1/dart-core/Duration-class.html">Duration</a>?</span> <span class="parameter-name">duration</span>, </span></li>
+<li><span class="parameter" id="param-isExplicit"><span>required</span> <span class="type-annotation"><a href="https://api.dart.dev/stable/3.14.1/dart-core/bool-class.html">bool</a>?</span> <span class="parameter-name">isExplicit</span>, </span></li>
+<li><span class="parameter" id="param-year"><span>required</span> <span class="type-annotation"><a href="https://api.dart.dev/stable/3.14.1/dart-core/int-class.html">int</a>?</span> <span class="parameter-name">year</span>, </span></li>
+<li><span class="parameter" id="param-trackCount"><span>required</span> <span class="type-annotation"><a href="https://api.dart.dev/stable/3.14.1/dart-core/int-class.html">int</a>?</span> <span class="parameter-name">trackCount</span>, </span></li>
+<li><span class="parameter" id="param-description"><span>required</span> <span class="type-annotation"><a href="https://api.dart.dev/stable/3.14.1/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">description</span>, </span></li>
+<li><span class="parameter" id="param-likeStatus"><span>required</span> <span class="type-annotation"><a href="../../models_content_enums/LikeStatus.html">LikeStatus</a>?</span> <span class="parameter-name">likeStatus</span>, </span></li>
+<li><span class="parameter" id="param-relatedRecommendations"><span>required</span> <span class="type-annotation"><a href="https://api.dart.dev/stable/3.14.1/dart-core/List-class.html">List</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../../models_objects_album/YtAlbum-class.html">YtAlbum</a></span>&gt;</span></span> <span class="parameter-name">relatedRecommendations</span>, </span></li>
+<li><span class="parameter" id="param-otherVersions"><span>required</span> <span class="type-annotation"><a href="https://api.dart.dev/stable/3.14.1/dart-core/List-class.html">List</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../../models_objects_album/YtAlbum-class.html">YtAlbum</a></span>&gt;</span></span> <span class="parameter-name">otherVersions</span>, </span></li>
 </ol>})
     </section>
     
@@ -72,15 +79,22 @@
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
   <pre class="language-dart"><code class="language-dart">YtAlbum({
+  required super.name,
+  required super.id,
+  required this.playlistId,
+  required this.albumType,
+  required this.thumbnails,
   required this.artists,
+  required this.tracks,
+  required this.durationRaw,
   required this.duration,
   required this.isExplicit,
-  required this.playlistId,
-  required this.thumbnailData,
-  required this.albumType,
   required this.year,
-  required super.id,
-  required super.title,
+  required this.trackCount,
+  required this.description,
+  required this.likeStatus,
+  required this.relatedRecommendations,
+  required this.otherVersions,
 }) : super(type: YtObjectType.ALBUM);</code></pre>
 </section>
 
@@ -109,7 +123,7 @@
 <footer>
   <span class="no-break">
     ytmusicapi_dart
-      2.4.1
+      3.0.0-rc.1
   </span>
   
 </footer>

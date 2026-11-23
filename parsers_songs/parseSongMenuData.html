@@ -54,7 +54,7 @@
 
     <section class="multi-line-signature">
         
-<span class="returntype"><a href="../type_alias/JsonMap.html">JsonMap</a></span>
+<span class="returntype"><a href="../utils/SongMenuData-class.html">SongMenuData</a></span>
 <span class="name ">parseSongMenuData</span>(<wbr><ol class="parameter-list single-line"> <li><span class="parameter" id="parseSongMenuData-param-data"><span class="type-annotation"><a href="../type_alias/JsonMap.html">JsonMap</a></span> <span class="parameter-name">data</span></span></li>
 </ol>)
 
@@ -83,12 +83,11 @@
     
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
-  <pre class="language-dart"><code class="language-dart">JsonMap parseSongMenuData(JsonMap data) {
+  <pre class="language-dart"><code class="language-dart">SongMenuData parseSongMenuData(JsonMap data) {
+  final songData = SongMenuData();
   if (!data.containsKey(&#39;menu&#39;)) {
-    return {};
+    return songData;
   }
-
-  final songData = &lt;String, dynamic&gt;{};
 
   for (final item in nav(data, MENU_ITEMS) as List) {
     final menuItem =
@@ -100,8 +99,8 @@
       continue;
     }
 
-    songData[&#39;inLibrary&#39;] ??= false;
-    songData[&#39;pinnedToListenAgain&#39;] ??= false;
+    songData.inLibrary ??= false;
+    songData.pinnedToListenAgain ??= false;
 
     final currentIconType =
         nav(menuItem, [&#39;defaultIcon&#39;, &#39;iconType&#39;], nullIfAbsent: true) ??
@@ -120,35 +119,35 @@
 
     switch (currentIconType) {
       case &#39;KEEP&#39;: &#47;&#47; pin to listen again
-        songData[&#39;pinnedToListenAgain&#39;] = isToggled;
-        songData[&#39;listenAgainFeedbackTokens&#39;] = {
-          &#39;pin&#39;: feedbackToken(&#39;defaultServiceEndpoint&#39;),
-          &#39;unpin&#39;: feedbackToken(&#39;toggledServiceEndpoint&#39;),
-        };
+        songData.pinnedToListenAgain = isToggled;
+        songData.listenAgainFeedbackTokenPin = feedbackToken(
+          &#39;defaultServiceEndpoint&#39;,
+        );
+        songData.listenAgainFeedbackTokenUnpin = feedbackToken(
+          &#39;toggledServiceEndpoint&#39;,
+        );
 
       case &#39;KEEP_OFF&#39;: &#47;&#47; unpin from listen again
-        songData[&#39;pinnedToListenAgain&#39;] = true;
-        songData[&#39;listenAgainFeedbackTokens&#39;] = {
-          &#39;pin&#39;: feedbackToken(&#39;toggledServiceEndpoint&#39;),
-          &#39;unpin&#39;: feedbackToken(&#39;defaultServiceEndpoint&#39;),
-        };
+        songData.pinnedToListenAgain = true;
+        songData.listenAgainFeedbackTokenPin = feedbackToken(
+          &#39;toggledServiceEndpoint&#39;,
+        );
+        songData.listenAgainFeedbackTokenUnpin = feedbackToken(
+          &#39;defaultServiceEndpoint&#39;,
+        );
 
       case &#39;BOOKMARK_BORDER&#39;: &#47;&#47; add to library
-        songData[&#39;inLibrary&#39;] = isToggled;
-        songData[&#39;feedbackTokens&#39;] = {
-          &#39;add&#39;: feedbackToken(&#39;defaultServiceEndpoint&#39;),
-          &#39;remove&#39;: feedbackToken(&#39;toggledServiceEndpoint&#39;),
-        };
+        songData.inLibrary = isToggled;
+        songData.feedbackTokenAdd = feedbackToken(&#39;defaultServiceEndpoint&#39;);
+        songData.feedbackTokenRemove = feedbackToken(&#39;toggledServiceEndpoint&#39;);
 
       case &#39;BOOKMARK&#39;: &#47;&#47; remove from library
-        songData[&#39;inLibrary&#39;] = true;
-        songData[&#39;feedbackTokens&#39;] = {
-          &#39;add&#39;: feedbackToken(&#39;toggledServiceEndpoint&#39;),
-          &#39;remove&#39;: feedbackToken(&#39;defaultServiceEndpoint&#39;),
-        };
+        songData.inLibrary = true;
+        songData.feedbackTokenAdd = feedbackToken(&#39;toggledServiceEndpoint&#39;);
+        songData.feedbackTokenRemove = feedbackToken(&#39;defaultServiceEndpoint&#39;);
 
       case &#39;REMOVE_FROM_HISTORY&#39;:
-        songData[&#39;feedbackToken&#39;] = feedbackToken(&#39;serviceEndpoint&#39;);
+        songData.feedbackToken = feedbackToken(&#39;serviceEndpoint&#39;);
     }
   }
 
@@ -180,7 +179,7 @@
 <footer>
   <span class="no-break">
     ytmusicapi_dart
-      2.4.1
+      3.0.0-rc.1
   </span>
   
 </footer>

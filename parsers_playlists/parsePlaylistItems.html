@@ -54,10 +54,10 @@
 
     <section class="multi-line-signature">
         
-<span class="returntype"><a href="https://api.dart.dev/stable/3.12.2/dart-core/List-class.html">List</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../type_alias/JsonMap.html">JsonMap</a></span>&gt;</span></span>
-<span class="name ">parsePlaylistItems</span>(<wbr><ol class="parameter-list"> <li><span class="parameter" id="parsePlaylistItems-param-results"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.12.2/dart-core/List-class.html">List</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../type_alias/JsonMap.html">JsonMap</a></span>&gt;</span></span> <span class="parameter-name">results</span>, {</span></li>
-<li><span class="parameter" id="parsePlaylistItems-param-isAlbum"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.12.2/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">isAlbum</span> = <span class="default-value">false</span>, </span></li>
-<li><span class="parameter" id="parsePlaylistItems-param-isCollaborative"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.12.2/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">isCollaborative</span> = <span class="default-value">false</span>, </span></li>
+<span class="returntype"><a href="https://api.dart.dev/stable/3.14.1/dart-core/List-class.html">List</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../models_objects_video/YtVideo-class.html">YtVideo</a></span>&gt;</span></span>
+<span class="name ">parsePlaylistItems</span>(<wbr><ol class="parameter-list"> <li><span class="parameter" id="parsePlaylistItems-param-results"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.14.1/dart-core/List-class.html">List</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../type_alias/JsonMap.html">JsonMap</a></span>&gt;</span></span> <span class="parameter-name">results</span>, {</span></li>
+<li><span class="parameter" id="parsePlaylistItems-param-isAlbum"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.14.1/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">isAlbum</span> = <span class="default-value">false</span>, </span></li>
+<li><span class="parameter" id="parsePlaylistItems-param-isCollaborative"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.14.1/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">isCollaborative</span> = <span class="default-value">false</span>, </span></li>
 </ol>})
 
         
@@ -72,12 +72,12 @@
     
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
-  <pre class="language-dart"><code class="language-dart">List&lt;JsonMap&gt; parsePlaylistItems(
+  <pre class="language-dart"><code class="language-dart">List&lt;YtVideo&gt; parsePlaylistItems(
   List&lt;JsonMap&gt; results, {
   bool isAlbum = false,
   bool isCollaborative = false,
 }) {
-  final songs = &lt;JsonMap&gt;[];
+  final songs = &lt;YtVideo&gt;[];
 
   for (final result in results) {
     if (!result.containsKey(MRLIR)) {
@@ -124,7 +124,7 @@
 <footer>
   <span class="no-break">
     ytmusicapi_dart
-      2.4.1
+      3.0.0-rc.1
   </span>
   
 </footer>

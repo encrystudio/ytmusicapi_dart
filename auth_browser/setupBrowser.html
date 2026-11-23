@@ -54,9 +54,9 @@
 
     <section class="multi-line-signature">
         
-<span class="returntype"><a href="https://api.dart.dev/stable/3.12.2/dart-async/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.dart.dev/stable/3.12.2/dart-core/String-class.html">String</a></span>&gt;</span></span>
-<span class="name ">setupBrowser</span>(<wbr>{<ol class="parameter-list"> <li><span class="parameter" id="setupBrowser-param-filepath"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.12.2/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">filepath</span>, </span></li>
-<li><span class="parameter" id="setupBrowser-param-headersRaw"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.12.2/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">headersRaw</span>, </span></li>
+<span class="returntype"><a href="https://api.dart.dev/stable/3.14.1/dart-async/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.dart.dev/stable/3.14.1/dart-core/String-class.html">String</a></span>&gt;</span></span>
+<span class="name ">setupBrowser</span>(<wbr>{<ol class="parameter-list"> <li><span class="parameter" id="setupBrowser-param-filepath"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.14.1/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">filepath</span>, </span></li>
+<li><span class="parameter" id="setupBrowser-param-headersRaw"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.14.1/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">headersRaw</span>, </span></li>
 </ol>})
 
         
@@ -100,29 +100,29 @@
   try {
     for (final content in contents) {
       final header = content.split(&#39;: &#39;);
-      if (header[0].startsWith(&#39;:&#39;)) {
+      if (header.first.startsWith(&#39;:&#39;)) {
         &#47;&#47; nothing was split or chromium headers
         continue;
       }
-      if (header[0].endsWith(&#39;:&#39;)) {
+      if (header.first.endsWith(&#39;:&#39;)) {
         &#47;&#47; weird new chrome &quot;copy-paste in separate lines&quot; format
         chromeRememberedKey = content.replaceAll(&#39;:&#39;, &#39;&#39;);
       }
       if (header.length == 1) {
         if (chromeRememberedKey.isNotEmpty) {
-          userHeaders[chromeRememberedKey] = header[0];
+          userHeaders[chromeRememberedKey] = header.first;
         }
-        if (!header[0].endsWith(&#39;:&#39;) &amp;&amp;
-            (chromeRememberedKey != &#39;Decoded&#39; || header[0] == &#39;}&#39;)) {
+        if (!header.first.endsWith(&#39;:&#39;) &amp;&amp;
+            (chromeRememberedKey != &#39;Decoded&#39; || header.first == &#39;}&#39;)) {
           &#47;&#47; support chrome format with or without colons for headers
           &#47;&#47;  and handle corner case of &quot;Decoded:&quot; multi-line header
           chromeRememberedKey = &#39;&#39;;
         } else {
-          chromeRememberedKey = header[0];
+          chromeRememberedKey = header.first;
         }
         continue;
       }
-      userHeaders[header[0].toLowerCase()] = header.sublist(1).join(&#39;: &#39;);
+      userHeaders[header.first.toLowerCase()] = header.sublist(1).join(&#39;: &#39;);
     }
   } catch (e) {
     throw YTMusicError(
@@ -187,7 +187,7 @@
 <footer>
   <span class="no-break">
     ytmusicapi_dart
-      2.4.1
+      3.0.0-rc.1
   </span>
   
 </footer>

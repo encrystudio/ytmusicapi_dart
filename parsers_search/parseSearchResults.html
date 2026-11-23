@@ -54,10 +54,10 @@
 
     <section class="multi-line-signature">
         
-<span class="returntype"><a href="https://api.dart.dev/stable/3.12.2/dart-core/List-class.html">List</a></span>
-<span class="name ">parseSearchResults</span>(<wbr><ol class="parameter-list"> <li><span class="parameter" id="parseSearchResults-param-results"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.12.2/dart-core/List-class.html">List</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../type_alias/JsonMap.html">JsonMap</a></span>&gt;</span></span> <span class="parameter-name">results</span>, {</span></li>
-<li><span class="parameter" id="parseSearchResults-param-resultType"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.12.2/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">resultType</span>, </span></li>
-<li><span class="parameter" id="parseSearchResults-param-category"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.12.2/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">category</span>, </span></li>
+<span class="returntype"><a href="https://api.dart.dev/stable/3.14.1/dart-core/List-class.html">List</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../utils/YtSearchResult-class.html">YtSearchResult</a></span>&gt;</span></span>
+<span class="name ">parseSearchResults</span>(<wbr><ol class="parameter-list"> <li><span class="parameter" id="parseSearchResults-param-results"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.14.1/dart-core/List-class.html">List</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../type_alias/JsonMap.html">JsonMap</a></span>&gt;</span></span> <span class="parameter-name">results</span>, {</span></li>
+<li><span class="parameter" id="parseSearchResults-param-resultType"><span class="type-annotation"><a href="../enums/YtResultType.html">YtResultType</a>?</span> <span class="parameter-name">resultType</span>, </span></li>
+<li><span class="parameter" id="parseSearchResults-param-category"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.14.1/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">category</span>, </span></li>
 </ol>})
 
         
@@ -72,17 +72,20 @@
     
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
-  <pre class="language-dart"><code class="language-dart">List parseSearchResults(
+  <pre class="language-dart"><code class="language-dart">List&lt;YtSearchResult&gt; parseSearchResults(
   List&lt;JsonMap&gt; results, {
-  String? resultType,
+  YtResultType? resultType,
   String? category,
 }) {
-  return results
-      .map(
-        (result) =&gt;
-            parseSearchResult(result[MRLIR] as JsonMap, resultType, category),
-      )
-      .toList();
+  return List&lt;YtSearchResult&gt;.from(
+    results
+        .map(
+          (result) =&gt;
+              parseSearchResult(result[MRLIR] as JsonMap, resultType, category),
+        )
+        .toList()
+      ..removeWhere((e) =&gt; e == null),
+  );
 }</code></pre>
 </section>
 
@@ -110,7 +113,7 @@
 <footer>
   <span class="no-break">
     ytmusicapi_dart
-      2.4.1
+      3.0.0-rc.1
   </span>
   
 </footer>

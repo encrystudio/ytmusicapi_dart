@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="description" content="API docs for the YtBrowsedArtist class from the artist library, for the Dart programming language.">
+  <title>YtBrowsedArtist class - artist library - Dart API</title>
+
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../static-assets/github.css?v1">
+  <link rel="stylesheet" href="../static-assets/styles.css?v1">
+  <link rel="icon" href="../static-assets/favicon.png?v1">
+  
+</head>
+
+<body data-base-href="../" data-using-base-href="false" class="light-theme">
+<div id="overlay-under-drawer"></div>
+<header id="title">
+  <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li><a href="../index.html">ytmusicapi_dart</a></li>
+    <li><a href="../models_objects_artist/">models&#47;objects&#47;artist.dart</a></li>
+    <li class="self-crumb">YtBrowsedArtist class</li>
+  </ol>
+  <div class="self-name">YtBrowsedArtist</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+  <button class="toggle" id="theme-button" title="Toggle between light and dark mode" aria-label="Light and dark mode toggle">
+    <span id="dark-theme-button" class="material-symbols-outlined" aria-hidden="true">
+      dark_mode
+    </span>
+    <span id="light-theme-button" class="material-symbols-outlined" aria-hidden="true">
+      light_mode
+    </span>
+  </button>
+</header>
+<main>
+<div
+    id="dartdoc-main-content"
+    class="main-content"
+    data-above-sidebar="models_objects_artist&#47;models_objects_artist-library-sidebar.html"
+    data-below-sidebar="models_objects_artist&#47;YtBrowsedArtist-class-sidebar.html">
+    <div>
+<h1><span class="kind-class">YtBrowsedArtist</span> class 
+ 
+</h1></div>
+
+    
+
+
+    <section>
+      <dl class="dl-horizontal">
+        
+  <dt>Inheritance</dt>
+  <dd>
+    <ul class="gt-separated dark clazz-relationships">
+      <li><a href="https://api.dart.dev/stable/3.14.1/dart-core/Object-class.html">Object</a></li>
+        <li><a href="../models_objects_base/YtBaseObject-class.html">YtBaseObject</a></li>
+      <li>YtBrowsedArtist</li>
+    </ul>
+  </dd>
+
+        
+        
+
+
+        
+        
+
+
+      </dl>
+    </section>
+
+    
+  <section class="summary offset-anchor" id="constructors">
+    <h2>Constructors</h2>
+    <dl class="constructor-summary-list">
+        <dt id="YtBrowsedArtist.new" class="callable">
+          <span class="name"><a href="../models_objects_artist/YtBrowsedArtist/YtBrowsedArtist.html">YtBrowsedArtist</a></span><span class="signature">({<span class="parameter" id="param-name"><span>required</span> <span class="type-annotation"><a href="https://api.dart.dev/stable/3.14.1/dart-core/String-class.html">String</a></span> <span class="parameter-name">name</span>, </span><span class="parameter" id="param-id"><span>required</span> <span class="type-annotation"><a href="https://api.dart.dev/stable/3.14.1/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">id</span>, </span><span class="parameter" id="param-descriptionRaw"><span>required</span> <span class="type-annotation"><a href="https://api.dart.dev/stable/3.14.1/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">descriptionRaw</span>, </span><span class="parameter" id="param-descriptionRuns"><span>required</span> <span class="type-annotation"><a href="https://api.dart.dev/stable/3.14.1/dart-core/List-class.html">List</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../models_content_text_run/TextRun-class.html">TextRun</a></span>&gt;</span></span> <span class="parameter-name">descriptionRuns</span>, </span><span class="parameter" id="param-views"><span>required</span> <span class="type-annotation"><a href="https://api.dart.dev/stable/3.14.1/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">views</span>, </span><span class="parameter" id="param-shuffleId"><span>required</span> <span class="type-annotation"><a href="https://api.dart.dev/stable/3.14.1/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">shuffleId</span>, </span><span class="parameter" id="param-radioId"><span>required</span> <span class="type-annotation"><a href="https://api.dart.dev/stable/3.14.1/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">radioId</span>, </span><span class="parameter" id="param-subscribers"><span>required</span> <span class="type-annotation"><a href="https://api.dart.dev/stable/3.14.1/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">subscribers</span>, </span><span class="parameter" id="param-monthlyListeners"><span>required</span> <span class="type-annotation"><a href="https://api.dart.dev/stable/3.14.1/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">monthlyListeners</span>, </span><span class="parameter" id="param-thumbnails"><span>required</span> <span class="type-annotation"><a href="../models_objects_base/YtThumbnails-class.html">YtThumbnails</a>?</span> <span class="parameter-name">thumbnails</span>, </span><span class="parameter" id="param-songsBrowseId"><span>required</span> <span class="type-annotation"><a href="https://api.dart.dev/stable/3.14.1/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">songsBrowseId</span>, </span><span class="parameter" id="param-songsResults"><span>required</span> <span class="type-annotation"><a href="https://api.dart.dev/stable/3.14.1/dart-core/List-class.html">List</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../models_objects_video/YtVideo-class.html">YtVideo</a></span>&gt;</span></span> <span class="parameter-name">songsResults</span>, </span><span class="parameter" id="param-albumsBrowseId"><span>required</span> <span class="type-annotation"><a href="https://api.dart.dev/stable/3.14.1/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">albumsBrowseId</span>, </span><span class="parameter" id="param-albumsParams"><span>required</span> <span class="type-annotation"><a href="https://api.dart.dev/stable/3.14.1/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">albumsParams</span>, </span><span class="parameter" id="param-albumsResults"><span>required</span> <span class="type-annotation"><a href="https://api.dart.dev/stable/3.14.1/dart-core/List-class.html">List</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../models_objects_album/YtAlbum-class.html">YtAlbum</a></span>&gt;</span></span> <span class="parameter-name">albumsResults</span>, </span><span class="parameter" id="param-singlesBrowseId"><span>required</span> <span class="type-annotation"><a href="https://api.dart.dev/stable/3.14.1/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">singlesBrowseId</span>, </span><span class="parameter" id="param-singlesParams"><span>required</span> <span class="type-annotation"><a href="https://api.dart.dev/stable/3.14.1/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">singlesParams</span>, </span><span class="parameter" id="param-singlesResults"><span>required</span> <span class="type-annotation"><a href="https://api.dart.dev/stable/3.14.1/dart-core/List-class.html">List</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../models_objects_album/YtAlbum-class.html">YtAlbum</a></span>&gt;</span></span> <span class="parameter-name">singlesResults</span>, </span><span class="parameter" id="param-showsBrowseId"><span>required</span> <span class="type-annotation"><a href="https://api.dart.dev/stable/3.14.1/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">showsBrowseId</span>, </span><span class="parameter" id="param-videosBrowseId"><span>required</span> <span class="type-annotation"><a href="https://api.dart.dev/stable/3.14.1/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">videosBrowseId</span>, </span><span class="parameter" id="param-videosResults"><span>required</span> <span class="type-annotation"><a href="https://api.dart.dev/stable/3.14.1/dart-core/List-class.html">List</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../models_objects_video/YtVideo-class.html">YtVideo</a></span>&gt;</span></span> <span class="parameter-name">videosResults</span>, </span><span class="parameter" id="param-playlistsBrowseId"><span>required</span> <span class="type-annotation"><a href="https://api.dart.dev/stable/3.14.1/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">playlistsBrowseId</span>, </span><span class="parameter" id="param-episodesBrowseId"><span>required</span> <span class="type-annotation"><a href="https://api.dart.dev/stable/3.14.1/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">episodesBrowseId</span>, </span><span class="parameter" id="param-podcastsBrowseId"><span>required</span> <span class="type-annotation"><a href="https://api.dart.dev/stable/3.14.1/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">podcastsBrowseId</span>, </span><span class="parameter" id="param-relatedBrowseId"><span>required</span> <span class="type-annotation"><a href="https://api.dart.dev/stable/3.14.1/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">relatedBrowseId</span>, </span><span class="parameter" id="param-relatedResults"><span>required</span> <span class="type-annotation"><a href="https://api.dart.dev/stable/3.14.1/dart-core/List-class.html">List</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../models_objects_artist/YtArtist-class.html">YtArtist</a></span>&gt;</span></span> <span class="parameter-name">relatedResults</span></span>})</span>
+        </dt>
+        <dd>
+          
+        </dd>
+    </dl>
+  </section>
+    
+  <section
+      class="summary offset-anchor"
+      id="instance-properties">
+    <h2>Properties</h2>
+    <dl class="properties">
+        <dt id="albumsBrowseId" class="property">
+  <span class="name"><a href="../models_objects_artist/YtBrowsedArtist/albumsBrowseId.html">albumsBrowseId</a></span>
+  <span class="signature">&#8596; <a href="https://api.dart.dev/stable/3.14.1/dart-core/String-class.html">String</a>?</span>
+  
+
+</dt>
+<dd>
+  
+  <div class="features"><span class="feature">getter/setter pair</span></div>
+
+</dd>
+
+        <dt id="albumsParams" class="property">
+  <span class="name"><a href="../models_objects_artist/YtBrowsedArtist/albumsParams.html">albumsParams</a></span>
+  <span class="signature">&#8596; <a href="https://api.dart.dev/stable/3.14.1/dart-core/String-class.html">String</a>?</span>
+  
+
+</dt>
+<dd>
+  
+  <div class="features"><span class="feature">getter/setter pair</span></div>
+
+</dd>
+
+        <dt id="albumsResults" class="property">
+  <span class="name"><a href="../models_objects_artist/YtBrowsedArtist/albumsResults.html">albumsResults</a></span>
+  <span class="signature">&#8596; <a href="https://api.dart.dev/stable/3.14.1/dart-core/List-class.html">List</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../models_objects_album/YtAlbum-class.html">YtAlbum</a></span>&gt;</span></span>
+  
+
+</dt>
+<dd>
+  
+  <div class="features"><span class="feature">getter/setter pair</span></div>
+
+</dd>
+
+        <dt id="descriptionRaw" class="property">
+  <span class="name"><a href="../models_objects_artist/YtBrowsedArtist/descriptionRaw.html">descriptionRaw</a></span>
+  <span class="signature">&#8596; <a href="https://api.dart.dev/stable/3.14.1/dart-core/String-class.html">String</a>?</span>
+  
+
+</dt>
+<dd>
+  
+  <div class="features"><span class="feature">getter/setter pair</span></div>
+
+</dd>
+
+        <dt id="descriptionRuns" class="property">
+  <span class="name"><a href="../models_objects_artist/YtBrowsedArtist/descriptionRuns.html">descriptionRuns</a></span>
+  <span class="signature">&#8596; <a href="https://api.dart.dev/stable/3.14.1/dart-core/List-class.html">List</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../models_content_text_run/TextRun-class.html">TextRun</a></span>&gt;</span></span>
+  
+
+</dt>
+<dd>
+  
+  <div class="features"><span class="feature">getter/setter pair</span></div>
+
+</dd>
+
+        <dt id="episodesBrowseId" class="property">
+  <span class="name"><a href="../models_objects_artist/YtBrowsedArtist/episodesBrowseId.html">episodesBrowseId</a></span>
+  <span class="signature">&#8596; <a href="https://api.dart.dev/stable/3.14.1/dart-core/String-class.html">String</a>?</span>
+  
+
+</dt>
+<dd>
+  
+  <div class="features"><span class="feature">getter/setter pair</span></div>
+
+</dd>
+
+        <dt id="hashCode" class="property inherited">
+  <span class="name"><a href="https://api.dart.dev/stable/3.14.1/dart-core/Object/hashCode.html">hashCode</a></span>
+  <span class="signature">&#8594; <a href="https://api.dart.dev/stable/3.14.1/dart-core/int-class.html">int</a></span>
+  
+
+</dt>
+<dd class="inherited">
+  The hash code for this object.
+  <div class="features"><span class="feature">no setter</span><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="id" class="property inherited">
+  <span class="name"><a href="../models_objects_base/YtBaseObject/id.html">id</a></span>
+  <span class="signature">&#8596; <a href="https://api.dart.dev/stable/3.14.1/dart-core/String-class.html">String</a>?</span>
+  
+
+</dt>
+<dd class="inherited">
+  
+  <div class="features"><span class="feature">getter/setter pair</span><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="monthlyListeners" class="property">
+  <span class="name"><a href="../models_objects_artist/YtBrowsedArtist/monthlyListeners.html">monthlyListeners</a></span>
+  <span class="signature">&#8596; <a href="https://api.dart.dev/stable/3.14.1/dart-core/String-class.html">String</a>?</span>
+  
+
+</dt>
+<dd>
+  
+  <div class="features"><span class="feature">getter/setter pair</span></div>
+
+</dd>
+
+        <dt id="name" class="property inherited">
+  <span class="name"><a href="../models_objects_base/YtBaseObject/name.html">name</a></span>
+  <span class="signature">&#8596; <a href="https://api.dart.dev/stable/3.14.1/dart-core/String-class.html">String</a></span>
+  
+
+</dt>
+<dd class="inherited">
+  
+  <div class="features"><span class="feature">getter/setter pair</span><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="playlistsBrowseId" class="property">
+  <span class="name"><a href="../models_objects_artist/YtBrowsedArtist/playlistsBrowseId.html">playlistsBrowseId</a></span>
+  <span class="signature">&#8596; <a href="https://api.dart.dev/stable/3.14.1/dart-core/String-class.html">String</a>?</span>
+  
+
+</dt>
+<dd>
+  
+  <div class="features"><span class="feature">getter/setter pair</span></div>
+
+</dd>
+
+        <dt id="podcastsBrowseId" class="property">
+  <span class="name"><a href="../models_objects_artist/YtBrowsedArtist/podcastsBrowseId.html">podcastsBrowseId</a></span>
+  <span class="signature">&#8596; <a href="https://api.dart.dev/stable/3.14.1/dart-core/String-class.html">String</a>?</span>
+  
+
+</dt>
+<dd>
+  
+  <div class="features"><span class="feature">getter/setter pair</span></div>
+
+</dd>
+
+        <dt id="radioId" class="property">
+  <span class="name"><a href="../models_objects_artist/YtBrowsedArtist/radioId.html">radioId</a></span>
+  <span class="signature">&#8596; <a href="https://api.dart.dev/stable/3.14.1/dart-core/String-class.html">String</a>?</span>
+  
+
+</dt>
+<dd>
+  
+  <div class="features"><span class="feature">getter/setter pair</span></div>
+
+</dd>
+
+        <dt id="relatedBrowseId" class="property">
+  <span class="name"><a href="../models_objects_artist/YtBrowsedArtist/relatedBrowseId.html">relatedBrowseId</a></span>
+  <span class="signature">&#8596; <a href="https://api.dart.dev/stable/3.14.1/dart-core/String-class.html">String</a>?</span>
+  
+
+</dt>
+<dd>
+  
+  <div class="features"><span class="feature">getter/setter pair</span></div>
+
+</dd>
+
+        <dt id="relatedResults" class="property">
+  <span class="name"><a href="../models_objects_artist/YtBrowsedArtist/relatedResults.html">relatedResults</a></span>
+  <span class="signature">&#8596; <a href="https://api.dart.dev/stable/3.14.1/dart-core/List-class.html">List</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../models_objects_artist/YtArtist-class.html">YtArtist</a></span>&gt;</span></span>
+  
+
+</dt>
+<dd>
+  
+  <div class="features"><span class="feature">getter/setter pair</span></div>
+
+</dd>
+
+        <dt id="runtimeType" class="property inherited">
+  <span class="name"><a href="https://api.dart.dev/stable/3.14.1/dart-core/Object/runtimeType.html">runtimeType</a></span>
+  <span class="signature">&#8594; <a href="https://api.dart.dev/stable/3.14.1/dart-core/Type-class.html">Type</a></span>
+  
+
+</dt>
+<dd class="inherited">
+  A representation of the runtime type of the object.
+  <div class="features"><span class="feature">no setter</span><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="showsBrowseId" class="property">
+  <span class="name"><a href="../models_objects_artist/YtBrowsedArtist/showsBrowseId.html">showsBrowseId</a></span>
+  <span class="signature">&#8596; <a href="https://api.dart.dev/stable/3.14.1/dart-core/String-class.html">String</a>?</span>
+  
+
+</dt>
+<dd>
+  
+  <div class="features"><span class="feature">getter/setter pair</span></div>
+
+</dd>
+
+        <dt id="shuffleId" class="property">
+  <span class="name"><a href="../models_objects_artist/YtBrowsedArtist/shuffleId.html">shuffleId</a></span>
+  <span class="signature">&#8596; <a href="https://api.dart.dev/stable/3.14.1/dart-core/String-class.html">String</a>?</span>
+  
+
+</dt>
+<dd>
+  
+  <div class="features"><span class="feature">getter/setter pair</span></div>
+
+</dd>
+
+        <dt id="singlesBrowseId" class="property">
+  <span class="name"><a href="../models_objects_artist/YtBrowsedArtist/singlesBrowseId.html">singlesBrowseId</a></span>
+  <span class="signature">&#8596; <a href="https://api.dart.dev/stable/3.14.1/dart-core/String-class.html">String</a>?</span>
+  
+
+</dt>
+<dd>
+  
+  <div class="features"><span class="feature">getter/setter pair</span></div>
+
+</dd>
+
+        <dt id="singlesParams" class="property">
+  <span class="name"><a href="../models_objects_artist/YtBrowsedArtist/singlesParams.html">singlesParams</a></span>
+  <span class="signature">&#8596; <a href="https://api.dart.dev/stable/3.14.1/dart-core/String-class.html">String</a>?</span>
+  
+
+</dt>
+<dd>
+  
+  <div class="features"><span class="feature">getter/setter pair</span></div>
+
+</dd>
+
+        <dt id="singlesResults" class="property">
+  <span class="name"><a href="../models_objects_artist/YtBrowsedArtist/singlesResults.html">singlesResults</a></span>
+  <span class="signature">&#8596; <a href="https://api.dart.dev/stable/3.14.1/dart-core/List-class.html">List</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../models_objects_album/YtAlbum-class.html">YtAlbum</a></span>&gt;</span></span>
+  
+
+</dt>
+<dd>
+  
+  <div class="features"><span class="feature">getter/setter pair</span></div>
+
+</dd>
+
+        <dt id="songsBrowseId" class="property">
+  <span class="name"><a href="../models_objects_artist/YtBrowsedArtist/songsBrowseId.html">songsBrowseId</a></span>
+  <span class="signature">&#8596; <a href="https://api.dart.dev/stable/3.14.1/dart-core/String-class.html">String</a>?</span>
+  
+
+</dt>
+<dd>
+  
+  <div class="features"><span class="feature">getter/setter pair</span></div>
+
+</dd>
+
+        <dt id="songsResults" class="property">
+  <span class="name"><a href="../models_objects_artist/YtBrowsedArtist/songsResults.html">songsResults</a></span>
+  <span class="signature">&#8596; <a href="https://api.dart.dev/stable/3.14.1/dart-core/List-class.html">List</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../models_objects_video/YtVideo-class.html">YtVideo</a></span>&gt;</span></span>
+  
+
+</dt>
+<dd>
+  
+  <div class="features"><span class="feature">getter/setter pair</span></div>
+
+</dd>
+
+        <dt id="subscribers" class="property">
+  <span class="name"><a href="../models_objects_artist/YtBrowsedArtist/subscribers.html">subscribers</a></span>
+  <span class="signature">&#8596; <a href="https://api.dart.dev/stable/3.14.1/dart-core/String-class.html">String</a>?</span>
+  
+
+</dt>
+<dd>
+  
+  <div class="features"><span class="feature">getter/setter pair</span></div>
+
+</dd>
+
+        <dt id="thumbnails" class="property">
+  <span class="name"><a href="../models_objects_artist/YtBrowsedArtist/thumbnails.html">thumbnails</a></span>
+  <span class="signature">&#8596; <a href="../models_objects_base/YtThumbnails-class.html">YtThumbnails</a>?</span>
+  
+
+</dt>
+<dd>
+  
+  <div class="features"><span class="feature">getter/setter pair</span></div>
+
+</dd>
+
+        <dt id="type" class="property inherited">
+  <span class="name"><a href="../models_objects_base/YtBaseObject/type.html">type</a></span>
+  <span class="signature">&#8594; <a href="../enums/YtObjectType.html">YtObjectType</a></span>
+  
+
+</dt>
+<dd class="inherited">
+  
+  <div class="features"><span class="feature">final</span><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="videosBrowseId" class="property">
+  <span class="name"><a href="../models_objects_artist/YtBrowsedArtist/videosBrowseId.html">videosBrowseId</a></span>
+  <span class="signature">&#8596; <a href="https://api.dart.dev/stable/3.14.1/dart-core/String-class.html">String</a>?</span>
+  
+
+</dt>
+<dd>
+  
+  <div class="features"><span class="feature">getter/setter pair</span></div>
+
+</dd>
+
+        <dt id="videosResults" class="property">
+  <span class="name"><a href="../models_objects_artist/YtBrowsedArtist/videosResults.html">videosResults</a></span>
+  <span class="signature">&#8596; <a href="https://api.dart.dev/stable/3.14.1/dart-core/List-class.html">List</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../models_objects_video/YtVideo-class.html">YtVideo</a></span>&gt;</span></span>
+  
+
+</dt>
+<dd>
+  
+  <div class="features"><span class="feature">getter/setter pair</span></div>
+
+</dd>
+
+        <dt id="views" class="property">
+  <span class="name"><a href="../models_objects_artist/YtBrowsedArtist/views.html">views</a></span>
+  <span class="signature">&#8596; <a href="https://api.dart.dev/stable/3.14.1/dart-core/String-class.html">String</a>?</span>
+  
+
+</dt>
+<dd>
+  
+  <div class="features"><span class="feature">getter/setter pair</span></div>
+
+</dd>
+
+    </dl>
+  </section>
+
+    
+  <section
+      class="summary offset-anchor"
+      id="instance-methods">
+    <h2>Methods</h2>
+    <dl class="callables">
+        <dt id="asJson" class="callable">
+  <span class="name"><a href="../models_objects_artist/YtBrowsedArtist/asJson.html">asJson</a></span><span class="signature">(<wbr>)
+    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/3.14.1/dart-core/Map-class.html">Map</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.dart.dev/stable/3.14.1/dart-core/String-class.html">String</a></span>, <span class="type-parameter">dynamic</span>&gt;</span></span>
+  </span>
+  
+
+</dt>
+<dd>
+  
+  <div class="features"><span class="feature">override</span></div>
+
+</dd>
+
+        <dt id="noSuchMethod" class="callable inherited">
+  <span class="name"><a href="https://api.dart.dev/stable/3.14.1/dart-core/Object/noSuchMethod.html">noSuchMethod</a></span><span class="signature">(<wbr><span class="parameter" id="noSuchMethod-param-invocation"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.14.1/dart-core/Invocation-class.html">Invocation</a></span> <span class="parameter-name">invocation</span></span>)
+    <span class="returntype parameter">&#8594; dynamic</span>
+  </span>
+  
+
+</dt>
+<dd class="inherited">
+  Invoked when a nonexistent method or property is accessed.
+  <div class="features"><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="toString" class="callable">
+  <span class="name"><a href="../models_objects_artist/YtBrowsedArtist/toString.html">toString</a></span><span class="signature">(<wbr>)
+    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/3.14.1/dart-core/String-class.html">String</a></span>
+  </span>
+  
+
+</dt>
+<dd>
+  A string representation of this object.
+  <div class="features"><span class="feature">override</span></div>
+
+</dd>
+
+    </dl>
+  </section>
+    
+  <section
+      class="summary offset-anchor inherited"
+      id="operators">
+    <h2>Operators</h2>
+    <dl class="callables">
+        <dt id="operator ==" class="callable inherited">
+  <span class="name"><a href="https://api.dart.dev/stable/3.14.1/dart-core/Object/operator_equals.html">operator ==</a></span><span class="signature">(<wbr><span class="parameter" id="==-param-other"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.14.1/dart-core/Object-class.html">Object</a></span> <span class="parameter-name">other</span></span>)
+    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/3.14.1/dart-core/bool-class.html">bool</a></span>
+  </span>
+  
+
+</dt>
+<dd class="inherited">
+  The equality operator.
+  <div class="features"><span class="feature">inherited</span></div>
+
+</dd>
+
+    </dl>
+  </section>
+    
+    
+    
+
+  </div> <!-- /.main-content -->
+  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+    <!-- The search input and breadcrumbs below are only responsively visible at low resolutions. -->
+<header id="header-search-sidebar" class="hidden-l">
+  <form class="search-sidebar" role="search">
+    <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+<ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+    <li><a href="../index.html">ytmusicapi_dart</a></li>
+    <li><a href="../models_objects_artist/">artist</a></li>
+    <li class="self-crumb">YtBrowsedArtist class</li>
+</ol>
+
+    <h5>artist library</h5>
+    <div id="dartdoc-sidebar-left-content"></div>
+  </div>
+  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+  </div><!--/.sidebar-offcanvas-->
+</main>
+<footer>
+  <span class="no-break">
+    ytmusicapi_dart
+      3.0.0-rc.1
+  </span>
+  
+</footer>
+
+
+<script src="../static-assets/highlight.pack.js?v1"></script>
+<script src="../static-assets/docs.dart.js"></script>
+
+</body>
+</html>
+

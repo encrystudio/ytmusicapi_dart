@@ -54,10 +54,10 @@
 
     <section class="multi-line-signature">
       
-<span class="returntype"><a href="https://api.dart.dev/stable/3.12.2/dart-async/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.dart.dev/stable/3.12.2/dart-core/List-class.html">List</a></span>&gt;</span></span>
-<span class="name ">getArtistAlbums</span>(<wbr><ol class="parameter-list"> <li><span class="parameter" id="getArtistAlbums-param-channelId"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.12.2/dart-core/String-class.html">String</a></span> <span class="parameter-name">channelId</span>, </span></li>
-<li><span class="parameter" id="getArtistAlbums-param-params"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.12.2/dart-core/String-class.html">String</a></span> <span class="parameter-name">params</span>, {</span></li>
-<li><span class="parameter" id="getArtistAlbums-param-limit"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.12.2/dart-core/int-class.html">int</a>?</span> <span class="parameter-name">limit</span> = <span class="default-value">100</span>, </span></li>
+<span class="returntype"><a href="https://api.dart.dev/stable/3.14.1/dart-async/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.dart.dev/stable/3.14.1/dart-core/List-class.html">List</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../../models_objects_album/YtAlbum-class.html">YtAlbum</a></span>&gt;</span></span>&gt;</span></span>
+<span class="name ">getArtistAlbums</span>(<wbr><ol class="parameter-list"> <li><span class="parameter" id="getArtistAlbums-param-channelId"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.14.1/dart-core/String-class.html">String</a></span> <span class="parameter-name">channelId</span>, </span></li>
+<li><span class="parameter" id="getArtistAlbums-param-params"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.14.1/dart-core/String-class.html">String</a></span> <span class="parameter-name">params</span>, {</span></li>
+<li><span class="parameter" id="getArtistAlbums-param-limit"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.14.1/dart-core/int-class.html">int</a>?</span> <span class="parameter-name">limit</span> = <span class="default-value">100</span>, </span></li>
 <li><span class="parameter" id="getArtistAlbums-param-order"><span class="type-annotation"><a href="../../enums/ArtistOrderType.html">ArtistOrderType</a>?</span> <span class="parameter-name">order</span>, </span></li>
 </ol>})
 
@@ -73,14 +73,14 @@
 <li><code>limit</code> Number of albums to return. <code>null</code> retrieves them all. (Default: <code>100</code>).</li>
 <li><code>order</code> Order of albums to return. (Default: default order).</li>
 </ul>
-<p>Returns List of albums in the format of <code>getLibraryAlbums</code>, except <code>artists</code> key is missing. // TODO getLibraryAlbums is currently missing</p>
 </section>
 
 
     
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
-  <pre class="language-dart"><code class="language-dart">Future&lt;List&gt; getArtistAlbums(
+  <pre class="language-dart"><code class="language-dart">&#47;&#47; TODO getLibraryAlbums is currently missing
+Future&lt;List&lt;YtAlbum&gt;&gt; getArtistAlbums(
   String channelId,
   String params, {
   int? limit = 100,
@@ -93,7 +93,7 @@
   Future&lt;JsonMap&gt; requestFunc(String additionalParams) =&gt;
       sendRequest(endpoint, body, additionalParams: additionalParams);
 
-  List parseFunc(List&lt;JsonMap&gt; contents) =&gt; parseAlbums(contents);
+  List&lt;YtAlbum&gt; parseFunc(List&lt;JsonMap&gt; contents) =&gt; parseAlbums(contents);
 
   JsonMap results;
   if (order != null) {
@@ -201,7 +201,7 @@
 <footer>
   <span class="no-break">
     ytmusicapi_dart
-      2.4.1
+      3.0.0-rc.1
   </span>
   
 </footer>

@@ -54,9 +54,9 @@
 
     <section class="multi-line-signature">
         
-<span class="returntype"><a href="../type_alias/JsonMap.html">JsonMap</a></span>
-<span class="name ">parseSongRuns</span>(<wbr><ol class="parameter-list"> <li><span class="parameter" id="parseSongRuns-param-runs"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.12.2/dart-core/List-class.html">List</a></span> <span class="parameter-name">runs</span>, {</span></li>
-<li><span class="parameter" id="parseSongRuns-param-skipTypeSpec"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.12.2/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">skipTypeSpec</span> = <span class="default-value">false</span>, </span></li>
+<span class="returntype"><a href="https://api.dart.dev/stable/3.14.1/dart-core/List-class.html">List</a><span class="signature">&lt;<wbr><span class="type-parameter">(<span class="field"><span class="type-annotation"><a href="../enums/SongRunsItemType.html">SongRunsItemType</a></span>, </span><span class="field"><span class="type-annotation">dynamic</span></span>)</span>&gt;</span></span>
+<span class="name ">parseSongRuns</span>(<wbr><ol class="parameter-list"> <li><span class="parameter" id="parseSongRuns-param-runs"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.14.1/dart-core/List-class.html">List</a></span> <span class="parameter-name">runs</span>, {</span></li>
+<li><span class="parameter" id="parseSongRuns-param-skipTypeSpec"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.14.1/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">skipTypeSpec</span> = <span class="default-value">false</span>, </span></li>
 </ol>})
 
         
@@ -71,14 +71,17 @@
     
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
-  <pre class="language-dart"><code class="language-dart">JsonMap parseSongRuns(List runs, {bool skipTypeSpec = false}) {
-  final parsed = &lt;String, dynamic&gt;{};
+  <pre class="language-dart"><code class="language-dart">List&lt;(SongRunsItemType, dynamic)&gt; parseSongRuns(
+  List runs, {
+  bool skipTypeSpec = false,
+}) {
+  final parsed = &lt;(SongRunsItemType, dynamic)&gt;[];
 
   final List realRuns;
   if (skipTypeSpec &amp;&amp;
       runs.length &gt; 2 &amp;&amp;
       !(runs.first as JsonMap).containsKey(&#39;navigationEndpoint&#39;) &amp;&amp;
-      parseSongRun(runs[0] as JsonMap)[&#39;type&#39;] == &#39;artist&#39; &amp;&amp;
+      parseSongRun(runs.first as JsonMap)[&#39;type&#39;] == &#39;artist&#39; &amp;&amp;
       runs[1] == DOT_SEPARATOR_RUN &amp;&amp;
       [
         &#39;artist&#39;,
@@ -97,17 +100,35 @@
     final data = parsedRun[&#39;data&#39;];
     switch (parsedRun[&#39;type&#39;]) {
       case &#39;album&#39;:
-        parsed[&#39;album&#39;] = data;
+        parsed.add((
+          SongRunsItemType.ALBUM,
+          YtBaseObject(
+            id: (data as JsonMap)[&#39;id&#39;] as String?,
+            name: data[&#39;name&#39;] as String,
+            type: YtObjectType.OBJECT,
+          ),
+        ));
       case &#39;artist&#39;:
-        parsed[&#39;artists&#39;] ??= &lt;JsonMap&gt;[];
-        (parsed[&#39;artists&#39;] as List).add(data);
+        parsed.add((
+          SongRunsItemType.ARTISTS,
+          [
+            YtBaseObject(
+              id: (data as JsonMap)[&#39;id&#39;] as String?,
+              name: data[&#39;name&#39;] as String,
+              type: YtObjectType.OBJECT,
+            ),
+          ],
+        ));
       case &#39;views&#39;:
-        parsed[&#39;views&#39;] = data;
-      case &#39;duration&#39;:
-        parsed[&#39;duration&#39;] = data;
-        parsed[&#39;duration_seconds&#39;] = parseDuration(data as String?);
+        parsed.add((SongRunsItemType.VIEWS, data as String?));
+      case &#39;durationRaw&#39;:
+        parsed.add((
+          SongRunsItemType.DURATION_SECONDS,
+          parseDuration(data as String?),
+        ));
+        parsed.add((SongRunsItemType.DURATION_RAW, data));
       case &#39;year&#39;:
-        parsed[&#39;year&#39;] = data;
+        parsed.add((SongRunsItemType.YEAR, int.tryParse(data as String)));
     }
   }
 
@@ -139,7 +160,7 @@
 <footer>
   <span class="no-break">
     ytmusicapi_dart
-      2.4.1
+      3.0.0-rc.1
   </span>
   
 </footer>

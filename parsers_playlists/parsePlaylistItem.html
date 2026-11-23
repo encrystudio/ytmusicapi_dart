@@ -54,10 +54,10 @@
 
     <section class="multi-line-signature">
         
-<span class="returntype"><a href="../type_alias/JsonMap.html">JsonMap</a>?</span>
+<span class="returntype"><a href="../models_objects_video/YtVideo-class.html">YtVideo</a>?</span>
 <span class="name ">parsePlaylistItem</span>(<wbr><ol class="parameter-list"> <li><span class="parameter" id="parsePlaylistItem-param-data"><span class="type-annotation"><a href="../type_alias/JsonMap.html">JsonMap</a></span> <span class="parameter-name">data</span>, {</span></li>
-<li><span class="parameter" id="parsePlaylistItem-param-isAlbum"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.12.2/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">isAlbum</span> = <span class="default-value">false</span>, </span></li>
-<li><span class="parameter" id="parsePlaylistItem-param-isCollaborative"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.12.2/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">isCollaborative</span> = <span class="default-value">false</span>, </span></li>
+<li><span class="parameter" id="parsePlaylistItem-param-isAlbum"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.14.1/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">isAlbum</span> = <span class="default-value">false</span>, </span></li>
+<li><span class="parameter" id="parsePlaylistItem-param-isCollaborative"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.14.1/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">isCollaborative</span> = <span class="default-value">false</span>, </span></li>
 </ol>})
 
         
@@ -72,15 +72,16 @@
     
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
-  <pre class="language-dart"><code class="language-dart">JsonMap? parsePlaylistItem(
+  <pre class="language-dart"><code class="language-dart">YtVideo? parsePlaylistItem(
   JsonMap data, {
   bool isAlbum = false,
   bool isCollaborative = false,
 }) {
   String? videoId;
-  String? setVideoId;
-  String? creditsBrowseId;
-  String? like;
+  &#47;&#47; TODO
+  &#47;&#47; String? setVideoId;
+  &#47;&#47; String? creditsBrowseId;
+  &#47;&#47; String? like;
 
   &#47;&#47; If the item has a menu, find its setVideoId
   if (data.containsKey(&#39;menu&#39;)) {
@@ -89,14 +90,15 @@
         final menuService = nav(item, MENU_SERVICE) as JsonMap;
 
         if (menuService.containsKey(&#39;playlistEditEndpoint&#39;)) {
-          setVideoId =
-              nav(menuService, [
-                    &#39;playlistEditEndpoint&#39;,
-                    &#39;actions&#39;,
-                    0,
-                    &#39;setVideoId&#39;,
-                  ], nullIfAbsent: true)
-                  as String?;
+          &#47;&#47; TODO
+          &#47;&#47; setVideoId =
+          &#47;&#47;     nav(menuService, [
+          &#47;&#47;           &#39;playlistEditEndpoint&#39;,
+          &#47;&#47;           &#39;actions&#39;,
+          &#47;&#47;           0,
+          &#47;&#47;           &#39;setVideoId&#39;,
+          &#47;&#47;         ], nullIfAbsent: true)
+          &#47;&#47;         as String?;
 
           videoId =
               nav(menuService, [
@@ -114,17 +116,14 @@
 
         if (maybeCreditsBrowseId != null &amp;&amp;
             maybeCreditsBrowseId.startsWith(&#39;MPTC&#39;)) {
-          creditsBrowseId = maybeCreditsBrowseId;
+          &#47;&#47; TODO
+          &#47;&#47; creditsBrowseId = maybeCreditsBrowseId;
         }
       }
     }
   }
 
-  final songMenuData = &lt;String, dynamic&gt;{
-    &#39;inLibrary&#39;: null,
-    &#39;pinnedToListenAgain&#39;: null,
-    ...parseSongMenuData(data),
-  };
+  final songMenuData = parseSongMenuData(data);
 
   final playButton = nav(data, PLAY_BUTTON, nullIfAbsent: true) as JsonMap?;
 
@@ -139,7 +138,8 @@
             as String;
 
     if (data.containsKey(&#39;menu&#39;)) {
-      like = nav(data, MENU_LIKE_STATUS, nullIfAbsent: true) as String?;
+      &#47;&#47; TODO
+      &#47;&#47; like = nav(data, MENU_LIKE_STATUS, nullIfAbsent: true) as String?;
     }
   }
 
@@ -232,76 +232,92 @@
 
   final views = isAlbum ? getItemText(data, 2) : null;
 
-  String? duration =
+  String? durationRaw =
       durationIndex != null ? getItemText(data, durationIndex) : null;
 
   if (data.containsKey(&#39;fixedColumns&#39;)) {
     final fixedColumn = getFixedColumnItem(data, 0);
 
     if (nav(fixedColumn, [&#39;text&#39;, &#39;simpleText&#39;], nullIfAbsent: true) != null) {
-      duration = nav(fixedColumn, [&#39;text&#39;, &#39;simpleText&#39;]) as String;
+      durationRaw = nav(fixedColumn, [&#39;text&#39;, &#39;simpleText&#39;]) as String;
     } else {
-      duration = nav(fixedColumn, TEXT_RUN_TEXT) as String;
+      durationRaw = nav(fixedColumn, TEXT_RUN_TEXT) as String;
     }
   }
-
-  final thumbnails = nav(data, THUMBNAILS, nullIfAbsent: true);
+  final thumbnailsRaw = nav(data, THUMBNAILS, nullIfAbsent: true) as List?;
+  final thumbnails =
+      thumbnailsRaw != null
+          ? YtThumbnails.fromJson(List&lt;JsonMap&gt;.from(thumbnailsRaw))
+          : null;
 
   final isExplicit = nav(data, BADGE_LABEL, nullIfAbsent: true) != null;
 
-  final videoType = nav(data, [
-    ...MENU_ITEMS,
-    0,
-    MNIR,
-    &#39;navigationEndpoint&#39;,
-    ...NAVIGATION_VIDEO_TYPE,
-  ], nullIfAbsent: true);
+  final videoType = VideoType.tryFromValue(
+    nav(data, [
+          ...MENU_ITEMS,
+          0,
+          MNIR,
+          &#39;navigationEndpoint&#39;,
+          ...NAVIGATION_VIDEO_TYPE,
+        ], nullIfAbsent: true)
+        as String?,
+  );
 
-  final votingStatus =
-      nav(data, ENGAGEMENT_BAR, nullIfAbsent: true) as JsonMap?;
+  &#47;&#47; TODO
+  &#47;&#47; final votingStatus =
+  &#47;&#47;     nav(data, ENGAGEMENT_BAR, nullIfAbsent: true) as JsonMap?;
 
-  final communityVoteStatus =
-      votingStatus == null
-          ? null
-          : {
-            &#39;netVoteValue&#39;: votingStatus[&#39;votes&#39;],
-            &#39;status&#39;: VoteStatus.fromValue(votingStatus[&#39;status&#39;] as String),
-          };
+  &#47;&#47; TODO
+  &#47;&#47; final communityVoteStatus =
+  &#47;&#47;     votingStatus == null
+  &#47;&#47;         ? null
+  &#47;&#47;         : {
+  &#47;&#47;           &#39;netVoteValue&#39;: votingStatus[&#39;votes&#39;],
+  &#47;&#47;           &#39;status&#39;: VoteStatus.fromValue(votingStatus[&#39;status&#39;] as String),
+  &#47;&#47;         };
 
-  final song = &lt;String, dynamic&gt;{
-    &#39;videoId&#39;: videoId,
-    &#39;title&#39;: title,
-    &#39;artists&#39;: artists,
-    &#39;album&#39;: album,
-    &#39;likeStatus&#39;: like,
-    ...songMenuData,
-    &#39;thumbnails&#39;: thumbnails,
-    &#39;isAvailable&#39;: isAvailable,
-    &#39;isExplicit&#39;: isExplicit,
-    &#39;videoType&#39;: videoType,
-    &#39;views&#39;: views,
-    &#39;communityVoteStatus&#39;: communityVoteStatus,
-  };
+  final song = YtVideo(
+    name: title!,
+    id: videoId,
+    playlistId: null,
+    videoType: videoType,
+    views: views,
+    durationRaw: durationRaw,
+    duration: null,
+    artists: artists ?? [],
+    thumbnails: thumbnails,
+    year: null,
+    isAvailable: isAvailable,
+    isSong: null,
+    album: album,
+    trackNumber: null,
+    isExplicit: isExplicit,
+    inLibrary: null,
+    feedbackTokenAdd: songMenuData.feedbackTokenAdd,
+    feedbackTokenRemove: songMenuData.feedbackTokenRemove,
+    isEpisode: null,
+    description: null,
+  );
 
   if (isAlbum) {
-    song[&#39;trackNumber&#39;] =
+    song.trackNumber =
         isAvailable
             ? int.parse(nav(data, [&#39;index&#39;, &#39;runs&#39;, 0, &#39;text&#39;]) as String)
             : null;
   }
 
-  if (duration != null &amp;&amp; duration.isNotEmpty) {
-    song[&#39;duration&#39;] = duration;
-    song[&#39;duration_seconds&#39;] = parseDuration(duration);
+  if (durationRaw != null &amp;&amp; durationRaw.isNotEmpty) {
+    song.durationRaw = durationRaw;
+    song.duration = parseDuration(durationRaw);
   }
 
-  if (setVideoId != null) {
-    song[&#39;setVideoId&#39;] = setVideoId;
-  }
+  &#47;&#47; if (setVideoId != null) {
+  &#47;&#47;   song.setVideoId = setVideoId; &#47;&#47; TODO
+  &#47;&#47; }
 
-  if (creditsBrowseId != null) {
-    song[&#39;creditsBrowseId&#39;] = creditsBrowseId;
-  }
+  &#47;&#47; if (creditsBrowseId != null) {
+  &#47;&#47;   song.creditsBrowseId = creditsBrowseId; &#47;&#47; TODO
+  &#47;&#47; }
 
   return song;
 }</code></pre>
@@ -331,7 +347,7 @@
 <footer>
   <span class="no-break">
     ytmusicapi_dart
-      2.4.1
+      3.0.0-rc.1
   </span>
   
 </footer>

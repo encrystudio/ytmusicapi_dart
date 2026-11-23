@@ -54,9 +54,8 @@
 
     <section class="multi-line-signature">
         
-<span class="returntype">void</span>
-<span class="name ">parseMenuPlaylists</span>(<wbr><ol class="parameter-list single-line"> <li><span class="parameter" id="parseMenuPlaylists-param-data"><span class="type-annotation"><a href="../type_alias/JsonMap.html">JsonMap</a></span> <span class="parameter-name">data</span>, </span></li>
-<li><span class="parameter" id="parseMenuPlaylists-param-result"><span class="type-annotation"><a href="../type_alias/JsonMap.html">JsonMap</a></span> <span class="parameter-name">result</span></span></li>
+<span class="returntype"><a href="../utils/MenuPlaylists-class.html">MenuPlaylists</a></span>
+<span class="name ">parseMenuPlaylists</span>(<wbr><ol class="parameter-list single-line"> <li><span class="parameter" id="parseMenuPlaylists-param-data"><span class="type-annotation"><a href="../type_alias/JsonMap.html">JsonMap</a></span> <span class="parameter-name">data</span></span></li>
 </ol>)
 
         
@@ -71,13 +70,15 @@
     
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
-  <pre class="language-dart"><code class="language-dart">void parseMenuPlaylists(JsonMap data, JsonMap result) {
+  <pre class="language-dart"><code class="language-dart">MenuPlaylists parseMenuPlaylists(JsonMap data) {
   final menuItems = nav(data, MENU_ITEMS, nullIfAbsent: true);
-  if (menuItems == null) return;
+  if (menuItems == null) return MenuPlaylists(shuffleId: null, radioId: null);
 
   final watchMenu = List&lt;JsonMap&gt;.from(
     findObjectsByKey(menuItems as List, MNIR),
   );
+  String? shuffleId;
+  String? radioId;
   for (final item in watchMenu.map((x) =&gt; x[MNIR])) {
     final icon = nav(item, ICON_TYPE);
     String? watchKey;
@@ -89,20 +90,29 @@
       continue;
     }
 
-    var watchId = nav(item, [
-      &#39;navigationEndpoint&#39;,
-      &#39;watchPlaylistEndpoint&#39;,
-      &#39;playlistId&#39;,
-    ], nullIfAbsent: true);
-    watchId ??= nav(item, [
-      &#39;navigationEndpoint&#39;,
-      &#39;watchEndpoint&#39;,
-      &#39;playlistId&#39;,
-    ], nullIfAbsent: true);
+    var watchId =
+        nav(item, [
+              &#39;navigationEndpoint&#39;,
+              &#39;watchPlaylistEndpoint&#39;,
+              &#39;playlistId&#39;,
+            ], nullIfAbsent: true)
+            as String?;
+    watchId ??=
+        nav(item, [
+              &#39;navigationEndpoint&#39;,
+              &#39;watchEndpoint&#39;,
+              &#39;playlistId&#39;,
+            ], nullIfAbsent: true)
+            as String?;
     if (watchId != null) {
-      result[watchKey] = watchId;
+      if (watchKey == &#39;shuffleId&#39;) {
+        shuffleId = watchId;
+      } else {
+        radioId = watchId;
+      }
     }
   }
+  return MenuPlaylists(shuffleId: shuffleId, radioId: radioId);
 }</code></pre>
 </section>
 
@@ -130,7 +140,7 @@
 <footer>
   <span class="no-break">
     ytmusicapi_dart
-      2.4.1
+      3.0.0-rc.1
   </span>
   
 </footer>

@@ -54,16 +54,16 @@
 
     <section class="multi-line-signature">
       
-<span class="returntype"><a href="https://api.dart.dev/stable/3.12.2/dart-async/Future-class.html">Future</a></span>
-<span class="name ">editPlaylist</span>(<wbr><ol class="parameter-list"> <li><span class="parameter" id="editPlaylist-param-playlistId"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.12.2/dart-core/String-class.html">String</a></span> <span class="parameter-name">playlistId</span>, {</span></li>
-<li><span class="parameter" id="editPlaylist-param-title"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.12.2/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">title</span>, </span></li>
-<li><span class="parameter" id="editPlaylist-param-description"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.12.2/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">description</span>, </span></li>
-<li><span class="parameter" id="editPlaylist-param-privacyStatus"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.12.2/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">privacyStatus</span>, </span></li>
-<li><span class="parameter" id="editPlaylist-param-collaboration"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.12.2/dart-core/bool-class.html">bool</a>?</span> <span class="parameter-name">collaboration</span>, </span></li>
+<span class="returntype"><a href="https://api.dart.dev/stable/3.14.1/dart-async/Future-class.html">Future</a></span>
+<span class="name ">editPlaylist</span>(<wbr><ol class="parameter-list"> <li><span class="parameter" id="editPlaylist-param-playlistId"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.14.1/dart-core/String-class.html">String</a></span> <span class="parameter-name">playlistId</span>, {</span></li>
+<li><span class="parameter" id="editPlaylist-param-title"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.14.1/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">title</span>, </span></li>
+<li><span class="parameter" id="editPlaylist-param-description"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.14.1/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">description</span>, </span></li>
+<li><span class="parameter" id="editPlaylist-param-privacyStatus"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.14.1/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">privacyStatus</span>, </span></li>
+<li><span class="parameter" id="editPlaylist-param-collaboration"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.14.1/dart-core/bool-class.html">bool</a>?</span> <span class="parameter-name">collaboration</span>, </span></li>
 <li><span class="parameter" id="editPlaylist-param-moveItem"><span class="type-annotation">dynamic</span> <span class="parameter-name">moveItem</span>, </span></li>
-<li><span class="parameter" id="editPlaylist-param-addPlaylistId"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.12.2/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">addPlaylistId</span>, </span></li>
+<li><span class="parameter" id="editPlaylist-param-addPlaylistId"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.14.1/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">addPlaylistId</span>, </span></li>
 <li><span class="parameter" id="editPlaylist-param-sortOrder"><span class="type-annotation"><a href="../../models_content_enums/PlaylistSortOrder.html">PlaylistSortOrder</a>?</span> <span class="parameter-name">sortOrder</span>, </span></li>
-<li><span class="parameter" id="editPlaylist-param-addToTop"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.12.2/dart-core/bool-class.html">bool</a>?</span> <span class="parameter-name">addToTop</span>, </span></li>
+<li><span class="parameter" id="editPlaylist-param-addToTop"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.14.1/dart-core/bool-class.html">bool</a>?</span> <span class="parameter-name">addToTop</span>, </span></li>
 <li><span class="parameter" id="editPlaylist-param-voteOption"><span class="type-annotation"><a href="../../models_content_enums/PlaylistVoteEditOptions.html">PlaylistVoteEditOptions</a>?</span> <span class="parameter-name">voteOption</span>, </span></li>
 </ol>})
 
@@ -155,7 +155,7 @@
     final action = {
       &#39;action&#39;: &#39;ACTION_MOVE_VIDEO_BEFORE&#39;,
       &#39;setVideoId&#39;:
-          moveItem is String ? moveItem : (moveItem as List&lt;String&gt;)[0],
+          moveItem is String ? moveItem : (moveItem as List&lt;String&gt;).first,
     };
     if (moveItem is List &amp;&amp; moveItem.length &gt; 1) {
       action[&#39;movedSetVideoIdSuccessor&#39;] = (moveItem as List&lt;String&gt;)[1];
@@ -238,7 +238,7 @@
 <footer>
   <span class="no-break">
     ytmusicapi_dart
-      2.4.1
+      3.0.0-rc.1
   </span>
   
 </footer>

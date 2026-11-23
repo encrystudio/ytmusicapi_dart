@@ -54,8 +54,8 @@
 
     <section class="multi-line-signature">
       
-<span class="returntype"><a href="https://api.dart.dev/stable/3.12.2/dart-async/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../../type_alias/JsonMap.html">JsonMap</a></span>&gt;</span></span>
-<span class="name ">getEpisodesPlaylist</span>(<wbr>{<ol class="parameter-list"> <li><span class="parameter" id="getEpisodesPlaylist-param-playlistId"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.12.2/dart-core/String-class.html">String</a></span> <span class="parameter-name">playlistId</span> = <span class="default-value">&#39;RDPN&#39;</span>, </span></li>
+<span class="returntype"><a href="https://api.dart.dev/stable/3.14.1/dart-async/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../../models_objects_playlist/YtPlaylist-class.html">YtPlaylist</a></span>&gt;</span></span>
+<span class="name ">getEpisodesPlaylist</span>(<wbr>{<ol class="parameter-list"> <li><span class="parameter" id="getEpisodesPlaylist-param-playlistId"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.14.1/dart-core/String-class.html">String</a></span> <span class="parameter-name">playlistId</span> = <span class="default-value">&#39;RDPN&#39;</span>, </span></li>
 </ol>})
 
       
@@ -66,20 +66,37 @@
   <p>Get all episodes in an episodes playlist.</p>
 <p>Currently the only known playlist is the "New Episodes" auto-generated playlist.</p>
 <p><code>playlistId</code> Playlist ID, defaults to <code>RDPN</code>, the id of the "New Episodes" playlist.</p>
-<p>Returns Map in the format of <a href="../../mixins_podcasts/PodcastsMixin/getPodcast.html">getPodcast</a>.</p>
 </section>
 
 
     
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
-  <pre class="language-dart"><code class="language-dart">Future&lt;JsonMap&gt; getEpisodesPlaylist({String playlistId = &#39;RDPN&#39;}) async {
+  <pre class="language-dart"><code class="language-dart">Future&lt;YtPlaylist&gt; getEpisodesPlaylist({String playlistId = &#39;RDPN&#39;}) async {
   final browseId = playlistId.startsWith(&#39;VL&#39;) ? playlistId : &#39;VL$playlistId&#39;;
   final body = {&#39;browseId&#39;: browseId};
   const endpoint = &#39;browse&#39;;
   final response = await sendRequest(endpoint, body);
 
-  final playlist = parsePlaylistHeader(response);
+  final playlistHeader = parsePlaylistHeader(response);
+  final playlist = YtPlaylist(
+    name: playlistHeader.meta.title,
+    id: playlistId,
+    playlistType: YtPlaylistType.EPISODES_PLAYLIST,
+    authors: playlistHeader.meta.authors,
+    owned: playlistHeader.owned,
+    privacy: playlistHeader.privacy,
+    thumbnails: playlistHeader.thumbnails,
+    description: playlistHeader.description,
+    durationRaw: playlistHeader.meta.durationRaw,
+    duration: null,
+    year: playlistHeader.year,
+    itemCount: playlistHeader.meta.itemCount,
+    views: playlistHeader.meta.views,
+    items: [],
+    related: [],
+    suggestions: [],
+  );
 
   final results =
       nav(response, [
@@ -89,12 +106,12 @@
             ...MUSIC_SHELF,
           ])
           as JsonMap;
-  Future&lt;List&gt; parseFunc(contents) =&gt; parseContentList(
+  Future&lt;List&lt;YtVideo&gt;&gt; parseFunc(contents) =&gt; parseContentList(
     List&lt;JsonMap&gt;.from(contents as List),
     parseEpisode,
     key: MMRIR,
   );
-  playlist[&#39;episodes&#39;] = parseFunc(results[&#39;contents&#39;]);
+  playlist.items = await parseFunc(results[&#39;contents&#39;]);
 
   return playlist;
 }</code></pre>
@@ -125,7 +142,7 @@
 <footer>
   <span class="no-break">
     ytmusicapi_dart
-      2.4.1
+      3.0.0-rc.1
   </span>
   
 </footer>

@@ -54,7 +54,7 @@
 
     <section class="multi-line-signature">
         
-<span class="returntype"><a href="https://api.dart.dev/stable/3.12.2/dart-core/String-class.html">String</a></span>
+<span class="returntype"><a href="https://api.dart.dev/stable/3.14.1/dart-core/String-class.html">String</a></span>
 <span class="name ">prepareOrderParams</span>(<wbr><ol class="parameter-list single-line"> <li><span class="parameter" id="prepareOrderParams-param-order"><span class="type-annotation"><a href="../mixins_utils/LibraryOrderType.html">LibraryOrderType</a></span> <span class="parameter-name">order</span></span></li>
 </ol>)
 
@@ -72,7 +72,7 @@
   <h2><span>Implementation</span></h2>
   <pre class="language-dart"><code class="language-dart">String prepareOrderParams(LibraryOrderType order) {
   final orders = [&#39;a_to_z&#39;, &#39;z_to_a&#39;, &#39;recently_added&#39;];
-  &#47;&#47; determine orderParams via `.contents.singleColumnBrowseResultsRenderer.tabs[0].tabRenderer.content.sectionListRenderer.contents[1].itemSectionRenderer.header.itemSectionTabbedHeaderRenderer.endItems[1].dropdownRenderer.entries[].dropdownItemRenderer.onSelectCommand.browseEndpoint.params` of `&#47;youtubei&#47;v1&#47;browse` response
+  &#47;&#47; determine orderParams via `.contents.singleColumnBrowseResultsRenderer.tabs.first.tabRenderer.content.sectionListRenderer.contents[1].itemSectionRenderer.header.itemSectionTabbedHeaderRenderer.endItems[1].dropdownRenderer.entries[].dropdownItemRenderer.onSelectCommand.browseEndpoint.params` of `&#47;youtubei&#47;v1&#47;browse` response
   final orderParams = [&#39;ggMGKgQIARAA&#39;, &#39;ggMGKgQIARAB&#39;, &#39;ggMGKgQIABAB&#39;];
   return orderParams[orders.indexOf(order)];
 }</code></pre>
@@ -102,7 +102,7 @@
 <footer>
   <span class="no-break">
     ytmusicapi_dart
-      2.4.1
+      3.0.0-rc.1
   </span>
   
 </footer>

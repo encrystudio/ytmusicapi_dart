@@ -89,12 +89,14 @@
     final yearReg = RegExp(r&#39;^\d{4}$&#39;);
 
     if (durationReg.hasMatch(text as String)) {
-      return {&#39;type&#39;: &#39;duration&#39;, &#39;data&#39;: text};
+      return {&#39;type&#39;: &#39;durationRaw&#39;, &#39;data&#39;: text};
     } else if (yearReg.hasMatch(text)) {
       return {&#39;type&#39;: &#39;year&#39;, &#39;data&#39;: text};
     } else if (parseViews(text) != null) {
       return {&#39;type&#39;: &#39;views&#39;, &#39;data&#39;: parseViews(text)};
-    } else if (!API_RESULT_TYPES.contains(text.toLowerCase())) {
+    } else if (!YtResultType.values.any(
+      (type) =&gt; type.name == text.toLowerCase(),
+    )) {
       return {
         &#39;type&#39;: &#39;artist&#39;,
         &#39;data&#39;: {&#39;name&#39;: text, &#39;id&#39;: null},
@@ -130,7 +132,7 @@
 <footer>
   <span class="no-break">
     ytmusicapi_dart
-      2.4.1
+      3.0.0-rc.1
   </span>
   
 </footer>

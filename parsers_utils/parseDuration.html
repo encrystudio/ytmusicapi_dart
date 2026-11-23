@@ -54,8 +54,8 @@
 
     <section class="multi-line-signature">
         
-<span class="returntype"><a href="https://api.dart.dev/stable/3.12.2/dart-core/int-class.html">int</a>?</span>
-<span class="name ">parseDuration</span>(<wbr><ol class="parameter-list single-line"> <li><span class="parameter" id="parseDuration-param-duration"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.12.2/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">duration</span></span></li>
+<span class="returntype"><a href="https://api.dart.dev/stable/3.14.1/dart-core/Duration-class.html">Duration</a>?</span>
+<span class="name ">parseDuration</span>(<wbr><ol class="parameter-list single-line"> <li><span class="parameter" id="parseDuration-param-duration"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.14.1/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">duration</span></span></li>
 </ol>)
 
         
@@ -70,7 +70,7 @@
     
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
-  <pre class="language-dart"><code class="language-dart">int? parseDuration(String? duration) {
+  <pre class="language-dart"><code class="language-dart">Duration? parseDuration(String? duration) {
   if (duration == null || duration.trim().isEmpty) return null;
   final durationSplit = duration.trim().split(&#39;:&#39;);
   if (durationSplit.any((d) =&gt; int.tryParse(d.replaceAll(&#39;,&#39;, &#39;&#39;)) == null)) {
@@ -83,7 +83,7 @@
     final value = int.parse(durationSplit[durationSplit.length - 1 - i]);
     seconds.add(value * multipliers[i]);
   }
-  return seconds.reduce((a, b) =&gt; a + b);
+  return Duration(seconds: seconds.reduce((a, b) =&gt; a + b));
 }</code></pre>
 </section>
 
@@ -111,7 +111,7 @@
 <footer>
   <span class="no-break">
     ytmusicapi_dart
-      2.4.1
+      3.0.0-rc.1
   </span>
   
 </footer>
