@@ -85,7 +85,7 @@ mixin ChartsMixin on MixinProtocol {
         nav(response, [...SINGLE_COLUMN_TAB, ...SECTION_LIST]) as List;
 
     final charts = <String, dynamic>{'countries': {}};
-    final menu = nav(results[0], [
+    final menu = nav(results.first, [
       ...MUSIC_SHELF,
       'subheaders',
       0,

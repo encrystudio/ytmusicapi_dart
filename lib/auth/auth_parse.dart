@@ -2,8 +2,8 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:ytmusicapi_dart/auth/oauth/token.dart';
-import 'package:ytmusicapi_dart/auth/types.dart';
 import 'package:ytmusicapi_dart/exceptions.dart';
+import 'package:ytmusicapi_dart/models/content/enums.dart';
 import 'package:ytmusicapi_dart/type_alias.dart';
 import 'package:ytmusicapi_dart/utils.dart';
 

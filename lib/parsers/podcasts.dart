@@ -1,5 +1,9 @@
 import 'dart:collection';
 
+import 'package:ytmusicapi_dart/models/content/enums.dart';
+import 'package:ytmusicapi_dart/models/objects/album.dart';
+import 'package:ytmusicapi_dart/models/objects/base.dart';
+import 'package:ytmusicapi_dart/models/objects/video.dart';
 import 'package:ytmusicapi_dart/navigation.dart';
 import 'package:ytmusicapi_dart/parsers/utils.dart';
 import 'package:ytmusicapi_dart/type_alias.dart';
@@ -162,95 +166,137 @@ JsonMap parseEpisodeHeader(JsonMap header) {
 }
 
 /// Parses episode from [data].
-JsonMap parseEpisode(JsonMap data) {
+YtVideo parseEpisode(JsonMap data) {
   final JsonMap realData;
   if (data.containsKey(MMRIR)) {
     realData = nav(data, [MMRIR]) as JsonMap;
   } else {
     realData = data;
   }
-  final thumbnails = nav(realData, THUMBNAILS);
-  final date = nav(realData, SUBTITLE, nullIfAbsent: true);
-  final duration = nav(realData, [
-    'playbackProgress',
-    ...PROGRESS_RENDERER,
-    ...DURATION_TEXT,
-  ], nullIfAbsent: true);
-  final title = nav(realData, TITLE_TEXT);
-  final description = nav(realData, DESCRIPTION, nullIfAbsent: true);
-  final videoId = nav(realData, [
-    'onTap',
-    ...WATCH_VIDEO_ID,
-  ], nullIfAbsent: true);
-  final browseId = nav(realData, [
-    ...TITLE,
-    ...NAVIGATION_BROWSE_ID,
-  ], nullIfAbsent: true);
-  final videoType = nav(realData, [
-    'onTap',
-    ...NAVIGATION_VIDEO_TYPE,
-  ], nullIfAbsent: true);
-  final index = nav(realData, [
-    'onTap',
-    'watchEndpoint',
-    'index',
-  ], nullIfAbsent: true);
+  final thumbnails = YtThumbnails.fromJson(
+    List<JsonMap>.from(nav(realData, THUMBNAILS) as List),
+  );
+  // TODO
+  // final date = nav(realData, SUBTITLE, nullIfAbsent: true);
+  final durationRaw =
+      nav(realData, [
+            'playbackProgress',
+            ...PROGRESS_RENDERER,
+            ...DURATION_TEXT,
+          ], nullIfAbsent: true)
+          as String?;
+  final title = nav(realData, TITLE_TEXT) as String;
+  final description = nav(realData, DESCRIPTION, nullIfAbsent: true) as String?;
+  final videoId =
+      nav(realData, ['onTap', ...WATCH_VIDEO_ID], nullIfAbsent: true)
+          as String?;
+  final browseId =
+      nav(realData, [...TITLE, ...NAVIGATION_BROWSE_ID], nullIfAbsent: true)
+          as String?;
+  final videoType = VideoType.tryFromValue(
+    nav(realData, ['onTap', ...NAVIGATION_VIDEO_TYPE], nullIfAbsent: true)
+        as String?,
+  );
+  final index =
+      nav(realData, ['onTap', 'watchEndpoint', 'index'], nullIfAbsent: true)
+          as String? ??
+      '';
 
-  return {
-    'index': index,
-    'title': title,
-    'description': description,
-    'duration': duration,
-    'videoId': videoId,
-    'browseId': browseId,
-    'videoType': videoType,
-    'date': date,
-    'thumbnails': thumbnails,
-  };
+  return YtVideo(
+    name: title,
+    id: videoId,
+    playlistId: browseId,
+    videoType: videoType,
+    views: null,
+    durationRaw: durationRaw,
+    duration: null,
+    artists: [],
+    thumbnails: thumbnails,
+    year: null,
+    isAvailable: null,
+    isEpisode: true,
+    isSong: false,
+    album: null,
+    trackNumber: int.tryParse(index),
+    isExplicit: null,
+    inLibrary: null,
+    feedbackTokenAdd: null,
+    feedbackTokenRemove: null,
+    description: description,
+  );
 }
 
 /// Parses episode from [data]
-JsonMap parseEpisodeFlat(JsonMap data) {
-  return {
-    'title': nav(getFlexColumnItem(data, 0), TEXT_RUN_TEXT),
-    'podcast': parseIdName(
-      nav(getFlexColumnItem(data, 1), TEXT_RUN) as JsonMap,
+YtVideo parseEpisodeFlat(JsonMap data) {
+  return YtVideo(
+    name: nav(getFlexColumnItem(data, 0), TEXT_RUN_TEXT) as String,
+    id: nav(data, ['playlistItemData', 'videoId']) as String,
+    playlistId:
+        nav(data, [
+              ...PLAY_BUTTON,
+              'playNavigationEndpoint',
+              ...WATCH_PLAYLIST_ID,
+            ])
+            as String,
+    videoType: VideoType.tryFromValue(
+      nav(data, [
+            ...PLAY_BUTTON,
+            'playNavigationEndpoint',
+            ...NAVIGATION_VIDEO_TYPE,
+          ])
+          as String,
     ),
-    'videoId': nav(data, ['playlistItemData', 'videoId']),
-    'browseId': nav(getFlexColumnItem(data, 0), [
-      ...TEXT_RUN,
-      ...NAVIGATION_BROWSE_ID,
-    ]),
-    'playlistId': nav(data, [
-      ...PLAY_BUTTON,
-      'playNavigationEndpoint',
-      ...WATCH_PLAYLIST_ID,
-    ]),
-    'videoType': nav(data, [
-      ...PLAY_BUTTON,
-      'playNavigationEndpoint',
-      ...NAVIGATION_VIDEO_TYPE,
-    ]),
-    'date': nav(getFlexColumnItem(data, 2), TEXT_RUN_TEXT),
-    'thumbnails': nav(data, THUMBNAILS),
-  };
+    views: null,
+    durationRaw: null,
+    duration: null,
+    artists: [],
+    thumbnails: YtThumbnails.fromJson(
+      List<JsonMap>.from(nav(data, THUMBNAILS) as List),
+    ),
+    year: null,
+    isAvailable: null,
+    isEpisode: true,
+    isSong: false,
+    album: parseIdName(nav(getFlexColumnItem(data, 1), TEXT_RUN) as JsonMap),
+    trackNumber: null,
+    isExplicit: null,
+    inLibrary: null,
+    feedbackTokenAdd: null,
+    feedbackTokenRemove: null,
+    description: null,
+  );
 }
 
 /// Parses podcast from [data].
-JsonMap parsePodcast(JsonMap data) {
+YtAlbum parsePodcast(JsonMap data) {
   final JsonMap realData;
   if (data.containsKey(MTRIR)) {
     realData = nav(data, [MTRIR]) as JsonMap;
   } else {
     realData = data;
   }
-  return {
-    'title': nav(realData, TITLE_TEXT),
-    'channel': parseIdName(
-      nav(realData, [...SUBTITLE_RUNS, 0], nullIfAbsent: true) as JsonMap?,
+  return YtAlbum(
+    name: nav(realData, TITLE_TEXT) as String,
+    id: nav(realData, THUMBNAIL_OVERLAY, nullIfAbsent: true) as String?,
+    playlistId: nav(realData, [...TITLE, ...NAVIGATION_BROWSE_ID]) as String,
+    albumType: null,
+    thumbnails: YtThumbnails.fromJson(
+      List<JsonMap>.from(nav(realData, THUMBNAIL_RENDERER) as List),
     ),
-    'browseId': nav(realData, [...TITLE, ...NAVIGATION_BROWSE_ID]),
-    'podcastId': nav(realData, THUMBNAIL_OVERLAY, nullIfAbsent: true),
-    'thumbnails': nav(realData, THUMBNAIL_RENDERER),
-  };
+    artists: [
+      parseIdName(
+        nav(realData, [...SUBTITLE_RUNS, 0], nullIfAbsent: true) as JsonMap?,
+      ),
+    ],
+    tracks: [],
+    durationRaw: null,
+    duration: null,
+    isExplicit: null,
+    year: null,
+    trackCount: null,
+    description: null,
+    likeStatus: null,
+    relatedRecommendations: [],
+    otherVersions: [],
+  );
 }

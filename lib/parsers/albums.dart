@@ -1,74 +1,15 @@
+import 'package:ytmusicapi_dart/enums.dart';
 import 'package:ytmusicapi_dart/helpers.dart';
+import 'package:ytmusicapi_dart/models/content/enums.dart';
+import 'package:ytmusicapi_dart/models/objects/album.dart';
+import 'package:ytmusicapi_dart/models/objects/base.dart';
 import 'package:ytmusicapi_dart/navigation.dart';
 import 'package:ytmusicapi_dart/parsers/artists.dart';
 import 'package:ytmusicapi_dart/parsers/songs.dart';
 import 'package:ytmusicapi_dart/type_alias.dart';
 
-/// Parse the information in an album header.
-JsonMap parseAlbumHeader(JsonMap response) {
-  final header = nav(response, HEADER_DETAIL) as JsonMap;
-  final album = <String, dynamic>{
-    'title': nav(header, TITLE_TEXT),
-    'type': nav(header, SUBTITLE),
-    'thumbnails': nav(header, THUMBNAIL_CROPPED),
-    'isExplicit': nav(header, SUBTITLE_BADGE_LABEL, nullIfAbsent: true) != null,
-  };
-
-  if (header.containsKey('description')) {
-    album['description'] =
-        (((header['description'] as JsonMap)['runs'] as List)[0]
-            as JsonMap)['text'];
-  }
-
-  final albumInfo = parseSongRuns(
-    ((header['subtitle'] as JsonMap)['runs'] as List).sublist(2),
-  );
-  album.addAll(albumInfo);
-
-  if (((header['secondSubtitle'] as JsonMap)['runs'] as List).length > 1) {
-    album['trackCount'] = toInt(
-      (((header['secondSubtitle'] as JsonMap)['runs'] as List)[0]
-              as JsonMap)['text']
-          as String,
-    );
-    album['duration'] =
-        (((header['secondSubtitle'] as JsonMap)['runs'] as List)[2]
-            as JsonMap)['text'];
-  } else {
-    album['duration'] =
-        (((header['secondSubtitle'] as JsonMap)['runs'] as List)[0]
-            as JsonMap)['text'];
-  }
-
-  // add to library/uploaded
-  final menu = nav(header, MENU) as JsonMap;
-  final toplevel = menu['topLevelButtons'];
-  album['audioPlaylistId'] = nav(toplevel, [
-    0,
-    'buttonRenderer',
-    ...NAVIGATION_WATCH_PLAYLIST_ID,
-  ], nullIfAbsent: true);
-  if (album['audioPlaylistId'] == null) {
-    album['audioPlaylistId'] = nav(toplevel, [
-      0,
-      'buttonRenderer',
-      ...NAVIGATION_PLAYLIST_ID,
-    ], nullIfAbsent: true);
-  }
-  final service = nav(toplevel, [
-    1,
-    'buttonRenderer',
-    'defaultServiceEndpoint',
-  ], nullIfAbsent: true);
-  if (service != null) {
-    album['likeStatus'] = parseLikeStatus(service as JsonMap);
-  }
-
-  return album;
-}
-
 /// Parse the information in an album header in 2025 format.
-JsonMap parseAlbumHeader2024(JsonMap response) {
+YtAlbum parseAlbumHeader2024(JsonMap response) {
   final header =
       nav(response, [
             ...TWO_COLUMN_RENDERER,
@@ -78,12 +19,26 @@ JsonMap parseAlbumHeader2024(JsonMap response) {
           ])
           as JsonMap;
 
-  final album = <String, dynamic>{
-    'title': nav(header, TITLE_TEXT),
-    'type': nav(header, SUBTITLE),
-    'thumbnails': nav(header, THUMBNAILS),
-    'isExplicit': nav(header, SUBTITLE_BADGE_LABEL, nullIfAbsent: true) != null,
-  };
+  final album = YtAlbum(
+    name: nav(header, TITLE_TEXT) as String,
+    id: null,
+    playlistId: null,
+    albumType: YtAlbumType.tryFromName(nav(header, SUBTITLE) as String),
+    thumbnails: YtThumbnails.fromJson(
+      List<JsonMap>.from(nav(header, THUMBNAILS) as List),
+    ),
+    artists: [],
+    tracks: [],
+    durationRaw: null,
+    duration: null,
+    isExplicit: nav(header, SUBTITLE_BADGE_LABEL, nullIfAbsent: true) != null,
+    trackCount: null,
+    likeStatus: null,
+    description: null,
+    year: null,
+    relatedRecommendations: [],
+    otherVersions: [],
+  );
 
   final (description, descriptionRuns) = parseDescriptionRuns(
     nav(header, [
@@ -93,8 +48,8 @@ JsonMap parseAlbumHeader2024(JsonMap response) {
     ], nullIfAbsent: true),
   );
 
-  album['description'] = description;
-  album['descriptionRuns'] = descriptionRuns;
+  album.description = description;
+  // album.descriptionRuns = descriptionRuns; // TODO
 
   final albumInfo = parseSongRuns(
     ((header['subtitle'] as JsonMap)['runs'] as List).sublist(2),
@@ -105,55 +60,75 @@ JsonMap parseAlbumHeader2024(JsonMap response) {
     'runs',
   ], nullIfAbsent: true);
 
-  albumInfo['artists'] =
-      straplineRuns != null ? parseArtistsRuns(straplineRuns as List) : null;
+  albumInfo.removeWhere((item) => item.$1 == SongRunsItemType.ARTISTS);
+  if (straplineRuns != null) {
+    albumInfo.add((
+      SongRunsItemType.ARTISTS,
+      parseArtistsRuns(straplineRuns as List),
+    ));
+  }
 
-  album.addAll(albumInfo);
+  for (final (songRunsItemType, value) in albumInfo) {
+    switch (songRunsItemType) {
+      case SongRunsItemType.ALBUM:
+        continue;
+      case SongRunsItemType.ARTISTS:
+        album.artists = value as List<YtBaseObject>;
+      case SongRunsItemType.DURATION_RAW:
+        album.durationRaw = value as String?;
+      case SongRunsItemType.DURATION_SECONDS:
+        album.duration = value as Duration?;
+      case SongRunsItemType.VIEWS:
+        continue; // TODO
+      case SongRunsItemType.YEAR:
+        album.year = value as int?;
+    }
+  }
 
   if (((header['secondSubtitle'] as JsonMap)['runs'] as List).length > 1) {
-    album['trackCount'] = toInt(
-      (((header['secondSubtitle'] as JsonMap)['runs'] as List)[0]
+    album.trackCount = toInt(
+      (((header['secondSubtitle'] as JsonMap)['runs'] as List).first
               as JsonMap)['text']
           as String,
     );
-    album['duration'] =
+    album.durationRaw =
         (((header['secondSubtitle'] as JsonMap)['runs'] as List)[2]
-            as JsonMap)['text'];
+                as JsonMap)['text']
+            as String;
   } else {
-    album['duration'] =
-        (((header['secondSubtitle'] as JsonMap)['runs'] as List)[0]
-            as JsonMap)['text'];
+    album.durationRaw =
+        (((header['secondSubtitle'] as JsonMap)['runs'] as List).first
+                as JsonMap)['text']
+            as String;
   }
 
   // add to library/uploaded
   final buttons = header['buttons'];
-  album['audioPlaylistId'] = nav(
-    findObjectByKey(buttons as List, 'musicPlayButtonRenderer'),
-    ['musicPlayButtonRenderer', 'playNavigationEndpoint', ...WATCH_PID],
-    nullIfAbsent: true,
-  );
+  album.playlistId =
+      nav(findObjectByKey(buttons as List, 'musicPlayButtonRenderer'), [
+            'musicPlayButtonRenderer',
+            'playNavigationEndpoint',
+            ...WATCH_PID,
+          ], nullIfAbsent: true)
+          as String?;
 
   // remove this once A/B testing is finished and it is no longer covered
-  if (album['audioPlaylistId'] == null) {
-    album['audioPlaylistId'] = nav(
-      findObjectByKey(buttons, 'musicPlayButtonRenderer'),
-      [
-        'musicPlayButtonRenderer',
-        'playNavigationEndpoint',
-        ...WATCH_PLAYLIST_ID,
-      ],
-      nullIfAbsent: true,
-    );
-  }
+  album.playlistId ??=
+      nav(findObjectByKey(buttons, 'musicPlayButtonRenderer'), [
+            'musicPlayButtonRenderer',
+            'playNavigationEndpoint',
+            ...WATCH_PLAYLIST_ID,
+          ], nullIfAbsent: true)
+          as String?;
 
   final service = nav(findObjectByKey(buttons, 'toggleButtonRenderer'), [
     'toggleButtonRenderer',
     'defaultServiceEndpoint',
   ], nullIfAbsent: true);
 
-  album['likeStatus'] = 'INDIFFERENT';
+  album.likeStatus = LikeStatus.INDIFFERENT;
   if (service != null) {
-    album['likeStatus'] = parseLikeStatus(service as JsonMap);
+    album.likeStatus = parseLikeStatus(service as JsonMap);
   }
 
   return album;

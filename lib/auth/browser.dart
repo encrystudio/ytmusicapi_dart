@@ -41,29 +41,29 @@ Future<String> setupBrowser({String? filepath, String? headersRaw}) async {
   try {
     for (final content in contents) {
       final header = content.split(': ');
-      if (header[0].startsWith(':')) {
+      if (header.first.startsWith(':')) {
         // nothing was split or chromium headers
         continue;
       }
-      if (header[0].endsWith(':')) {
+      if (header.first.endsWith(':')) {
         // weird new chrome "copy-paste in separate lines" format
         chromeRememberedKey = content.replaceAll(':', '');
       }
       if (header.length == 1) {
         if (chromeRememberedKey.isNotEmpty) {
-          userHeaders[chromeRememberedKey] = header[0];
+          userHeaders[chromeRememberedKey] = header.first;
         }
-        if (!header[0].endsWith(':') &&
-            (chromeRememberedKey != 'Decoded' || header[0] == '}')) {
+        if (!header.first.endsWith(':') &&
+            (chromeRememberedKey != 'Decoded' || header.first == '}')) {
           // support chrome format with or without colons for headers
           //  and handle corner case of "Decoded:" multi-line header
           chromeRememberedKey = '';
         } else {
-          chromeRememberedKey = header[0];
+          chromeRememberedKey = header.first;
         }
         continue;
       }
-      userHeaders[header[0].toLowerCase()] = header.sublist(1).join(': ');
+      userHeaders[header.first.toLowerCase()] = header.sublist(1).join(': ');
     }
   } catch (e) {
     throw YTMusicError(

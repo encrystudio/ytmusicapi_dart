@@ -1,29 +1,31 @@
 // ignore_for_file: public_member_api_docs
 
-import 'package:ytmusicapi_dart/models/objects/album.dart';
-import 'package:ytmusicapi_dart/models/objects/artist.dart';
-import 'package:ytmusicapi_dart/models/objects/playlist.dart';
-import 'package:ytmusicapi_dart/models/objects/song.dart';
-import 'package:ytmusicapi_dart/models/objects/video.dart';
+import 'package:ytmusicapi_dart/enums.dart';
 import 'package:ytmusicapi_dart/type_alias.dart';
 
 class YtBaseObject {
-  final String? id;
-  final String title;
+  String? id;
+  String name;
   final YtObjectType type;
 
-  YtBaseObject({required this.id, required this.title, required this.type});
+  YtBaseObject({required this.id, required this.name, required this.type});
 
-  factory YtBaseObject.fromJson(JsonMap jsonData, String id, String title) {
+  factory YtBaseObject.fromJson(
+    JsonMap jsonData,
+    String idKey,
+    String nameKey,
+  ) {
     return YtBaseObject(
-      id: jsonData[id] as String?,
-      title: jsonData[title] as String,
+      id: jsonData[idKey] as String?,
+      name: jsonData[nameKey] as String,
       type: YtObjectType.OBJECT,
     );
   }
 
+  Map<String, dynamic> asJson() => {'id': id, 'name': name, 'type': type.name};
+
   @override
-  String toString() => 'YtBaseObject(id: $id, title: $title, type: $type)';
+  String toString() => 'YtBaseObject(id: $id, title: $name, type: $type)';
 }
 
 class YtThumbnail {
@@ -35,15 +37,22 @@ class YtThumbnail {
 
   YtThumbnail({required this.url, required this.width, required this.height});
 
+  Map<String, dynamic> asJson() => {
+    'url': url,
+    'width': width,
+    'height': height,
+    'resolution': resolution,
+  };
+
   @override
   String toString() =>
       'YtThumbnail(url: $url, width: $width, height: $height, resolution: $resolution)';
 }
 
-class YtThumbnailData {
+class YtThumbnails {
   final List<YtThumbnail> thumbnails;
 
-  YtThumbnailData({required List<YtThumbnail> thumbnails})
+  YtThumbnails({required List<YtThumbnail> thumbnails})
     : assert(thumbnails.isNotEmpty, 'Thumbnail list cannot be empty'),
       thumbnails = List.unmodifiable(
         List<YtThumbnail>.of(thumbnails)
@@ -53,7 +62,8 @@ class YtThumbnailData {
   YtThumbnail get lowRes => thumbnails.first;
 
   YtThumbnail get highRes => thumbnails.last;
-  factory YtThumbnailData.fromJson(List<JsonMap> jsonData) {
+
+  factory YtThumbnails.fromJson(List<JsonMap> jsonData) {
     final thumbnails =
         jsonData
             .map(
@@ -64,81 +74,16 @@ class YtThumbnailData {
               ),
             )
             .toList();
+    assert(thumbnails.isNotEmpty, 'Thumbnail list cannot be empty');
 
-    return YtThumbnailData(thumbnails: thumbnails);
+    return YtThumbnails(thumbnails: thumbnails);
   }
+
+  Map<String, dynamic> asJson() => {
+    'thumbnails': thumbnails.map((t) => t.asJson()).toList(),
+  };
 
   @override
-  String toString() => 'YtThumbnailData(lowRes: $lowRes, highRes: $highRes)';
-}
-
-enum YtAlbumType {
-  SINGLE('Single'),
-
-  EP('EP'),
-
-  ALBUM('Album');
-
-  final String value;
-
-  const YtAlbumType(this.value);
-
-  static YtAlbumType fromValue(String value) {
-    return YtAlbumType.values.firstWhere(
-      (e) => e.value.toLowerCase() == value.toLowerCase(),
-      orElse: () => throw FormatException('Invalid value: $value'),
-    );
-  }
-}
-
-enum YtPlaylistType {
-  PLAYLIST('Playlists'),
-
-  FEATURED_PLAYLIST('Featured playlists'),
-
-  COMMUNITY_PLAYLIST('Community playlists');
-
-  final String value;
-
-  const YtPlaylistType(this.value);
-
-  static YtPlaylistType fromValue(String value) {
-    return YtPlaylistType.values.firstWhere(
-      (e) => e.value == value,
-      orElse: () {
-        if (value == 'Top result') {
-          return YtPlaylistType.PLAYLIST;
-        }
-        throw FormatException('Invalid value: $value');
-      },
-    );
-  }
-}
-
-enum YtObjectType { ALBUM, ARTIST, SONG, VIDEO, PLAYLIST, OBJECT }
-
-List<YtBaseObject> searchResultToDart(List<dynamic> results) {
-  return results
-      .where(
-        (result) =>
-            !['episode', 'podcast'].contains((result as JsonMap)['resultType']),
-      )
-      .map((result) {
-        final resultType = (result as JsonMap)['resultType'];
-        switch (resultType) {
-          case 'album':
-            return YtAlbum.fromJson(result);
-          case 'artist':
-            return YtArtist.fromJson(result);
-          case 'playlist':
-            return YtPlaylist.fromJson(result);
-          case 'song':
-            return YtSong.fromJson(result);
-          case 'video':
-            return YtVideo.fromJson(result);
-          default:
-            throw UnsupportedError('Unknown resultType: $resultType');
-        }
-      })
-      .toList();
+  String toString() =>
+      'YtThumbnailData(lowRes: $lowRes, highRes: $highRes, count: ${thumbnails.length})';
 }

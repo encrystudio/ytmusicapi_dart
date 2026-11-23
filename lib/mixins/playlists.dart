@@ -5,6 +5,9 @@ import 'package:ytmusicapi_dart/helpers.dart';
 import 'package:ytmusicapi_dart/mixins/protocol.dart';
 import 'package:ytmusicapi_dart/mixins/utils.dart';
 import 'package:ytmusicapi_dart/models/content/enums.dart';
+import 'package:ytmusicapi_dart/models/objects/base.dart';
+import 'package:ytmusicapi_dart/models/objects/playlist.dart';
+import 'package:ytmusicapi_dart/models/objects/video.dart';
 import 'package:ytmusicapi_dart/navigation.dart';
 import 'package:ytmusicapi_dart/parsers/browsing.dart';
 import 'package:ytmusicapi_dart/parsers/playlists.dart';
@@ -22,123 +25,11 @@ mixin PlaylistsMixin on MixinProtocol {
   ///                      suggested playlist items (videos) contained in a `suggestions` key.
   ///                      7 items are retrieved in each internal request. (Default: `0`).
   ///
-  /// Returns Map with information about the playlist.
-  /// The key `tracks` contains a List of `playlistItem` Maps
-  ///
-  /// The result is in the following format:
-  /// ```json
-  /// {
-  ///   "id": "PLQwVIlKxHM6qv-o99iX9R85og7IzF9YS_",
-  ///   "privacy": "PUBLIC",
-  ///   "title": "New EDM This Week 03/13/2020",
-  ///   "thumbnails": [...],
-  ///   "description": "Weekly r/EDM new release roundup. Created with github.com/sigma67/spotifyplaylist_to_gmusic",
-  ///   "author": {
-  ///     "name": "sigmatics",
-  ///     "id": "..."
-  ///   },
-  ///   "year": "2020",
-  ///   "duration": "6+ hours",
-  ///   "duration_seconds": 52651,
-  ///   "trackCount": 237,
-  ///   "suggestions": [
-  ///     {
-  ///       "videoId": "HLCsfOykA94",
-  ///       "title": "Mambo (GATTÜSO Remix)",
-  ///       "artists": [
-  ///         {
-  ///           "name": "Nikki Vianna",
-  ///           "id": "UCMW5eSIO1moVlIBLQzq4PnQ"
-  ///         }
-  ///       ],
-  ///       "album": {
-  ///         "name": "Mambo (GATTÜSO Remix)",
-  ///         "id": "MPREb_jLeQJsd7U9w"
-  ///       },
-  ///       "likeStatus": "LIKE",
-  ///       "thumbnails": [...],
-  ///       "isAvailable": true,
-  ///       "isExplicit": false,
-  ///       "duration": "3:32",
-  ///       "duration_seconds": 212,
-  ///       "setVideoId": "to_be_updated_by_client"
-  ///     }
-  ///   ],
-  ///   "related": [
-  ///     {
-  ///       "title": "Presenting MYRNE",
-  ///       "playlistId": "RDCLAK5uy_mbdO3_xdD4NtU1rWI0OmvRSRZ8NH4uJCM",
-  ///       "thumbnails": [...],
-  ///       "description": "Playlist • YouTube Music"
-  ///     }
-  ///   ],
-  ///   "tracks": [
-  ///     {
-  ///       "videoId": "bjGppZKiuFE",
-  ///       "title": "Lost",
-  ///       "artists": [
-  ///         {
-  ///           "name": "Guest Who",
-  ///           "id": "UCkgCRdnnqWnUeIH7EIc3dBg"
-  ///         },
-  ///         {
-  ///           "name": "Kate Wild",
-  ///           "id": "UCwR2l3JfJbvB6aq0RnnJfWg"
-  ///         }
-  ///       ],
-  ///       "album": {
-  ///         "name": "Lost",
-  ///         "id": "MPREb_PxmzvDuqOnC"
-  ///       },
-  ///       "duration": "2:58",
-  ///       "duration_seconds": 178,
-  ///       "setVideoId": "748EE8...",
-  ///       "likeStatus": "INDIFFERENT",
-  ///       "thumbnails": [...],
-  ///       "isAvailable": true,
-  ///       "isExplicit": false,
-  ///       "videoType": "MUSIC_VIDEO_TYPE_OMV",
-  ///       "inLibrary": false,
-  ///       "feedbackTokens": {
-  ///         "add": "AB9zfpJxtvrU...",
-  ///         "remove": "AB9zfpKTyZ..."
-  ///   },
-  ///   "pinnedToListenAgain": false,
-  ///   "listenAgainFeedbackTokens": {
-  ///     "pin": "AB9zfpImL2k...",
-  ///     "unpin": "AB9zfpJt6pA..."
-  ///   },
-  ///   "communityVoteStatus": {
-  ///     "netVoteValue": 12,
-  ///     "status": "VOTE_STATUS_UPVOTED"
-  ///   }
-  /// }
-  ///   "creditsBrowseId": "MPTCekz1IJ9I0sw"
-  ///     }
-  ///   ]
-  /// }
-  ///
-  /// ```
   /// The `setVideoId` is the unique id of this playlist item and
   /// needed for moving/removing playlist items.
   ///
   /// Note that communityVoteStatus can be null if the information is not available (i.e. playlist does not have that setting enabled, the request is not authenticated, ...)
-  ///
-  /// Collaborative playlists replace ``author`` with limited data about ``collaborators``:
-  ///   {
-  ///     "collaborators": {
-  ///       "text": "by Sample Author and 1 other",
-  ///       "avatars": [
-  ///         {
-  ///           "url": "https://yt3.ggpht.com/sample-author-photo"
-  ///         },
-  ///         {
-  ///           "url": "https://yt3.ggpht.com/sample-collaborator-photo"
-  ///         }
-  ///       ]
-  ///     }
-  ///   }
-  Future<JsonMap> getPlaylist(
+  Future<YtPlaylist> getPlaylist(
     String playlistId, {
     int? limit = 100,
     bool related = false,
@@ -166,7 +57,11 @@ mixin PlaylistsMixin on MixinProtocol {
         ], nullIfAbsent: true) !=
         null;
     if (isOla && !hasPlaylistHeader) {
-      return parseAudioPlaylist(response, limit, requestFuncContinuations);
+      return await parseAudioPlaylist(
+        response,
+        limit,
+        requestFuncContinuations,
+      );
     }
 
     final headerData =
@@ -180,28 +75,28 @@ mixin PlaylistsMixin on MixinProtocol {
         nav(response, [...TWO_COLUMN_RENDERER, 'secondaryContents', ...SECTION])
             as JsonMap;
 
-    final playlist = <String, dynamic>{};
-    playlist['owned'] = headerData.containsKey(
-      EDITABLE_PLAYLIST_DETAIL_HEADER[0],
-    );
+    final owned = headerData.containsKey(EDITABLE_PLAYLIST_DETAIL_HEADER.first);
+    String? id;
+    PrivacyStatus privacy;
 
     late JsonMap header;
 
-    if (!(playlist['owned'] as bool)) {
+    if (!owned) {
       header = nav(headerData, RESPONSIVE_HEADER) as JsonMap;
-      playlist['id'] = nav(header, [
-        'buttons',
-        1,
-        'musicPlayButtonRenderer',
-        'playNavigationEndpoint',
-        ...WATCH_PLAYLIST_ID,
-      ], nullIfAbsent: true);
-      playlist['privacy'] = 'PUBLIC';
+      id =
+          nav(header, [
+                'buttons',
+                1,
+                'musicPlayButtonRenderer',
+                'playNavigationEndpoint',
+                ...WATCH_PLAYLIST_ID,
+              ], nullIfAbsent: true)
+              as String?;
+      privacy = PrivacyStatus.PUBLIC;
     } else {
-      playlist['id'] = nav(headerData, [
-        ...EDITABLE_PLAYLIST_DETAIL_HEADER,
-        ...PLAYLIST_ID,
-      ]);
+      id =
+          nav(headerData, [...EDITABLE_PLAYLIST_DETAIL_HEADER, ...PLAYLIST_ID])
+              as String;
       header =
           nav(headerData, [
                 ...EDITABLE_PLAYLIST_DETAIL_HEADER,
@@ -209,41 +104,80 @@ mixin PlaylistsMixin on MixinProtocol {
                 ...RESPONSIVE_HEADER,
               ])
               as JsonMap;
-      playlist['privacy'] =
-          (((headerData[EDITABLE_PLAYLIST_DETAIL_HEADER[0]]
-                      as JsonMap)['editHeader']
-                  as JsonMap)['musicPlaylistEditHeaderRenderer']
-              as JsonMap)['privacy'];
+      privacy =
+          PrivacyStatus.fromValue(
+            (((headerData[EDITABLE_PLAYLIST_DETAIL_HEADER.first]
+                            as JsonMap)['editHeader']
+                        as JsonMap)['musicPlaylistEditHeaderRenderer']
+                    as JsonMap)['privacy']
+                as String,
+          )!;
     }
 
     final descriptionShelf =
         nav(header, ['description', ...DESCRIPTION_SHELF], nullIfAbsent: true)
             as JsonMap?;
-    playlist['description'] =
+    final description =
         descriptionShelf != null
             ? List<JsonMap>.from(
               (descriptionShelf['description'] as JsonMap)['runs'] as List,
             ).map((run) => run['text']).join()
             : null;
 
-    playlist.addAll(parsePlaylistHeaderMeta(header));
-    final isCollaborative = playlist.containsKey('collaborators');
+    final playlistHeaderMeta = parsePlaylistHeaderMeta(header);
 
-    playlist.addAll(
-      parseSongRuns(
-        (nav(header, SUBTITLE_RUNS) as List).sublist(
-          2 + ((playlist['owned'] as bool) ? 2 : 0),
-        ),
-      ),
+    final playlist = YtPlaylist(
+      name: playlistHeaderMeta.title,
+      id: id,
+      playlistType: null,
+      authors: playlistHeaderMeta.authors,
+      owned: owned,
+      privacy: privacy,
+      thumbnails: playlistHeaderMeta.thumbnails,
+      description: description,
+      durationRaw: playlistHeaderMeta.durationRaw,
+      duration: null,
+      year: null,
+      itemCount: playlistHeaderMeta.itemCount,
+      views: playlistHeaderMeta.views,
+      items: [],
+      related: [],
+      suggestions: [],
     );
 
+    final isCollaborative = playlistHeaderMeta.authors.isNotEmpty;
+
+    for (final (songRunsItemType, value) in parseSongRuns(
+      (nav(header, SUBTITLE_RUNS) as List).sublist(
+        2 + (playlist.owned != null && playlist.owned! ? 2 : 0),
+      ),
+    )) {
+      switch (songRunsItemType) {
+        case SongRunsItemType.ARTISTS:
+          playlist.authors = value as List<YtBaseObject>;
+        case SongRunsItemType.DURATION_RAW:
+          playlist.durationRaw = value as String?;
+        case SongRunsItemType.DURATION_SECONDS:
+          playlist.duration = value as Duration?;
+        case SongRunsItemType.VIEWS:
+          playlist.views = value as int?;
+        case SongRunsItemType.YEAR:
+          playlist.year = value as int?;
+        case SongRunsItemType.ALBUM:
+          continue;
+      }
+    }
+
     // suggestions and related are missing e.g. on liked songs
-    playlist['related'] = [];
+    List<YtPlaylist> relatedPlaylists = [];
+    List<YtVideo> suggestions = [];
 
     if (sectionList.containsKey('continuations')) {
       var additionalParams = getContinuationParams(sectionList);
-      if ((playlist['owned'] as bool) && (suggestionsLimit > 0 || related)) {
-        List parseFunc(results) =>
+      if (playlist.owned != null &&
+          playlist.owned! &&
+          (suggestionsLimit > 0 || related)) {
+        List<YtVideo> parseFunc(results) =>
             parsePlaylistItems(List<JsonMap>.from(results as List));
         final suggested = await requestFunc(additionalParams);
         final continuation = nav(suggested, SECTION_LIST_CONTINUATION);
@@ -252,21 +186,21 @@ mixin PlaylistsMixin on MixinProtocol {
           ...CONTENT,
           ...MUSIC_SHELF,
         ]);
-        playlist['suggestions'] = getContinuationContents(
+        suggestions = await getContinuationContents(
           suggestionsShelf as JsonMap,
           parseFunc,
         );
-        (playlist['suggestions'] as List).addAll(
+        suggestions.addAll(
           await getReloadableContinuations(
             suggestionsShelf,
             'musicShelfContinuation',
-            suggestionsLimit -
-                ((playlist['suggestions'] as List).length), // TODO
+            suggestionsLimit - (suggestions.length), // TODO
             requestFunc,
             parseFunc,
           ),
         );
       }
+      playlist.suggestions = suggestions;
 
       if (related) {
         final relatedResponse = await requestFunc(additionalParams);
@@ -276,43 +210,42 @@ mixin PlaylistsMixin on MixinProtocol {
           nullIfAbsent: true,
         );
         if (continuation != null) {
-          Future<List> parseFunc(results) => parseContentList(
+          Future<List<YtPlaylist>> parseFunc(results) => parseContentList(
             List<JsonMap>.from(results as List),
             parsePlaylist,
           );
-          playlist['related'] = getContinuationContents(
+          relatedPlaylists = await getContinuationContents(
             nav(continuation, [...CONTENT, ...CAROUSEL]) as JsonMap,
             parseFunc,
           );
         }
       }
     }
+    playlist.related = relatedPlaylists;
 
-    playlist['tracks'] = [];
+    playlist.items = [];
     final contentData =
         nav(sectionList, [...CONTENT, 'musicPlaylistShelfRenderer']) as JsonMap;
     if (contentData.containsKey('contents')) {
-      playlist['tracks'] = parsePlaylistItems(
+      playlist.items = parsePlaylistItems(
         List<JsonMap>.from(contentData['contents'] as List),
         isCollaborative: isCollaborative,
       );
-      List parseFunc(contents) => parsePlaylistItems(
+      List<YtVideo> parseFunc(contents) => parsePlaylistItems(
         List<JsonMap>.from(contents as List),
         isCollaborative: isCollaborative,
       );
-      (playlist['tracks'] as List).addAll(
-        List<JsonMap>.from(
-          await getContinuations2025(
-            contentData,
-            limit,
-            requestFuncContinuations,
-            parseFunc,
-          ),
+      playlist.items.addAll(
+        await getContinuations2025(
+          contentData,
+          limit,
+          requestFuncContinuations,
+          parseFunc,
         ),
       );
     }
 
-    playlist['duration_seconds'] = sumTotalDuration(playlist);
+    playlist.duration = Duration(seconds: sumTotalDurationPlaylist(playlist));
 
     return playlist;
   }
@@ -320,9 +253,7 @@ mixin PlaylistsMixin on MixinProtocol {
   /// Gets playlist items for the 'Liked Songs' playlist.
   ///
   /// - [limit] How many items to return. (Default: `100`).
-  ///
-  /// Returns List of `playlistItem` Maps. See [getPlaylist].
-  Future<JsonMap> getLikedSongs({int limit = 100}) {
+  Future<YtPlaylist> getLikedSongs({int limit = 100}) {
     checkAuth();
     return getPlaylist('LM', limit: limit);
   }
@@ -330,9 +261,7 @@ mixin PlaylistsMixin on MixinProtocol {
   /// Gets playlist items for the 'Liked Songs' playlist.
   ///
   /// - [limit] How many items to return. (Default: `100`).
-  ///
-  /// Returns List of `playlistItem` Maps. See [getPlaylist].
-  Future<JsonMap> getSavedEpisodes({int limit = 100}) =>
+  Future<YtPlaylist> getSavedEpisodes({int limit = 100}) =>
       getPlaylist('SE', limit: limit);
 
   /// Creates a new empty playlist and returns its id.
@@ -496,7 +425,7 @@ mixin PlaylistsMixin on MixinProtocol {
       final action = {
         'action': 'ACTION_MOVE_VIDEO_BEFORE',
         'setVideoId':
-            moveItem is String ? moveItem : (moveItem as List<String>)[0],
+            moveItem is String ? moveItem : (moveItem as List<String>).first,
       };
       if (moveItem is List && moveItem.length > 1) {
         action['movedSetVideoIdSuccessor'] = (moveItem as List<String>)[1];

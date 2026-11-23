@@ -1,5 +1,13 @@
+import 'dart:async';
 import 'dart:core';
 
+import 'package:ytmusicapi_dart/enums.dart';
+import 'package:ytmusicapi_dart/models/content/enums.dart';
+import 'package:ytmusicapi_dart/models/objects/album.dart';
+import 'package:ytmusicapi_dart/models/objects/artist.dart';
+import 'package:ytmusicapi_dart/models/objects/base.dart';
+import 'package:ytmusicapi_dart/models/objects/playlist.dart';
+import 'package:ytmusicapi_dart/models/objects/video.dart';
 import 'package:ytmusicapi_dart/navigation.dart';
 import 'package:ytmusicapi_dart/parsers/albums.dart';
 import 'package:ytmusicapi_dart/parsers/artists.dart';
@@ -10,17 +18,17 @@ import 'package:ytmusicapi_dart/type_alias.dart';
 import 'package:ytmusicapi_dart/utils.dart';
 
 /// Parse various contents from [rows].
-List parseMixedContent(List<JsonMap> rows) {
-  final items = <dynamic>[];
+List<YtNamedRow> parseMixedContent(List<JsonMap> rows) {
+  final items = <YtNamedRow>[];
 
   for (final row in rows) {
-    List contents;
-    dynamic title;
+    final contents = <YtBaseObject>[];
+    String? title;
 
-    if (row.containsKey(DESCRIPTION_SHELF[0])) {
+    if (row.containsKey(DESCRIPTION_SHELF.first)) {
       final results = nav(row, DESCRIPTION_SHELF);
-      title = nav(results, ['header', ...RUN_TEXT]);
-      contents = nav(results, DESCRIPTION) as List;
+      title = nav(results, ['header', ...RUN_TEXT]) as String;
+      // contents = nav(results, DESCRIPTION) as List; // TODO
     } else {
       final results = row.values.first;
       if (!(results as JsonMap).containsKey('contents')) {
@@ -28,13 +36,14 @@ List parseMixedContent(List<JsonMap> rows) {
       }
       // some carousel headers only carry a strapline (e.g. "MORE FROM") instead of a title
       title =
-          nav(results, [...CAROUSEL_TITLE, 'text'], nullIfAbsent: true) ??
-          nav(results, [...CAROUSEL_STRAPLINE, 'text'], nullIfAbsent: true);
-      contents = [];
+          nav(results, [...CAROUSEL_TITLE, 'text'], nullIfAbsent: true)
+              as String? ??
+          nav(results, [...CAROUSEL_STRAPLINE, 'text'], nullIfAbsent: true)
+              as String?;
 
       for (final result in results['contents'] as Iterable) {
         final data = nav(result, [MTRIR], nullIfAbsent: true);
-        JsonMap? content;
+        YtBaseObject? content;
 
         if (data != null) {
           final pageType = nav(data, [
@@ -78,19 +87,19 @@ List parseMixedContent(List<JsonMap> rows) {
       }
     }
 
-    items.add({'title': title, 'contents': contents});
+    items.add(YtNamedRow(name: title, contents: contents));
   }
 
   return items;
 }
 
 /// Parses from [results] using [parseFunc] and [key].
-Future<List> parseContentList(
+Future<List<T>> parseContentList<T>(
   List<JsonMap> results,
-  RequestFuncBodyType parseFunc, {
+  FutureOr<T> Function(JsonMap) parseFunc, {
   String key = MTRIR,
 }) async {
-  final contents = <JsonMap>[];
+  final contents = <T>[];
   for (final result in results) {
     contents.add(await parseFunc(result[key] as JsonMap));
   }
@@ -98,19 +107,19 @@ Future<List> parseContentList(
 }
 
 /// Parses album or single subtitles
-JsonMap parseAlbumSingleSubtitle(JsonMap result, JsonMap albumOrSingle) {
-  final typeOrYear = nav(result, SUBTITLE, nullIfAbsent: true);
+YtAlbum parseAlbumSingleSubtitle(JsonMap result, YtAlbum albumOrSingle) {
+  final typeOrYear = nav(result, SUBTITLE, nullIfAbsent: true) as String?;
 
   if (typeOrYear != null) {
-    if ((typeOrYear as String).isNumeric()) {
-      albumOrSingle['year'] = typeOrYear;
+    if (typeOrYear.isNumeric()) {
+      albumOrSingle.year = int.tryParse(typeOrYear);
     } else {
-      albumOrSingle['type'] = typeOrYear;
+      albumOrSingle.albumType = YtAlbumType.tryFromName(typeOrYear);
 
-      final year = nav(result, SUBTITLE2, nullIfAbsent: true);
+      final year = nav(result, SUBTITLE2, nullIfAbsent: true) as String?;
 
-      if (year != null && (year as String).isNumeric()) {
-        albumOrSingle['year'] = year;
+      if (year != null && year.isNumeric()) {
+        albumOrSingle.year = int.tryParse(year);
       }
     }
   }
@@ -118,103 +127,209 @@ JsonMap parseAlbumSingleSubtitle(JsonMap result, JsonMap albumOrSingle) {
   return albumOrSingle;
 }
 
-/// Parses an album from [result].
-JsonMap parseAlbum(JsonMap result) {
+/// Parses a [YtAlbum] from [result].
+YtAlbum parseAlbum(JsonMap result) {
   final subtitleRuns = List<JsonMap>.from(
     (nav(result, ['subtitle', 'runs'], nullIfAbsent: true) ?? []) as List,
   );
 
-  final album = <String, dynamic>{
-    'title': nav(result, TITLE_TEXT),
-    'artists': [
+  final album = YtAlbum(
+    name: nav(result, TITLE_TEXT) as String,
+    id: nav(result, [...TITLE, ...NAVIGATION_BROWSE_ID]) as String,
+    playlistId: parseAlbumPlaylistIdIfExists(
+      nav(result, THUMBNAIL_OVERLAY_NAVIGATION, nullIfAbsent: true) as JsonMap?,
+    ),
+    albumType: null,
+    thumbnails: YtThumbnails.fromJson(
+      List<JsonMap>.from(nav(result, THUMBNAIL_RENDERER) as List),
+    ),
+    artists: [
       for (final x in subtitleRuns)
         if (x.containsKey('navigationEndpoint')) parseIdName(x),
     ],
-    'browseId': nav(result, [...TITLE, ...NAVIGATION_BROWSE_ID]),
-    'audioPlaylistId': parseAlbumPlaylistIdIfExists(
-      nav(result, THUMBNAIL_OVERLAY_NAVIGATION, nullIfAbsent: true) as JsonMap,
-    ),
-    'thumbnails': nav(result, THUMBNAIL_RENDERER),
-    'isExplicit': nav(result, SUBTITLE_BADGE_LABEL, nullIfAbsent: true) != null,
-  };
+    duration: null,
+    isExplicit: nav(result, SUBTITLE_BADGE_LABEL, nullIfAbsent: true) != null,
+    year: null,
+    tracks: [],
+    durationRaw: null,
+    trackCount: null,
+    description: null,
+    likeStatus: null,
+    relatedRecommendations: [],
+    otherVersions: [],
+  );
 
   return parseAlbumSingleSubtitle(result, album);
 }
 
 /// Parses a single from [result].
-JsonMap parseSingle(JsonMap result) {
-  final single = <String, dynamic>{
-    'title': nav(result, TITLE_TEXT),
-    'browseId': nav(result, [...TITLE, ...NAVIGATION_BROWSE_ID]),
-    'thumbnails': nav(result, THUMBNAIL_RENDERER),
-  };
+YtAlbum parseSingle(JsonMap result) {
+  final single = YtAlbum(
+    name: nav(result, TITLE_TEXT) as String,
+    id: nav(result, [...TITLE, ...NAVIGATION_BROWSE_ID]) as String,
+    playlistId: null,
+    albumType: null,
+    thumbnails: YtThumbnails.fromJson(
+      List<JsonMap>.from(nav(result, THUMBNAIL_RENDERER) as List),
+    ),
+    artists: [],
+    duration: null,
+    isExplicit: null,
+    year: null,
+    tracks: [],
+    durationRaw: null,
+    trackCount: null,
+    description: null,
+    likeStatus: null,
+    relatedRecommendations: [],
+    otherVersions: [],
+  );
 
   return parseAlbumSingleSubtitle(result, single);
 }
 
 /// Parses a song from [result].
-JsonMap parseSong(JsonMap result) {
-  final song = <String, dynamic>{
-    'title': nav(result, TITLE_TEXT),
-    'videoId': nav(result, NAVIGATION_VIDEO_ID),
-    'playlistId': nav(result, NAVIGATION_PLAYLIST_ID, nullIfAbsent: true),
-    'thumbnails': nav(result, THUMBNAIL_RENDERER),
-  };
-  song.addAll(
-    parseSongRuns(nav(result, SUBTITLE_RUNS) as List, skipTypeSpec: true),
+YtVideo parseSong(JsonMap result) {
+  final song = YtVideo(
+    name: nav(result, TITLE_TEXT) as String,
+    id: nav(result, NAVIGATION_VIDEO_ID) as String,
+    playlistId:
+        nav(result, NAVIGATION_PLAYLIST_ID, nullIfAbsent: true) as String?,
+    videoType: null,
+    views: null,
+    durationRaw: null,
+    duration: null,
+    artists: [],
+    thumbnails: YtThumbnails.fromJson(
+      List<JsonMap>.from(nav(result, THUMBNAIL_RENDERER) as List),
+    ),
+    year: null,
+    isAvailable: null,
+    isSong: true,
+    album: null,
+    isExplicit: null,
+    inLibrary: null,
+    feedbackTokenAdd: null,
+    feedbackTokenRemove: null,
+    trackNumber: null,
+    isEpisode: false,
+    description: null,
   );
+  for (final (songRunsItemType, value) in parseSongRuns(
+    nav(result, SUBTITLE_RUNS) as List,
+    skipTypeSpec: true,
+  )) {
+    switch (songRunsItemType) {
+      case SongRunsItemType.ALBUM:
+        song.album = value as YtBaseObject?;
+      case SongRunsItemType.ARTISTS:
+        song.artists = value as List<YtBaseObject>;
+      case SongRunsItemType.DURATION_RAW:
+        song.durationRaw = value as String?;
+      case SongRunsItemType.DURATION_SECONDS:
+        song.duration = value as Duration?;
+      case SongRunsItemType.VIEWS:
+        song.views = value as String?;
+      case SongRunsItemType.YEAR:
+        song.year = value as int?;
+    }
+  }
   return song;
 }
 
 /// Parses a song from [data].
-JsonMap parseSongFlat(JsonMap data, {bool withPlaylistId = false}) {
+YtVideo parseSongFlat(JsonMap data, {bool withPlaylistId = false}) {
   final columns = [
     for (var i = 0; i < (data['flexColumns'] as List).length; i++)
       getFlexColumnItem(data, i),
   ];
 
-  final song = <String, dynamic>{
-    'title': nav(columns[0], TEXT_RUN_TEXT),
-    'videoId': nav(columns[0], [
-      ...TEXT_RUN,
-      ...NAVIGATION_VIDEO_ID,
-    ], nullIfAbsent: true),
-    'videoType': nav(data, [
-      ...PLAY_BUTTON,
-      'playNavigationEndpoint',
-      ...NAVIGATION_VIDEO_TYPE,
-    ], nullIfAbsent: true),
-    'thumbnails': nav(data, THUMBNAILS),
-    'isExplicit': nav(data, BADGE_LABEL, nullIfAbsent: true) != null,
-  };
+  final song = YtVideo(
+    name: nav(columns.first, TEXT_RUN_TEXT) as String,
+    id:
+        nav(columns.first, [
+              ...TEXT_RUN,
+              ...NAVIGATION_VIDEO_ID,
+            ], nullIfAbsent: true)
+            as String?,
+    playlistId: null,
+    videoType: VideoType.tryFromValue(
+      nav(data, [
+            ...PLAY_BUTTON,
+            'playNavigationEndpoint',
+            ...NAVIGATION_VIDEO_TYPE,
+          ], nullIfAbsent: true)
+          as String?,
+    ),
+    views: null,
+    durationRaw: null,
+    duration: null,
+    artists: [],
+    thumbnails: YtThumbnails.fromJson(
+      List<JsonMap>.from(nav(data, THUMBNAILS) as List),
+    ),
+    year: null,
+    isAvailable: null,
+    isSong: true,
+    album: null,
+    isExplicit: nav(data, BADGE_LABEL, nullIfAbsent: true) != null,
+    inLibrary: null,
+    feedbackTokenAdd: null,
+    feedbackTokenRemove: null,
+    trackNumber: null,
+    isEpisode: false,
+    description: null,
+  );
 
   if (withPlaylistId) {
-    song['playlistId'] = nav(data, [
-      ...PLAY_BUTTON,
-      'playNavigationEndpoint',
-      ...WATCH_PLAYLIST_ID,
-    ]);
+    song.playlistId =
+        nav(data, [
+              ...PLAY_BUTTON,
+              'playNavigationEndpoint',
+              ...WATCH_PLAYLIST_ID,
+            ])
+            as String;
   }
 
   final runs = nav(columns[1], TEXT_RUNS) as List;
-  song.addAll(parseSongRuns(runs, skipTypeSpec: true));
+
+  for (final (songRunsItemType, value) in parseSongRuns(
+    runs,
+    skipTypeSpec: true,
+  )) {
+    switch (songRunsItemType) {
+      case SongRunsItemType.ALBUM:
+        song.album = value as YtBaseObject?;
+      case SongRunsItemType.ARTISTS:
+        song.artists = value as List<YtBaseObject>;
+      case SongRunsItemType.DURATION_RAW:
+        song.durationRaw = value as String?;
+      case SongRunsItemType.DURATION_SECONDS:
+        song.duration = value as Duration?;
+      case SongRunsItemType.VIEWS:
+        song.views = value as String?;
+      case SongRunsItemType.YEAR:
+        song.year = value as int?;
+    }
+  }
 
   if (columns.length > 2 &&
       columns[2] != null &&
       (nav(columns[2], TEXT_RUN) as JsonMap).containsKey(
         'navigationEndpoint',
       )) {
-    song['album'] = {
-      'name': nav(columns[2], TEXT_RUN_TEXT),
-      'id': nav(columns[2], [...TEXT_RUN, ...NAVIGATION_BROWSE_ID]),
-    };
+    song.album = YtBaseObject(
+      id: nav(columns[2], [...TEXT_RUN, ...NAVIGATION_BROWSE_ID]) as String,
+      name: nav(columns[2], TEXT_RUN_TEXT) as String,
+      type: YtObjectType.OBJECT,
+    );
   }
 
   return song;
 }
 
 /// Parses a video from [result].
-JsonMap parseVideo(JsonMap result) {
+YtVideo parseVideo(JsonMap result) {
   final JsonMap realResult;
   if (result.containsKey(MTRIR)) {
     realResult = nav(result, [MTRIR]) as JsonMap;
@@ -223,54 +338,93 @@ JsonMap parseVideo(JsonMap result) {
   }
   final runs = nav(realResult, SUBTITLE_RUNS);
   final artistsLen = getDotSeparatorIndex(runs as List);
-  var videoId = nav(realResult, NAVIGATION_VIDEO_ID, nullIfAbsent: true);
+  var videoId =
+      nav(realResult, NAVIGATION_VIDEO_ID, nullIfAbsent: true) as String?;
   if (videoId == null) {
     for (final entry in nav(realResult, MENU_ITEMS) as Iterable) {
-      final candidate = nav(entry, [
-        ...MENU_SERVICE,
-        ...QUEUE_VIDEO_ID,
-      ], nullIfAbsent: true);
+      final candidate =
+          nav(entry, [...MENU_SERVICE, ...QUEUE_VIDEO_ID], nullIfAbsent: true)
+              as String?;
       if (candidate != null) {
         videoId = candidate;
         break;
       }
     }
   }
-  return {
-    'title': nav(realResult, TITLE_TEXT),
-    'videoId': videoId,
-    'artists': parseArtistsRuns(runs.sublist(0, artistsLen)),
-    'playlistId': nav(realResult, NAVIGATION_PLAYLIST_ID, nullIfAbsent: true),
-    'thumbnails': nav(realResult, THUMBNAIL_RENDERER, nullIfAbsent: true),
-    'views': (List<JsonMap>.from(runs).last['text'] as String).split(' ')[0],
-  };
+
+  return YtVideo(
+    name: nav(realResult, TITLE_TEXT) as String,
+    id: videoId,
+    playlistId:
+        nav(realResult, NAVIGATION_PLAYLIST_ID, nullIfAbsent: true) as String?,
+    videoType: null,
+    views: (List<JsonMap>.from(runs).last['text'] as String).split(' ').first,
+    durationRaw: null,
+    duration: null,
+    artists: parseArtistsRuns(runs.sublist(0, artistsLen)),
+    thumbnails: YtThumbnails.fromJson(
+      List<JsonMap>.from(
+        nav(realResult, THUMBNAIL_RENDERER, nullIfAbsent: true) as List,
+      ),
+    ),
+    year: null,
+    isAvailable: null,
+    isSong: false,
+    album: null,
+    isExplicit: null,
+    inLibrary: null,
+    feedbackTokenAdd: null,
+    feedbackTokenRemove: null,
+    trackNumber: null,
+    isEpisode: false,
+    description: null,
+  );
 }
 
 /// Parses a playlist from [data].
-JsonMap parsePlaylist(JsonMap data) {
+YtPlaylist parsePlaylist(JsonMap data) {
   final JsonMap realData;
   if (data.containsKey(MTRIR)) {
     realData = nav(data, [MTRIR]) as JsonMap;
   } else {
     realData = data;
   }
-  final playlist = <String, dynamic>{
-    'title': nav(realData, TITLE_TEXT, nullIfAbsent: true),
-    'playlistId': (nav(realData, [...TITLE, ...NAVIGATION_BROWSE_ID]) as String)
+
+  final playlist = YtPlaylist(
+    name:
+        nav(realData, TITLE_TEXT, nullIfAbsent: true) as String? ??
+        '(no title)', // rare but possible for playlist title to be missing
+    id: (nav(realData, [...TITLE, ...NAVIGATION_BROWSE_ID]) as String)
         .substring(2),
-    'thumbnails': nav(realData, THUMBNAIL_RENDERER),
-  };
+    playlistType: null,
+    authors: [],
+    thumbnails: YtThumbnails.fromJson(
+      List<JsonMap>.from(nav(realData, THUMBNAIL_RENDERER) as List),
+    ),
+    description: null,
+    duration: null,
+    year: null,
+    itemCount: null,
+    owned: null,
+    privacy: null,
+    durationRaw: null,
+    views: null,
+    items: [],
+    related: [],
+    suggestions: [],
+  );
 
   final subtitle = realData['subtitle'] as JsonMap;
   if (subtitle.containsKey('runs')) {
-    playlist['description'] =
+    playlist.description =
         (subtitle['runs'] as List)
             .map((run) => (run as JsonMap)['text'])
             .join();
     if ((subtitle['runs'] as List).length == 3 &&
         RegExp(r'\d+ ').hasMatch(nav(realData, SUBTITLE2) as String)) {
-      playlist['count'] = (nav(realData, SUBTITLE2) as String).split(' ')[0];
-      playlist['author'] = parseArtistsRuns(
+      playlist.itemCount =
+          (nav(realData, SUBTITLE2) as String).split(' ').first as int;
+      playlist.authors = parseArtistsRuns(
         (subtitle['runs'] as List).sublist(0, 1),
       );
     }
@@ -280,30 +434,49 @@ JsonMap parsePlaylist(JsonMap data) {
 }
 
 /// Parses related artists from [data].
-JsonMap parseRelatedArtist(JsonMap data) {
+YtArtist parseRelatedArtist(JsonMap data) {
   final JsonMap realData;
   if (data.containsKey(MTRIR)) {
     realData = nav(data, [MTRIR]) as JsonMap;
   } else {
     realData = data;
   }
-  var subscribers = nav(realData, SUBTITLE, nullIfAbsent: true);
+  var subscribers = nav(realData, SUBTITLE, nullIfAbsent: true) as String?;
   if (subscribers != null) {
-    subscribers = (subscribers as String).split(' ')[0];
+    subscribers = subscribers.split(' ').first;
   }
-  return {
-    'title': nav(realData, TITLE_TEXT),
-    'browseId': nav(realData, [...TITLE, ...NAVIGATION_BROWSE_ID]),
-    'subscribers': subscribers,
-    'thumbnails': nav(realData, THUMBNAIL_RENDERER),
-  };
+  return YtArtist(
+    name: nav(realData, TITLE_TEXT) as String,
+    id: nav(realData, [...TITLE, ...NAVIGATION_BROWSE_ID]) as String,
+    shuffleId: null,
+    radioId: null,
+    thumbnails: YtThumbnails.fromJson(
+      List<JsonMap>.from(nav(realData, THUMBNAIL_RENDERER) as List),
+    ),
+    subscribers: subscribers,
+  );
 }
 
 /// Parses watch playlist from [data].
-JsonMap parseWatchPlaylist(JsonMap data) {
-  return {
-    'title': nav(data, TITLE_TEXT),
-    'playlistId': nav(data, NAVIGATION_WATCH_PLAYLIST_ID),
-    'thumbnails': nav(data, THUMBNAIL_RENDERER),
-  };
+YtPlaylist parseWatchPlaylist(JsonMap data) {
+  return YtPlaylist(
+    name: nav(data, TITLE_TEXT) as String,
+    id: nav(data, NAVIGATION_WATCH_PLAYLIST_ID) as String,
+    playlistType: null,
+    authors: [],
+    thumbnails: YtThumbnails.fromJson(
+      List<JsonMap>.from(nav(data, THUMBNAIL_RENDERER) as List),
+    ),
+    description: null,
+    duration: null,
+    year: null,
+    itemCount: null,
+    owned: null,
+    privacy: null,
+    durationRaw: null,
+    views: null,
+    items: [],
+    related: [],
+    suggestions: [],
+  );
 }

@@ -8,6 +8,8 @@ import 'package:unorm_dart/unorm_dart.dart' as unorm;
 import 'package:ytmusicapi_dart/constants.dart';
 import 'package:ytmusicapi_dart/mixins/utils.dart';
 import 'package:ytmusicapi_dart/models/content/text_run.dart';
+import 'package:ytmusicapi_dart/models/objects/album.dart';
+import 'package:ytmusicapi_dart/models/objects/playlist.dart';
 import 'package:ytmusicapi_dart/navigation.dart';
 import 'package:ytmusicapi_dart/type_alias.dart';
 
@@ -57,7 +59,7 @@ String sapisidFromCookie(String rawCookie) {
   final cookies = <String, String>{};
   for (final pair in rawCookie.replaceAll('"', '').split(';')) {
     final kv = pair.split('=');
-    if (kv.length == 2) cookies[kv[0].trim()] = kv[1].trim();
+    if (kv.length == 2) cookies[kv.first.trim()] = kv[1].trim();
   }
   return cookies['__Secure-3PAPISID'] ?? '';
 }
@@ -101,12 +103,22 @@ int toInt(String input, {String locale = 'en_US'}) {
 }
 
 /// Returns sum of the [item] duration.
-int sumTotalDuration(JsonMap item) {
-  if (!item.containsKey('tracks')) return 0;
-  final tracks = item['tracks'] as List;
+int sumTotalDurationPlaylist(YtPlaylist item) {
+  final tracks = item.items;
   return tracks.fold<int>(0, (sum, track) {
-    if (track is JsonMap && track.containsKey('duration_seconds')) {
-      return sum + (track['duration_seconds'] as int? ?? 0);
+    if (track is JsonMap) {
+      return sum + (track.duration?.inSeconds ?? 0);
+    }
+    return sum;
+  });
+}
+
+/// Returns sum of the [item] duration.
+int sumTotalDurationAlbum(YtAlbum item) {
+  final tracks = item.tracks;
+  return tracks.fold<int>(0, (sum, track) {
+    if (track is JsonMap) {
+      return sum + (track.duration?.inSeconds ?? 0);
     }
     return sum;
   });

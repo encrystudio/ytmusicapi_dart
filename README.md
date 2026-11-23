@@ -4,6 +4,12 @@
 
 _ytmusicapi_dart_ is a Dart library to send requests to the YouTube Music API. It emulates YouTube Music web client requests.
 
+> [!NOTE]
+> This version (`3.0.0-rc.1`) is a release candidate. Breaking changes might occur.
+
+> [!WARNING]
+> Version 3.x.x switched to stronger types and therefore breaks 2.x.x. Stay at 2.4.1 as the last release without stronger types.
+
 > [!IMPORTANT]
 > Dart YTMusicAPI is currently in early development.
 > It is not yet feature-complete and may be unstable.

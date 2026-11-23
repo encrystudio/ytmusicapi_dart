@@ -1,6 +1,7 @@
 import 'package:ytmusicapi_dart/continuations.dart';
 import 'package:ytmusicapi_dart/exceptions.dart';
 import 'package:ytmusicapi_dart/mixins/protocol.dart';
+import 'package:ytmusicapi_dart/models/objects/video.dart';
 import 'package:ytmusicapi_dart/navigation.dart';
 import 'package:ytmusicapi_dart/parsers/playlists.dart';
 import 'package:ytmusicapi_dart/parsers/watch.dart';
@@ -202,7 +203,7 @@ mixin WatchMixin on MixinProtocol {
         body,
         additionalParams: additionalParams as String,
       );
-      List parseFunc(dynamic contents) =>
+      List<YtVideo> parseFunc(dynamic contents) =>
           parseWatchPlaylist(List<JsonMap>.from(contents as List));
 
       tracks.addAll(

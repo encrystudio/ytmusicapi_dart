@@ -2,7 +2,12 @@
 library;
 
 import 'package:ytmusicapi_dart/continuations.dart';
+import 'package:ytmusicapi_dart/enums.dart';
 import 'package:ytmusicapi_dart/mixins/protocol.dart';
+import 'package:ytmusicapi_dart/models/objects/artist.dart';
+import 'package:ytmusicapi_dart/models/objects/base.dart';
+import 'package:ytmusicapi_dart/models/objects/playlist.dart';
+import 'package:ytmusicapi_dart/models/objects/video.dart';
 import 'package:ytmusicapi_dart/navigation.dart';
 import 'package:ytmusicapi_dart/parsers/browsing.dart';
 import 'package:ytmusicapi_dart/parsers/playlists.dart';
@@ -17,66 +22,46 @@ mixin PodcastsMixin on MixinProtocol {
   /// episodes can be retrieved via [getChannelEpisodes].
   ///
   /// - [channelId] channel id.
-  ///
-  /// Returns Map containing channel info.
-  ///
-  /// Example:
-  /// ```json
-  ///     {
-  ///         "title": 'Stanford Graduate School of Business',
-  ///         "thumbnails": [...]
-  ///         "episodes":
-  ///         {
-  ///             "browseId": "UCGwuxdEeCf0TIA2RbPOj-8g",
-  ///             "results":
-  ///             [
-  ///                 {
-  ///                     "index": 0,
-  ///                     "title": "The Brain Gain: The Impact of Immigration on American Innovation with Rebecca Diamond",
-  ///                     "description": "Immigrants' contributions to America ...",
-  ///                     "duration": "24 min",
-  ///                     "videoId": "TS3Ovvk3VAA",
-  ///                     "browseId": "MPEDTS3Ovvk3VAA",
-  ///                     "videoType": "MUSIC_VIDEO_TYPE_PODCAST_EPISODE",
-  ///                     "date": "Mar 6, 2024",
-  ///                     "thumbnails": [...]
-  ///                 },
-  ///             ],
-  ///             "params": "6gPiAUdxWUJXcFlCQ3BN..."
-  ///         },
-  ///         "podcasts":
-  ///         {
-  ///             "browseId": null,
-  ///             "results":
-  ///             [
-  ///                 {
-  ///                     "title": "Stanford GSB Podcasts",
-  ///                     "channel":
-  ///                     {
-  ///                         "id": "UCGwuxdEeCf0TIA2RbPOj-8g",
-  ///                         "name": "Stanford Graduate School of Business"
-  ///                     },
-  ///                     "browseId": "MPSPPLxq_lXOUlvQDUNyoBYLkN8aVt5yAwEtG9",
-  ///                     "podcastId": "PLxq_lXOUlvQDUNyoBYLkN8aVt5yAwEtG9",
-  ///                     "thumbnails": [...]
-  ///                 }
-  ///            ]
-  ///         }
-  ///     }
-  Future<JsonMap> getChannel(String channelId) async {
+  Future<YtBrowsedArtist> getChannel(String channelId) async {
     final body = {'browseId': channelId};
     const endpoint = 'browse';
     final response = await sendRequest(endpoint, body);
 
-    final channel = <String, dynamic>{
-      'title': nav(response, [...HEADER_MUSIC_VISUAL, ...TITLE_TEXT]),
-      'thumbnails': nav(response, [...HEADER_MUSIC_VISUAL, ...THUMBNAILS]),
-    };
+    final channel = YtBrowsedArtist(
+      name: nav(response, [...HEADER_MUSIC_VISUAL, ...TITLE_TEXT]) as String,
+      id: null,
+      descriptionRaw: null,
+      descriptionRuns: [],
+      views: null,
+      shuffleId: null,
+      radioId: null,
+      subscribers: null,
+      monthlyListeners: null,
+      thumbnails: YtThumbnails.fromJson(
+        List<JsonMap>.from(
+          nav(response, [...HEADER_MUSIC_VISUAL, ...THUMBNAILS]) as List,
+        ),
+      ),
+      songsBrowseId: null,
+      songsResults: [],
+      albumsBrowseId: null,
+      albumsParams: null,
+      albumsResults: [],
+      singlesBrowseId: null,
+      singlesParams: null,
+      singlesResults: [],
+      showsBrowseId: null,
+      videosBrowseId: null,
+      videosResults: [],
+      playlistsBrowseId: null,
+      episodesBrowseId: null,
+      podcastsBrowseId: null,
+      relatedBrowseId: null,
+      relatedResults: [],
+    );
 
     final results = nav(response, [...SINGLE_COLUMN_TAB, ...SECTION_LIST]);
-    channel.addAll(
-      parser.parseChannelContents(List<JsonMap>.from(results as List)),
-    );
+    parser.parseChannelContents(List<JsonMap>.from(results as List), channel);
 
     return channel;
   }
@@ -85,9 +70,10 @@ mixin PodcastsMixin on MixinProtocol {
   ///
   /// - [channelId] `channelId` of the user.
   /// - [params] Params obtained by [getChannel].
-  ///
-  /// Returns List of channel episodes in the format of [getChannel] `episodes` key.
-  Future<List> getChannelEpisodes(String channelId, String params) async {
+  Future<List<YtVideo>> getChannelEpisodes(
+    String channelId,
+    String params,
+  ) async {
     final body = {'browseId': channelId, 'params': params};
     const endpoint = 'browse';
     final response = await sendRequest(endpoint, body);
@@ -97,7 +83,7 @@ mixin PodcastsMixin on MixinProtocol {
       ...SECTION_LIST_ITEM,
       ...GRID_ITEMS,
     ]);
-    return parseContentList(
+    return await parseContentList(
       List<JsonMap>.from(results as List),
       parseEpisode,
       key: MMRIR,
@@ -273,15 +259,31 @@ mixin PodcastsMixin on MixinProtocol {
   /// Currently the only known playlist is the "New Episodes" auto-generated playlist.
   ///
   /// [playlistId] Playlist ID, defaults to `RDPN`, the id of the "New Episodes" playlist.
-  ///
-  /// Returns Map in the format of [getPodcast].
-  Future<JsonMap> getEpisodesPlaylist({String playlistId = 'RDPN'}) async {
+  Future<YtPlaylist> getEpisodesPlaylist({String playlistId = 'RDPN'}) async {
     final browseId = playlistId.startsWith('VL') ? playlistId : 'VL$playlistId';
     final body = {'browseId': browseId};
     const endpoint = 'browse';
     final response = await sendRequest(endpoint, body);
 
-    final playlist = parsePlaylistHeader(response);
+    final playlistHeader = parsePlaylistHeader(response);
+    final playlist = YtPlaylist(
+      name: playlistHeader.meta.title,
+      id: playlistId,
+      playlistType: YtPlaylistType.EPISODES_PLAYLIST,
+      authors: playlistHeader.meta.authors,
+      owned: playlistHeader.owned,
+      privacy: playlistHeader.privacy,
+      thumbnails: playlistHeader.thumbnails,
+      description: playlistHeader.description,
+      durationRaw: playlistHeader.meta.durationRaw,
+      duration: null,
+      year: playlistHeader.year,
+      itemCount: playlistHeader.meta.itemCount,
+      views: playlistHeader.meta.views,
+      items: [],
+      related: [],
+      suggestions: [],
+    );
 
     final results =
         nav(response, [
@@ -291,12 +293,12 @@ mixin PodcastsMixin on MixinProtocol {
               ...MUSIC_SHELF,
             ])
             as JsonMap;
-    Future<List> parseFunc(contents) => parseContentList(
+    Future<List<YtVideo>> parseFunc(contents) => parseContentList(
       List<JsonMap>.from(contents as List),
       parseEpisode,
       key: MMRIR,
     );
-    playlist['episodes'] = parseFunc(results['contents']);
+    playlist.items = await parseFunc(results['contents']);
 
     return playlist;
   }

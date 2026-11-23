@@ -198,6 +198,7 @@ const List CREDITS_SECTIONS = [
   'dismissableDialogRenderer',
   'sections',
 ];
+const DOT_SEPARATOR_RUN = {'text': ' • '};
 
 /// Access a nested object in root by item sequence.
 dynamic nav(dynamic root, List items, {bool nullIfAbsent = false}) {

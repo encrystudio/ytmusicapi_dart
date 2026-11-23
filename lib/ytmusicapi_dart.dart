@@ -8,7 +8,6 @@ import 'package:ytmusicapi_dart/auth/auth_parse.dart';
 import 'package:ytmusicapi_dart/auth/oauth/credentials.dart';
 import 'package:ytmusicapi_dart/auth/oauth/models.dart';
 import 'package:ytmusicapi_dart/auth/oauth/token.dart';
-import 'package:ytmusicapi_dart/auth/types.dart';
 import 'package:ytmusicapi_dart/constants.dart';
 import 'package:ytmusicapi_dart/exceptions.dart';
 import 'package:ytmusicapi_dart/helpers.dart';
@@ -20,7 +19,8 @@ import 'package:ytmusicapi_dart/mixins/podcasts.dart';
 import 'package:ytmusicapi_dart/mixins/protocol.dart';
 import 'package:ytmusicapi_dart/mixins/search.dart';
 import 'package:ytmusicapi_dart/mixins/watch.dart';
-import 'package:ytmusicapi_dart/parsers/i18n.dart';
+import 'package:ytmusicapi_dart/models/content/enums.dart';
+import 'package:ytmusicapi_dart/parsers/parser.dart';
 import 'package:ytmusicapi_dart/type_alias.dart';
 
 /// The main class to access the YouTube Music API.
@@ -135,7 +135,7 @@ class YTMusicBase implements MixinProtocol {
       Intl.defaultLocale = 'en_US';
     }
 
-    final parser = Parser(language);
+    final parser = Parser();
 
     if (user != null) {
       ((context['context'] as JsonMap)['user'] as JsonMap)['onBehalfOfUser'] =
@@ -258,7 +258,7 @@ class YTMusicBase implements MixinProtocol {
       options: Options(headers: fullHeaders, responseType: ResponseType.bytes),
     );
     final String responseBody;
-    if ((response.data! as List)[0] == 0x1F &&
+    if ((response.data! as List).first == 0x1F &&
         (response.data! as List)[1] == 0x8B) {
       // decompress gzip
       final List<int> decompressed = GZipCodec().decode(
@@ -302,7 +302,7 @@ class YTMusicBase implements MixinProtocol {
     );
 
     final String body;
-    if ((response.data! as List)[0] == 0x1F &&
+    if ((response.data! as List).first == 0x1F &&
         (response.data! as List)[1] == 0x8B) {
       final List<int> decompressed = GZipCodec().decode(
         response.data! as List<int>,

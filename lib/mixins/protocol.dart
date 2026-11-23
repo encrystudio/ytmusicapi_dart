@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
-import 'package:ytmusicapi_dart/auth/types.dart';
-import 'package:ytmusicapi_dart/parsers/i18n.dart';
+import 'package:ytmusicapi_dart/models/content/enums.dart';
+import 'package:ytmusicapi_dart/parsers/parser.dart';
 import 'package:ytmusicapi_dart/type_alias.dart';
 
 /// Abstract class defining the functions available to mixins.

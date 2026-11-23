@@ -1,21 +1,19 @@
+import 'package:ytmusicapi_dart/enums.dart';
+import 'package:ytmusicapi_dart/models/content/enums.dart';
+import 'package:ytmusicapi_dart/models/objects/base.dart';
+import 'package:ytmusicapi_dart/models/objects/video.dart';
 import 'package:ytmusicapi_dart/navigation.dart';
 import 'package:ytmusicapi_dart/parsers/songs.dart';
 import 'package:ytmusicapi_dart/type_alias.dart';
 
 /// Parses a list of watch playlist [results] into a list of track maps.
-List parseWatchPlaylist(List<JsonMap> results) {
-  final List tracks = [];
-  const String PPVWR = 'playlistPanelVideoWrapperRenderer';
-  const String PPVR = 'playlistPanelVideoRenderer';
+List<YtVideo> parseWatchPlaylist(List<JsonMap> results) {
+  final tracks = <YtVideo>[];
+  const PPVWR = 'playlistPanelVideoWrapperRenderer';
+  const PPVR = 'playlistPanelVideoRenderer';
 
   for (var result in results) {
-    JsonMap? counterpart;
     if (result.containsKey(PPVWR)) {
-      counterpart =
-          ((((result[PPVWR] as JsonMap?)!['counterpart'] as List)[0]
-                      as JsonMap)['counterpartRenderer']
-                  as JsonMap)[PPVR]
-              as JsonMap?;
       result = (result[PPVWR] as JsonMap?)!['primaryRenderer'] as JsonMap;
     }
 
@@ -31,10 +29,6 @@ List parseWatchPlaylist(List<JsonMap> results) {
 
     final track = parseWatchTrack(data);
 
-    if (counterpart != null) {
-      track['counterpart'] = parseWatchTrack(counterpart);
-    }
-
     tracks.add(track);
   }
 
@@ -42,8 +36,9 @@ List parseWatchPlaylist(List<JsonMap> results) {
 }
 
 /// Parses an individual track from a watch playlist.
-JsonMap parseWatchTrack(JsonMap data) {
-  String? likeStatus;
+YtVideo parseWatchTrack(JsonMap data) {
+  // TODO
+  // LikeStatus? likeStatus;
 
   for (final item in List<JsonMap>.from(nav(data, MENU_ITEMS) as List)) {
     if (item.containsKey(TOGGLE_MENU)) {
@@ -51,36 +46,67 @@ JsonMap parseWatchTrack(JsonMap data) {
           (item[TOGGLE_MENU] as JsonMap)['defaultServiceEndpoint'] as JsonMap;
 
       if (service.containsKey('likeEndpoint')) {
-        likeStatus = parseLikeStatus(service);
+        // TODO
+        // likeStatus = parseLikeStatus(service);
       }
     }
   }
 
-  final track = <String, dynamic>{
-    'videoId': data['videoId'],
-    'title': nav(data, TITLE_TEXT),
-    'length': nav(data, ['lengthText', 'runs', 0, 'text'], nullIfAbsent: true),
-    'thumbnail': nav(data, THUMBNAIL),
-    'likeStatus': likeStatus,
-    'videoType': nav(data, [
-      'navigationEndpoint',
-      ...NAVIGATION_VIDEO_TYPE,
-    ], nullIfAbsent: true),
-  };
+  final songMenuData = parseSongMenuData(data);
 
-  track.addAll({
-    'inLibrary': null,
-    'feedbackTokens': null,
-    'pinnedToListenAgain': null,
-    'listenAgainFeedbackTokens': null,
-    ...parseSongMenuData(data),
-  });
+  final track = YtVideo(
+    name: nav(data, TITLE_TEXT) as String,
+    id: data['videoId'] as String?,
+    playlistId: null,
+    videoType: VideoType.tryFromValue(
+      nav(data, [
+            'navigationEndpoint',
+            ...NAVIGATION_VIDEO_TYPE,
+          ], nullIfAbsent: true)
+          as String?,
+    ),
+    views: null,
+    durationRaw:
+        nav(data, ['lengthText', 'runs', 0, 'text'], nullIfAbsent: true)
+            as String?,
+    duration: null,
+    artists: [],
+    thumbnails: YtThumbnails.fromJson(
+      List<JsonMap>.from(nav(data, THUMBNAIL) as List),
+    ),
+    year: null,
+    isAvailable: null,
+    isEpisode: null,
+    isSong: null,
+    album: null,
+    trackNumber: null,
+    isExplicit: null,
+    inLibrary: songMenuData.inLibrary,
+    feedbackTokenAdd: songMenuData.feedbackTokenAdd,
+    feedbackTokenRemove: songMenuData.feedbackTokenRemove,
+    description: null,
+  );
 
   final longBylineText = nav(data, ['longBylineText']) as JsonMap?;
 
   if (longBylineText != null) {
     final songInfo = parseSongRuns(longBylineText['runs'] as List);
-    track.addAll(songInfo);
+    for (final (songRunsItemType, value) in songInfo) {
+      switch (songRunsItemType) {
+        case SongRunsItemType.ALBUM:
+          track.album = value as YtBaseObject;
+        case SongRunsItemType.ARTISTS:
+          track.artists = value as List<YtBaseObject>;
+        case SongRunsItemType.DURATION_RAW:
+          track.durationRaw = value as String?;
+        case SongRunsItemType.DURATION_SECONDS:
+          track.duration = value as Duration?;
+        case SongRunsItemType.VIEWS:
+          track.views = value as String?;
+        case SongRunsItemType.YEAR:
+          track.year = value as int?;
+      }
+    }
   }
 
   return track;

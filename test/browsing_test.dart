@@ -23,15 +23,15 @@ void main() {
       expect(result.length, greaterThanOrEqualTo(2));
 
       // ensure we aren't parsing specifiers like "Song" as artist names
-      for (final section in result) {
+      for (final section in result.map((item) => item.asJson())) {
         for (final item in section['contents'] as Iterable) {
           if (item != null && (item['artists']?.length ?? 0) > 1 as bool) {
-            final artist = item['artists'][0];
+            final artist = item['artists'].first;
             expect(
               artist['id'] != null ||
-                  !yt.parser.getApiResultTypes().contains(
-                    artist['name'].toLowerCase(),
-                  ),
+                  !YtResultType.values
+                      .map((value) => value.name)
+                      .contains(artist['name'].toLowerCase()),
               true,
             );
           }
@@ -47,13 +47,14 @@ void main() {
     });
 
     test('get artist', () async {
-      final results = await yt.getArtist('MPLAUCmMUZbaYdNH0bEd1PAlAqsA');
-      expect(results.length, equals(18));
+      final results =
+          (await yt.getArtist('MPLAUCmMUZbaYdNH0bEd1PAlAqsA')).asJson();
+      expect(results.length, equals(27));
       expect(results['shuffleId'], isNotNull);
       expect(results['radioId'], isNotNull);
 
       // test correctness of related artists
-      final related = results['related']['results'] as List;
+      final related = results['relatedResults'] as List;
       final valid = related.where(
         (x) =>
             x.keys.toSet().containsAll({
@@ -67,12 +68,12 @@ void main() {
       expect(valid.length, equals(related.length));
 
       // test that album type and year are being parsed correctly #899
-      final albums = results['albums']['results'] as List;
+      final albums = results['albumsResults'] as List;
       expect(
         albums.every(
           (album) =>
-              (album['year'] as String).isNotEmpty &&
-              RegExp(r'^\d+$').hasMatch(album['year'] as String),
+              (album['year'] is int) &&
+              RegExp(r'^\d+$').hasMatch(album['year'].toString()),
         ),
         isTrue,
       );
@@ -85,10 +86,11 @@ void main() {
         isTrue,
       );
 
-      final singles = results['singles']['results'] as List;
+      final singles = results['singlesResults'] as List;
       expect(
         singles.every(
-          (single) => RegExp(r'^\d+$').hasMatch(single['year'] as String),
+          (single) =>
+              RegExp(r'^\d+$').hasMatch((single['year'] as int).toString()),
         ),
         isTrue,
       );
@@ -99,9 +101,10 @@ void main() {
         isTrue,
       );
 
-      final resultsNoYear = await yt.getArtist(
-        'UCLZ7tlKC06ResyDmEStSrOw',
-      ); // no album year
+      final resultsNoYear =
+          (await yt.getArtist(
+            'UCLZ7tlKC06ResyDmEStSrOw',
+          )).asJson(); // no album year
       expect(resultsNoYear.length, greaterThanOrEqualTo(11));
     });
 
@@ -116,34 +119,28 @@ void main() {
     });
 
     test('get artist albums', () async {
-      final artist = await yt.getArtist('UCAeLFBCQS7FvI8PvBrWvSBg');
+      final artist = (await yt.getArtist('UCAeLFBCQS7FvI8PvBrWvSBg')).asJson();
       final albumResults = await yt.getArtistAlbums(
-        artist['albums']['browseId'] as String,
-        artist['albums']['params'] as String,
+        artist['albumsBrowseId'] as String,
+        artist['albumsParams'] as String,
       );
-      for (final result in albumResults) {
-        expect(
-          result.containsKey('artists'),
-          isFalse,
-        ); // artist info is omitted from the results
-      }
       expect(albumResults.length, equals(100));
       final singleResults = await yt.getArtistAlbums(
-        artist['singles']['browseId'] as String,
-        artist['singles']['params'] as String,
+        artist['singlesBrowseId'] as String,
+        artist['singlesParams'] as String,
       );
       expect(singleResults.length, equals(100));
 
       final resultsUnsorted = await yt.getArtistAlbums(
-        artist['albums']['browseId'] as String,
-        artist['albums']['params'] as String,
+        artist['albumsBrowseId'] as String,
+        artist['albumsParams'] as String,
         limit: null,
       );
       expect(resultsUnsorted.length, greaterThanOrEqualTo(300));
 
       final resultsSorted = await yt.getArtistAlbums(
-        artist['albums']['browseId'] as String,
-        artist['albums']['params'] as String,
+        artist['albumsBrowseId'] as String,
+        artist['albumsParams'] as String,
         limit: null,
         order: ArtistOrderType.alphabetical,
       );
@@ -153,8 +150,8 @@ void main() {
     });
 
     test('get user', () async {
-      final result = await yt.getUser('UC44hbeRoCZVVMVg5z0FfIww');
-      expect(result.length, equals(3));
+      final result = (await yt.getUser('UC44hbeRoCZVVMVg5z0FfIww')).asJson();
+      expect(result.length, equals(27));
     });
 
     test('get user playlists', () {
@@ -184,13 +181,14 @@ void main() {
     test('get album 2024', () async {
       final file = File('test/data/2024_03_get_album.json');
       final jsonMap = jsonDecode(await file.readAsString()) as JsonMap;
-      final album = await yt.getAlbum('MPREabc', requestData: jsonMap);
+      final album =
+          (await yt.getAlbum('MPREabc', requestData: jsonMap)).asJson();
       expect(album['tracks'].length, equals(19));
       expect(album['artists'].length, equals(1));
-      expect(album.length, equals(15));
+      expect(album.length, equals(17));
       for (final track in album['tracks'] as Iterable) {
-        expect(track['title'], isNotNull);
-        expect(track['title'], isA<String>());
+        expect(track['name'], isNotNull);
+        expect(track['name'], isA<String>());
         expect(track['artists'].length, greaterThan(0));
         for (final artist in track['artists'] as Iterable) {
           expect(artist.containsKey('name'), isTrue);
@@ -203,19 +201,20 @@ void main() {
     test('get album', () async {
       // TODO requires authentication - add tests when implemented
       expect(true, isTrue, skip: true);
-      final album = await yt.getAlbum('MPREb_BQZvl3BFGay');
-      expect(album['audioPlaylistId'], isNotNull);
+      final album = (await yt.getAlbum('MPREb_BQZvl3BFGay')).asJson();
+      expect(album['playlistId'], isNotNull);
       expect(album['tracks'].length, equals(7));
-      expect(album['tracks'][0]['artists'].length, equals(1));
-      final album2 = await yt.getAlbum('MPREb_7HdnOQMfJ3w');
+      expect(album['tracks'].first['artists'].length, equals(1));
+      final album2 = (await yt.getAlbum('MPREb_7HdnOQMfJ3w')).asJson();
       expect(album2['likeStatus'], isNotNull);
-      expect(album2['audioPlaylistId'], isNotNull);
-      expect(album2['tracks'][0]['artists'].length, equals(2));
-      final album3 = await yt.getAlbum(
-        'MPREb_G21w42zx0qJ',
-      ); // album with track (#13) disabled/greyed out
+      expect(album2['playlistId'], isNotNull);
+      expect(album2['tracks'].first['artists'].length, equals(2));
+      final album3 =
+          (await yt.getAlbum(
+            'MPREb_G21w42zx0qJ',
+          )).asJson(); // album with track (#13) disabled/greyed out
       expect(album3['likeStatus'], isNotNull);
-      expect(album3['audioPlaylistId'], isNotNull);
+      expect(album3['playlistId'], isNotNull);
       expect(album3['tracks'][12]['trackNumber'], equals(13));
       expect(album3['tracks'][12]['isAvailable'], isTrue);
     });
@@ -235,11 +234,12 @@ void main() {
     });
 
     test('get album without artist', () async {
-      final album = await yt.getAlbum(
-        'MPREb_n1AxZ9F8rF7',
-      ); // soundtrack album with no artist info
-      expect(album['artists'], isNull);
-      expect(album['audioPlaylistId'], isNotNull);
+      final album =
+          (await yt.getAlbum(
+            'MPREb_n1AxZ9F8rF7',
+          )).asJson(); // soundtrack album with no artist info
+      expect(album['artists'], equals([]));
+      expect(album['playlistId'], isNotNull);
       expect(album['tracks'].length, equals(11));
     });
 
@@ -281,7 +281,7 @@ void main() {
       expect(timestamped['hasTimestamps'], isTrue);
 
       // check the LyricLine object
-      final line = timestamped['lyrics'][0];
+      final line = timestamped['lyrics'].first;
       expect(line, isA<LyricLine>());
       expect(line.text, isA<String>());
       expect(line.startTime <= line.endTime, isTrue);

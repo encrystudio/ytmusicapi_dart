@@ -1,15 +1,19 @@
+import 'package:ytmusicapi_dart/enums.dart';
+import 'package:ytmusicapi_dart/models/objects/base.dart';
 import 'package:ytmusicapi_dart/navigation.dart';
-import 'package:ytmusicapi_dart/parsers/constants.dart';
 import 'package:ytmusicapi_dart/type_alias.dart';
+import 'package:ytmusicapi_dart/utils.dart';
 
 /// Parses menu playlists.
-void parseMenuPlaylists(JsonMap data, JsonMap result) {
+MenuPlaylists parseMenuPlaylists(JsonMap data) {
   final menuItems = nav(data, MENU_ITEMS, nullIfAbsent: true);
-  if (menuItems == null) return;
+  if (menuItems == null) return MenuPlaylists(shuffleId: null, radioId: null);
 
   final watchMenu = List<JsonMap>.from(
     findObjectsByKey(menuItems as List, MNIR),
   );
+  String? shuffleId;
+  String? radioId;
   for (final item in watchMenu.map((x) => x[MNIR])) {
     final icon = nav(item, ICON_TYPE);
     String? watchKey;
@@ -21,20 +25,29 @@ void parseMenuPlaylists(JsonMap data, JsonMap result) {
       continue;
     }
 
-    var watchId = nav(item, [
-      'navigationEndpoint',
-      'watchPlaylistEndpoint',
-      'playlistId',
-    ], nullIfAbsent: true);
-    watchId ??= nav(item, [
-      'navigationEndpoint',
-      'watchEndpoint',
-      'playlistId',
-    ], nullIfAbsent: true);
+    var watchId =
+        nav(item, [
+              'navigationEndpoint',
+              'watchPlaylistEndpoint',
+              'playlistId',
+            ], nullIfAbsent: true)
+            as String?;
+    watchId ??=
+        nav(item, [
+              'navigationEndpoint',
+              'watchEndpoint',
+              'playlistId',
+            ], nullIfAbsent: true)
+            as String?;
     if (watchId != null) {
-      result[watchKey] = watchId;
+      if (watchKey == 'shuffleId') {
+        shuffleId = watchId;
+      } else {
+        radioId = watchId;
+      }
     }
   }
+  return MenuPlaylists(shuffleId: shuffleId, radioId: radioId);
 }
 
 /// Get text of an item.
@@ -90,7 +103,7 @@ int getDotSeparatorIndex(List runs) {
 }
 
 /// Parses [duration] in seconds.
-int? parseDuration(String? duration) {
+Duration? parseDuration(String? duration) {
   if (duration == null || duration.trim().isEmpty) return null;
   final durationSplit = duration.trim().split(':');
   if (durationSplit.any((d) => int.tryParse(d.replaceAll(',', '')) == null)) {
@@ -103,13 +116,14 @@ int? parseDuration(String? duration) {
     final value = int.parse(durationSplit[durationSplit.length - 1 - i]);
     seconds.add(value * multipliers[i]);
   }
-  return seconds.reduce((a, b) => a + b);
+  return Duration(seconds: seconds.reduce((a, b) => a + b));
 }
 
 /// Parses id and name.
-JsonMap parseIdName(JsonMap? subRun) {
-  return {
-    'id': nav(subRun, NAVIGATION_BROWSE_ID, nullIfAbsent: true),
-    'name': nav(subRun, ['text'], nullIfAbsent: true),
-  };
+YtBaseObject parseIdName(JsonMap? subRun) {
+  return YtBaseObject(
+    id: nav(subRun, NAVIGATION_BROWSE_ID, nullIfAbsent: true) as String?,
+    name: nav(subRun, ['text']) as String,
+    type: YtObjectType.OBJECT,
+  );
 }

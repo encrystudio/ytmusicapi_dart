@@ -1,64 +1,82 @@
 // ignore_for_file: public_member_api_docs
 
+import 'package:ytmusicapi_dart/enums.dart';
+import 'package:ytmusicapi_dart/models/content/enums.dart';
 import 'package:ytmusicapi_dart/models/objects/base.dart';
-import 'package:ytmusicapi_dart/type_alias.dart';
+import 'package:ytmusicapi_dart/models/objects/video.dart';
 
 class YtPlaylist extends YtBaseObject {
-  final String author;
-  final Duration? duration;
-  final YtThumbnailData thumbnailData;
-  final YtPlaylistType playlistType;
-  final int? year;
-  // TODO itemCount currently missing since parsing might be wrong
+  // super.id is browseId
+  YtPlaylistType? playlistType;
+  List<YtBaseObject> authors;
+  bool? owned;
+  PrivacyStatus? privacy;
+  YtThumbnails? thumbnails;
+  String? description;
+  String? durationRaw;
+  Duration? duration;
+  int? year;
+  int? itemCount;
+  int? views;
+  List<YtVideo> items;
+  List<YtPlaylist> related;
+  List<YtVideo> suggestions;
 
   YtPlaylist({
-    required this.author,
-    required this.duration,
-    required this.thumbnailData,
-    required this.playlistType,
-    required this.year,
+    required super.name,
     required super.id,
-    required super.title,
+    required this.playlistType,
+    required this.authors,
+    required this.owned,
+    required this.privacy,
+    required this.thumbnails,
+    required this.description,
+    required this.durationRaw,
+    required this.duration,
+    required this.year,
+    required this.itemCount,
+    required this.views,
+    required this.items,
+    required this.related,
+    required this.suggestions,
   }) : super(type: YtObjectType.PLAYLIST);
 
-  factory YtPlaylist.fromJson(JsonMap jsonData) {
-    return YtPlaylist(
-      thumbnailData: YtThumbnailData.fromJson(
-        List<JsonMap>.from(jsonData['thumbnails'] as List),
-      ),
-      playlistType: YtPlaylistType.fromValue(
-        jsonData['category'] as String? ?? 'Playlists',
-      ),
-      id: jsonData['browseId'] as String? ?? jsonData['playlistId'] as String,
-      title: jsonData['title'] as String,
-      author:
-          (jsonData['author'] is String)
-              ? jsonData['author'] as String
-              : (List<JsonMap>.from(jsonData['author'] as List)
-                  .map(
-                    (author) =>
-                        YtBaseObject.fromJson(author, 'id', 'name').title,
-                  )
-                  .join(', ')),
-
-      duration: jsonData['duration'] as Duration?,
-      year:
-          (jsonData['year'] as int?) ??
-          ((jsonData['year'] is String)
-              ? (int.tryParse(jsonData['year'] as String))
-              : null),
-    );
-  }
+  @override
+  Map<String, dynamic> asJson() => {
+    ...super.asJson(),
+    'playlistType': playlistType?.name,
+    'authors': authors.map((a) => a.asJson()).toList(),
+    'owned': owned,
+    'privacy': privacy?.name,
+    'thumbnails': thumbnails?.asJson(),
+    'description': description,
+    'durationRaw': durationRaw,
+    'duration': duration?.inMilliseconds,
+    'year': year,
+    'itemCount': itemCount,
+    'views': views,
+    'items': items.map((v) => v.asJson()).toList(),
+    'related': related.map((p) => p.asJson()).toList(),
+    'suggestions': suggestions.map((v) => v.asJson()).toList(),
+  };
 
   @override
   String toString() =>
       'YtPlaylist('
-      'id: $id, '
-      'title: $title, '
-      'author: $author, '
+      'name: $name, '
+      'browseId: $id, '
       'playlistType: $playlistType '
-      'duration: ${duration?.inSeconds ?? "null"}s, '
-      'thumbnailData: $thumbnailData, '
-      'year: $year'
-      ')';
+      'authors: ${authors.map((a) => a.toString()).join(', ')}, '
+      'owned: $owned, '
+      'privacy: $privacy, '
+      'thumbnails: $thumbnails, '
+      'description: $description, '
+      'durationRaw: $durationRaw, '
+      'duration: ${duration?.inSeconds ?? 'null '}s, '
+      'year: $year, '
+      'itemCount: $itemCount, '
+      'views: $views, '
+      'items: ${items.length} items, '
+      'related: ${related.length} related, '
+      'suggestions: ${suggestions.length} suggested)';
 }

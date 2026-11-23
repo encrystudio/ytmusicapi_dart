@@ -2,6 +2,7 @@ import 'package:ytmusicapi_dart/continuations.dart';
 import 'package:ytmusicapi_dart/enums.dart';
 import 'package:ytmusicapi_dart/exceptions.dart';
 import 'package:ytmusicapi_dart/mixins/protocol.dart';
+import 'package:ytmusicapi_dart/models/objects/base.dart';
 import 'package:ytmusicapi_dart/navigation.dart';
 import 'package:ytmusicapi_dart/parsers/search.dart';
 import 'package:ytmusicapi_dart/type_alias.dart';
@@ -28,114 +29,13 @@ mixin SearchMixin on MixinProtocol {
   ///                    This does not have any effect when the filter is set to `uploads`.
   ///                    (Default: `false`, will use YTM's default behavior of autocorrecting the search.
   ///
-  /// Returns List of results depending on filter.
-  ///
   /// - `resultType` specifies the type of item (important for default search).
   ///   Albums, artists and playlists additionally contain a `browseId`, corresponding to
   ///   `albumId`, `channelId` and `playlistId` (`browseId`=`VL`+`playlistId`).
   ///
-  /// Example list for default search with one result per `resultType` for brevity.
-  /// Normally there are 3 results per `resultType` and an additional `thumbnails` key:
-  /// ```json
-  /// [
-  ///   {
-  ///     "category": "Top result",
-  ///     "resultType": "video",
-  ///     "videoId": "vU05Eksc_iM",
-  ///     "title": "Wonderwall",
-  ///     "artists": [
-  ///       {
-  ///         "name": "Oasis",
-  ///         "id": "UCmMUZbaYdNH0bEd1PAlAqsA"
-  ///       }
-  ///     ],
-  ///     "views": "1.4M",
-  ///     "videoType": "MUSIC_VIDEO_TYPE_OMV",
-  ///     "duration": "4:38",
-  ///     "duration_seconds": 278
-  ///   },
-  ///   {
-  ///     "category": "Songs",
-  ///     "resultType": "song",
-  ///     "videoId": "ZrOKjDZOtkA",
-  ///     "title": "Wonderwall",
-  ///     "artists": [
-  ///       {
-  ///         "name": "Oasis",
-  ///         "id": "UCmMUZbaYdNH0bEd1PAlAqsA"
-  ///       }
-  ///     ],
-  ///     "album": {
-  ///       "name": "(What's The Story) Morning Glory? (Remastered)",
-  ///       "id": "MPREb_9nqEki4ZDpp"
-  ///     },
-  ///     "duration": "4:19",
-  ///     "duration_seconds": 259,
-  ///     "isExplicit": false,
-  ///     "inLibrary": false,
-  ///     "feedbackTokens": {
-  ///       "add": null,
-  ///       "remove": null
-  ///     },
-  ///     "pinnedToListenAgain": false,
-  ///      "listenAgainFeedbackTokens": {
-  ///        "pin": null,
-  ///         "unpin": null
-  ///     }
-  ///   },
-  ///   {
-  ///     "category": "Albums",
-  ///     "resultType": "album",
-  ///     "browseId": "MPREb_IInSY5QXXrW",
-  ///     "playlistId": "OLAK5uy_kunInnOpcKECWIBQGB0Qj6ZjquxDvfckg",
-  ///     "title": "(What's The Story) Morning Glory?",
-  ///     "type": "Album",
-  ///     "artist": "Oasis",
-  ///     "year": "1995",
-  ///     "isExplicit": false
-  ///   },
-  ///   {
-  ///     "category": "Community playlists",
-  ///     "resultType": "playlist",
-  ///     "browseId": "VLPLK1PkWQlWtnNfovRdGWpKffO1Wdi2kvDx",
-  ///     "title": "Wonderwall - Oasis",
-  ///     "author": "Tate Henderson",
-  ///     "itemCount": "174" // itemCount of a playlist can be null as youtube music does not expose that information for search filtered to community playlist.
-  ///   },
-  ///   {
-  ///     "category": "Videos",
-  ///     "resultType": "video",
-  ///     "videoId": "bx1Bh8ZvH84",
-  ///     "title": "Wonderwall",
-  ///     "artists": [
-  ///       {
-  ///         "name": "Oasis",
-  ///         "id": "UCmMUZbaYdNH0bEd1PAlAqsA"
-  ///       }
-  ///     ],
-  ///     "views": "386M",
-  ///     "duration": "4:38",
-  ///     "duration_seconds": 278
-  ///   },
-  ///   {
-  ///     "category": "Artists",
-  ///     "resultType": "artist",
-  ///     "browseId": "UCmMUZbaYdNH0bEd1PAlAqsA",
-  ///     "artist": "Oasis",
-  ///     "shuffleId": "RDAOkjHYJjL1a3xspEyVkhHAsg",
-  ///     "radioId": "RDEMkjHYJjL1a3xspEyVkhHAsg"
-  ///   },
-  ///   {
-  ///     "category": "Profiles",
-  ///     "resultType": "profile",
-  ///     "title": "Taylor Swift Time",
-  ///     "name": "@TaylorSwiftTime",
-  ///     "browseId": "UCSCRK7XlVQ6fBdEl00kX6pQ",
-  ///     "thumbnails": ...
-  ///   }
-  /// ]
-  /// ```
-  Future<List> search(
+  /// Normally there are 3 results per `resultType`.
+  // TODO return a richer object (with titles etc)
+  Future<List<YtBaseObject>> search(
     String query, {
     SearchFilterType? filter,
     String? scope,
@@ -144,7 +44,7 @@ mixin SearchMixin on MixinProtocol {
   }) async {
     final body = <String, dynamic>{'query': query};
     const endpoint = 'search';
-    final searchResults = <dynamic>[];
+    final searchResults = <YtBaseObject>[];
 
     const filters = [
       'albums',
@@ -237,9 +137,10 @@ mixin SearchMixin on MixinProtocol {
       if (res.containsKey('musicCardShelfRenderer')) {
         final topResult = parseTopResult(
           res['musicCardShelfRenderer'] as JsonMap,
-          parser.getSearchResultTypes(),
         );
-        searchResults.add(topResult);
+        if (topResult != null) {
+          searchResults.add(topResult.result.result); // TODO
+        }
 
         shelfContents = List<JsonMap>.from(
           (nav(res, [
@@ -293,9 +194,10 @@ mixin SearchMixin on MixinProtocol {
       searchResults.addAll(
         parseSearchResults(
           shelfContents,
-          resultType: resultType,
+          resultType:
+              resultType != null ? YtResultType.fromName(resultType) : null,
           category: category,
-        ),
+        ).map((item) => item.result),
       );
 
       if (internalFilter != null) {
@@ -305,11 +207,13 @@ mixin SearchMixin on MixinProtocol {
           body,
           additionalParams: additionalParams as String,
         );
-        List parseFunc(contents) => parseSearchResults(
-          List<JsonMap>.from(contents as List),
-          resultType: resultType,
-          category: category,
-        );
+        List<YtBaseObject> parseFunc(contents) =>
+            parseSearchResults(
+              List<JsonMap>.from(contents as List),
+              resultType:
+                  resultType != null ? YtResultType.fromName(resultType) : null,
+              category: category,
+            ).map((item) => item.result).toList();
 
         searchResults.addAll(
           await getContinuations(
@@ -399,7 +303,7 @@ mixin SearchMixin on MixinProtocol {
   ///   ...
   /// ]
   /// ```
-  Future<dynamic> getSearchSuggestions(
+  Future<List> getSearchSuggestions(
     String query, {
     bool detailedRuns = false,
   }) async {

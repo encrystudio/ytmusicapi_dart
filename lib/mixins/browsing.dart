@@ -12,12 +12,18 @@ import 'package:ytmusicapi_dart/helpers.dart';
 import 'package:ytmusicapi_dart/mixins/protocol.dart';
 import 'package:ytmusicapi_dart/mixins/utils.dart';
 import 'package:ytmusicapi_dart/models/lyrics.dart';
+import 'package:ytmusicapi_dart/models/objects/album.dart';
+import 'package:ytmusicapi_dart/models/objects/artist.dart';
+import 'package:ytmusicapi_dart/models/objects/base.dart';
+import 'package:ytmusicapi_dart/models/objects/playlist.dart';
+import 'package:ytmusicapi_dart/models/objects/video.dart';
 import 'package:ytmusicapi_dart/navigation.dart';
 import 'package:ytmusicapi_dart/parsers/albums.dart';
 import 'package:ytmusicapi_dart/parsers/browsing.dart';
 import 'package:ytmusicapi_dart/parsers/library.dart';
 import 'package:ytmusicapi_dart/parsers/playlists.dart';
 import 'package:ytmusicapi_dart/type_alias.dart';
+import 'package:ytmusicapi_dart/utils.dart';
 
 /// Mixin for browsing functionalities.
 mixin BrowsingMixin on MixinProtocol {
@@ -27,93 +33,12 @@ mixin BrowsingMixin on MixinProtocol {
   /// Content varies and may contain artist, album, song or playlist suggestions, sometimes mixed within the same row.
   ///
   /// - [limit] Number of rows on the home page to return. (Default: `3`).
-  ///
-  /// Returns List of Maps keyed with `title` text and `contents` list.
-  ///
-  /// Example list:
-  ///
-  /// ```json
-  /// [
-  ///   {
-  ///     "title": "Your morning music",
-  ///     "contents": [
-  ///       { // album result
-  ///         "title": "Sentiment",
-  ///         "browseId": "MPREb_QtqXtd2xZMR",
-  ///         "thumbnails": [...]
-  ///       },
-  ///       { // playlist result
-  ///         "title": "r/EDM top submissions 01/28/2022",
-  ///         "playlistId": "PLz7-xrYmULdSLRZGk-6GKUtaBZcgQNwel",
-  ///         "thumbnails": [...],
-  ///         "description": "redditEDM • 161 songs",
-  ///         "count": "161",
-  ///         "author": [
-  ///           {
-  ///             "name": "redditEDM",
-  ///             "id": "UCaTrZ9tPiIGHrkCe5bxOGwA"
-  ///           }
-  ///         ]
-  ///       }
-  ///     ]
-  ///   },
-  ///   {
-  ///     "title": "Your favorites",
-  ///     "contents": [
-  ///       { // artist result
-  ///         "title": "Chill Satellite",
-  ///         "browseId": "UCrPLFBWdOroD57bkqPbZJog",
-  ///         "subscribers": "374",
-  ///         "thumbnails": [...]
-  ///       },
-  ///       { // album result
-  ///         "title": "Dragon",
-  ///         "year": "Two Steps From Hell",
-  ///         "browseId": "MPREb_M9aDqLRbSeg",
-  ///         "thumbnails": [...]
-  ///       }
-  ///     ]
-  ///   },
-  ///   {
-  ///     "title": "Quick picks",
-  ///     "contents": [
-  ///       { // song quick pick
-  ///         "title": "Gravity",
-  ///         "videoId": "EludZd6lfts",
-  ///         "artists": [
-  ///           {
-  ///             "name": "yetep",
-  ///             "id": "UCSW0r7dClqCoCvQeqXiZBlg"
-  ///           }
-  ///         ],
-  ///         "thumbnails": [...],
-  ///         "album": {
-  ///           "name": "Gravity",
-  ///           "id": "MPREb_D6bICFcuuRY"
-  ///         }
-  ///       },
-  ///       { // video quick pick
-  ///         "title": "Gryffin & Illenium (feat. Daya) - Feel Good (L3V3LS Remix)",
-  ///         "videoId": "bR5l0hJDnX8",
-  ///         "artists": [
-  ///           {
-  ///             "name": "L3V3LS",
-  ///             "id": "UCCVNihbOdkOWw_-ajIYhAbQ"
-  ///           }
-  ///         ],
-  ///         "thumbnails": [...],
-  ///         "views": "10M"
-  ///       }
-  ///     ]
-  ///   }
-  /// ]
-  /// ```
-  Future<List> getHome({int limit = 3}) async {
+  Future<List<YtNamedRow>> getHome({int limit = 3}) async {
     const endpoint = 'browse';
     final body = <String, dynamic>{'browseId': 'FEmusic_home'};
     final response = await sendRequest(endpoint, body);
 
-    final results = nav(response, [...SINGLE_COLUMN_TAB, ...SECTION_LIST]);
+    final results = nav(response, SINGLE_COLUMN_TAB + SECTION_LIST);
     final home = parseMixedContent(List<JsonMap>.from(results as List));
 
     final sectionList =
@@ -141,16 +66,6 @@ mixin BrowsingMixin on MixinProtocol {
   ///
   /// The top lists contain pointers for getting the full list of releases.
   ///
-  /// Possible content types for [getArtist] are:
-  /// - songs
-  /// - albums
-  /// - singles
-  /// - shows
-  /// - videos
-  /// - episodes
-  /// - podcasts
-  /// - related
-  ///
   /// Each of these content keys in the response contains
   /// `results` and possibly `browseId` and `params`:
   ///
@@ -160,102 +75,12 @@ mixin BrowsingMixin on MixinProtocol {
   /// Arguments:
   /// - [channelId] channel id of the artist.
   ///
-  /// Returns Map with requested information.
-  ///
   /// WARNING:
   /// - The returned channelId is not the same as the one passed to the function.
   ///   It should be used only with [subscribeArtist]. // TODO subscribeArtist is currently missing
   ///
-  /// Example:
-  /// ```json
-  /// {
-  ///   "description": "Oasis were ...",
-  ///   "descriptionRuns": [
-  ///     {
-  ///       "text":"Oasis were ..."
-  ///     }
-  ///   ],
-  ///   "views": "3,693,390,359 views",
-  ///   "name": "Oasis",
-  ///   "channelId": "UCUDVBtnOQi4c7E8jebpjc9Q",
-  ///   "shuffleId": "RDAOkjHYJjL1a3xspEyVkhHAsg",
-  ///   "radioId": "RDEMkjHYJjL1a3xspEyVkhHAsg",
-  ///   "subscribers": "3.86M",
-  ///   "monthlyListeners": "29.1M",
-  ///   "subscribed": false,
-  ///   "thumbnails": [...],
-  ///   "songs": {
-  ///     "browseId": "VLPLMpM3Z0118S42R1npOhcjoakLIv1aqnS1",
-  ///     "results": [
-  ///       {
-  ///         "videoId": "ZrOKjDZOtkA",
-  ///         "title": "Wonderwall (Remastered)",
-  ///         "thumbnails": [...],
-  ///         "artist": "Oasis",
-  ///         "album": "(What's The Story) Morning Glory? (Remastered)"
-  ///       }
-  ///     ]
-  ///   },
-  ///   "albums": {
-  ///     "results": [
-  ///       {
-  ///         "title": "Familiar To Millions",
-  ///         "thumbnails": [...],
-  ///         "year": "2018",
-  ///         "browseId": "MPREb_AYetWMZunqA"
-  ///       }
-  ///     ],
-  ///     "browseId": "UCmMUZbaYdNH0bEd1PAlAqsA",
-  ///     "params": "6gPTAUNwc0JDbndLYlFBQV..."
-  ///   },
-  ///   "singles": {
-  ///     "results": [
-  ///       {
-  ///         "title": "Stand By Me (Mustique Demo)",
-  ///         "thumbnails": [...],
-  ///         "type": "Single",
-  ///         "year": "2016",
-  ///         "browseId": "MPREb_7MPKLhibN5G"
-  ///       }
-  ///     ],
-  ///     "browseId": "UCmMUZbaYdNH0bEd1PAlAqsA",
-  ///     "params": "6gPTAUNwc0JDbndLYlFBQV..."
-  ///   },
-  ///   "videos": {
-  ///     "results": [
-  ///       {
-  ///         "title": "Wonderwall",
-  ///         "thumbnails": [...],
-  ///         "views": "358M",
-  ///         "videoId": "bx1Bh8ZvH84",
-  ///         "playlistId": "PLMpM3Z0118S5xuNckw1HUcj1D021AnMEB"
-  ///       }
-  ///     ],
-  ///     "browseId": "VLPLMpM3Z0118S5xuNckw1HUcj1D021AnMEB"
-  ///   },
-  ///   "related": {
-  ///     "results": [
-  ///       {
-  ///         "browseId": "UCt2KxZpY5D__kapeQ8cauQw",
-  ///         "subscribers": "450K",
-  ///         "title": "The Verve"
-  ///       },
-  ///       {
-  ///         "browseId": "UCwK2Grm574W1u-sBzLikldQ",
-  ///         "subscribers": "341K",
-  ///         "title": "Liam Gallagher"
-  ///       },
-  ///       ...
-  ///     ]
-  ///   }
-  /// }
-  ///
   ///  The difference between description and descriptionRuns is that description is just the raw text of the description and does not have any knowledge of the hyperlinks in the description.
-  ///  Whereas descriptionRuns is a list of dictionaries which contains the text runs of the description that is aware of the hyperlinks in the description. There are two types of text runs.
-  ///    1. PlainText: which has format {"text": string}
-  ///    2. HyperLink: which has format {"text": string, "url": string}
-  /// ```
-  Future<JsonMap> getArtist(String channelId) async {
+  Future<YtBrowsedArtist> getArtist(String channelId) async {
     final String cleanChannelId;
     if (channelId.startsWith('MPLA')) {
       cleanChannelId = channelId.substring(4);
@@ -278,16 +103,43 @@ mixin BrowsingMixin on MixinProtocol {
               response['header']! as JsonMap,
             )['musicVisualHeaderRenderer']
             as JsonMap;
-    final artist = <String, dynamic>{
-      'name': nav(header, TITLE_TEXT),
-      'description': null,
-      'descriptionRuns': [],
-      'views': null,
-    };
+
+    final subscriptionButton =
+        (header['subscriptionButton']! as JsonMap)['subscribeButtonRenderer']
+            as JsonMap;
+
+    final artist = YtBrowsedArtist(
+      name: nav(header, TITLE_TEXT) as String,
+      id: subscriptionButton['channelId'] as String?,
+      descriptionRaw: null,
+      descriptionRuns: [],
+      views: null,
+      shuffleId: null,
+      radioId: null,
+      subscribers: null,
+      monthlyListeners: null,
+      thumbnails: null,
+      songsBrowseId: null,
+      songsResults: [],
+      albumsBrowseId: null,
+      albumsParams: null,
+      albumsResults: [],
+      singlesBrowseId: null,
+      singlesParams: null,
+      singlesResults: [],
+      showsBrowseId: null,
+      videosBrowseId: null,
+      videosResults: [],
+      playlistsBrowseId: null,
+      episodesBrowseId: null,
+      podcastsBrowseId: null,
+      relatedBrowseId: null,
+      relatedResults: [],
+    );
 
     final descriptionShelf = findObjectByKey(
       results,
-      DESCRIPTION_SHELF[0] as String,
+      DESCRIPTION_SHELF.first as String,
       isKey: true,
     );
 
@@ -297,65 +149,71 @@ mixin BrowsingMixin on MixinProtocol {
       );
       final description = parsedDescriptionRuns.$1;
       final descriptionRuns = parsedDescriptionRuns.$2;
-      artist['description'] = description;
-      artist['descriptionRuns'] = descriptionRuns;
-      artist['views'] =
+      artist.descriptionRaw = description;
+      artist.descriptionRuns = descriptionRuns;
+      artist.views =
           descriptionShelf.containsKey('subheader')
-              ? (((descriptionShelf['subheader']! as JsonMap)['runs']!
-                      as List)[0]
-                  as JsonMap)['text']
+              ? (((descriptionShelf['subheader']! as JsonMap)['runs']! as List)
+                          .first
+                      as JsonMap)['text']
+                  as String?
               : null;
     }
 
-    final subscriptionButton =
-        (header['subscriptionButton']! as JsonMap)['subscribeButtonRenderer']
-            as JsonMap;
-    artist['channelId'] = subscriptionButton['channelId'];
-    artist['shuffleId'] = nav(header, [
-      'playButton',
-      'buttonRenderer',
-      ...NAVIGATION_PLAYLIST_ID,
-    ], nullIfAbsent: true);
-    artist['radioId'] = nav(header, [
-      'startRadioButton',
-      'buttonRenderer',
-      ...NAVIGATION_PLAYLIST_ID,
-    ], nullIfAbsent: true);
-    artist['subscribers'] = nav(subscriptionButton, [
-      'subscriberCountText',
-      'runs',
-      0,
-      'text',
-    ], nullIfAbsent: true);
-    artist['monthlyListeners'] = nav(header, [
-      'monthlyListenerCount',
-      'runs',
-      0,
-      'text',
-    ], nullIfAbsent: true);
-    artist['monthlyListeners'] = (artist['monthlyListeners'] as String?)
-        ?.replaceAll(' monthly audience', '');
-    artist['subscribed'] = subscriptionButton['subscribed'];
-    artist['thumbnails'] = nav(header, THUMBNAILS, nullIfAbsent: true);
-    artist['songs'] = JsonMap.from({'browseId': null});
+    artist.shuffleId =
+        nav(header, [
+              'playButton',
+              'buttonRenderer',
+              ...NAVIGATION_PLAYLIST_ID,
+            ], nullIfAbsent: true)
+            as String?;
+    artist.radioId =
+        nav(header, [
+              'startRadioButton',
+              'buttonRenderer',
+              ...NAVIGATION_PLAYLIST_ID,
+            ], nullIfAbsent: true)
+            as String?;
+    artist.subscribers =
+        nav(subscriptionButton, [
+              'subscriberCountText',
+              'runs',
+              0,
+              'text',
+            ], nullIfAbsent: true)
+            as String?;
+    artist.monthlyListeners =
+        nav(header, [
+              'monthlyListenerCount',
+              'runs',
+              0,
+              'text',
+            ], nullIfAbsent: true)
+            as String?;
+    artist.monthlyListeners = artist.monthlyListeners?.replaceAll(
+      ' monthly audience',
+      '',
+    );
+    final thumbnailsRaw = nav(header, THUMBNAILS, nullIfAbsent: true);
+    artist.thumbnails =
+        thumbnailsRaw != null
+            ? YtThumbnails.fromJson(List<JsonMap>.from(thumbnailsRaw as List))
+            : null;
 
-    if (results.isNotEmpty && results[0].containsKey('musicShelfRenderer')) {
+    if (results.isNotEmpty && results.first.containsKey('musicShelfRenderer')) {
       // API sometimes does not return songs
-      final musicShelf = nav(results[0], MUSIC_SHELF) as JsonMap;
+      final musicShelf = nav(results.first, MUSIC_SHELF) as JsonMap;
       if ((nav(musicShelf, TITLE) as JsonMap).containsKey(
         'navigationEndpoint',
       )) {
-        (artist['songs'] as JsonMap)['browseId'] = nav(
-          musicShelf,
-          TITLE + NAVIGATION_BROWSE_ID,
-        );
+        artist.songsBrowseId =
+            nav(musicShelf, TITLE + NAVIGATION_BROWSE_ID) as String;
       }
-      (artist['songs'] as JsonMap)['results'] = parsePlaylistItems(
+      artist.songsResults = parsePlaylistItems(
         List<JsonMap>.from(musicShelf['contents'] as List),
       );
     }
-
-    artist.addAll(parser.parseChannelContents(results));
+    parser.parseChannelContents(results, artist);
     return artist;
   }
 
@@ -365,9 +223,8 @@ mixin BrowsingMixin on MixinProtocol {
   /// - [params] Params obtained by [getArtist].
   /// - [limit] Number of albums to return. `null` retrieves them all. (Default: `100`).
   /// - [order] Order of albums to return. (Default: default order).
-  ///
-  /// Returns List of albums in the format of [getLibraryAlbums], except `artists` key is missing. // TODO getLibraryAlbums is currently missing
-  Future<List> getArtistAlbums(
+  // TODO getLibraryAlbums is currently missing
+  Future<List<YtAlbum>> getArtistAlbums(
     String channelId,
     String params, {
     int? limit = 100,
@@ -380,7 +237,7 @@ mixin BrowsingMixin on MixinProtocol {
     Future<JsonMap> requestFunc(String additionalParams) =>
         sendRequest(endpoint, body, additionalParams: additionalParams);
 
-    List parseFunc(List<JsonMap> contents) => parseAlbums(contents);
+    List<YtAlbum> parseFunc(List<JsonMap> contents) => parseAlbums(contents);
 
     JsonMap results;
     if (order != null) {
@@ -476,62 +333,42 @@ mixin BrowsingMixin on MixinProtocol {
   /// ```
   ///
   /// - [channelId] `channelId` of the user.
-  ///
-  /// Returns Map with information about a user.
-  ///
-  /// Example:
-  /// ```json
-  /// {
-  ///   "name": "4Tune - No Copyright Music",
-  ///   "videos": {
-  ///     "browseId": "UC44hbeRoCZVVMVg5z0FfIww",
-  ///     "results": [
-  ///       {
-  ///         "title": "Epic Music Soundtracks 2019",
-  ///         "videoId": "bJonJjgS2mM",
-  ///         "playlistId": "RDAMVMbJonJjgS2mM",
-  ///         "thumbnails": [
-  ///           {
-  ///             "url": "https://i.ytimg.com/vi/bJon...",
-  ///             "width": 800,
-  ///             "height": 450
-  ///           }
-  ///         ],
-  ///         "views": "19K"
-  ///       }
-  ///     ]
-  ///   },
-  ///   "playlists": {
-  ///     "browseId": "UC44hbeRoCZVVMVg5z0FfIww",
-  ///     "results": [
-  ///       {
-  ///         "title": "♚ Machinimasound | Playlist",
-  ///         "playlistId": "PLRm766YvPiO9ZqkBuEzSTt6Bk4eWIr3gB",
-  ///         "thumbnails": [
-  ///           {
-  ///             "url": "https://i.ytimg.com/vi/...",
-  ///             "width": 400,
-  ///             "height": 225
-  ///           }
-  ///         ]
-  ///       }
-  ///     ],
-  ///     "params": "6gO3AUNvWU..."
-  ///   }
-  /// }
-  /// ```
-  Future<JsonMap> getUser(String channelId) async {
+  Future<YtBrowsedArtist> getUser(String channelId) async {
     const endpoint = 'browse';
     final body = <String, dynamic>{'browseId': channelId};
     final response = await sendRequest(endpoint, body);
 
-    final user = {
-      'name': nav(response, [...HEADER_MUSIC_VISUAL, ...TITLE_TEXT]),
-    };
-    final results = nav(response, [...SINGLE_COLUMN_TAB, ...SECTION_LIST]);
-    user.addAll(
-      parser.parseChannelContents(List<JsonMap>.from(results as List)),
+    final user = YtBrowsedArtist(
+      name: nav(response, [...HEADER_MUSIC_VISUAL, ...TITLE_TEXT]) as String,
+      id: null,
+      descriptionRaw: null,
+      descriptionRuns: [],
+      views: null,
+      shuffleId: null,
+      radioId: null,
+      subscribers: null,
+      monthlyListeners: null,
+      thumbnails: null,
+      songsBrowseId: null,
+      songsResults: [],
+      albumsBrowseId: null,
+      albumsParams: null,
+      albumsResults: [],
+      singlesBrowseId: null,
+      singlesParams: null,
+      singlesResults: [],
+      showsBrowseId: null,
+      videosBrowseId: null,
+      videosResults: [],
+      playlistsBrowseId: null,
+      episodesBrowseId: null,
+      podcastsBrowseId: null,
+      relatedBrowseId: null,
+      relatedResults: [],
     );
+    final results = nav(response, [...SINGLE_COLUMN_TAB, ...SECTION_LIST]);
+    parser.parseChannelContents(List<JsonMap>.from(results as List), user);
+
     return user;
   }
 
@@ -541,9 +378,11 @@ mixin BrowsingMixin on MixinProtocol {
   ///
   /// - [channelId] `channelId` of the user.
   /// - [params] `params` obtained by [getUser].
-  ///
-  /// Returns List of user playlists in the format of [getLibraryPlaylists]. // TODO getLibraryPlaylists is currently missing
-  Future<List> getUserPlaylists(String channelId, String params) async {
+  // TODO getLibraryPlaylists is currently missing
+  Future<List<YtPlaylist>> getUserPlaylists(
+    String channelId,
+    String params,
+  ) async {
     const endpoint = 'browse';
     final body = {'browseId': channelId, 'params': params};
     final response = await sendRequest(endpoint, body);
@@ -555,7 +394,10 @@ mixin BrowsingMixin on MixinProtocol {
     ], nullIfAbsent: true);
     if (results == null) return [];
 
-    return parseContentList(List<JsonMap>.from(results as List), parsePlaylist);
+    return await parseContentList(
+      List<JsonMap>.from(results as List),
+      parsePlaylist,
+    );
   }
 
   /// Retrieve a list of videos for a given user.
@@ -564,9 +406,7 @@ mixin BrowsingMixin on MixinProtocol {
   ///
   /// - [channelId] `channelId` of the user.
   /// - [params] `params` obtained by [getUser].
-  ///
-  /// Returns List of user videos.
-  Future<List> getUserVideos(String channelId, String params) async {
+  Future<List<YtVideo>> getUserVideos(String channelId, String params) async {
     const endpoint = 'browse';
     final body = {'browseId': channelId, 'params': params};
     final response = await sendRequest(endpoint, body);
@@ -578,7 +418,10 @@ mixin BrowsingMixin on MixinProtocol {
     ], nullIfAbsent: true);
     if (results == null) return [];
 
-    return parseContentList(List<JsonMap>.from(results as List), parseVideo);
+    return await parseContentList(
+      List<JsonMap>.from(results as List),
+      parseVideo,
+    );
   }
 
   /// Get an album's `browseId` based on its [audioPlaylistId].
@@ -602,75 +445,8 @@ mixin BrowsingMixin on MixinProtocol {
   ///
   /// - [browseId] `browseId` of the album, for example returned by [SearchMixin.search].
   ///
-  /// Returns Map with album and track metadata.
-  ///
-  /// The result is in the following format:
-  /// ```json
-  /// {
-  ///   "title": "Revival",
-  ///   "type": "Album",
-  ///   "thumbnails": [...],
-  ///   "description": "Revival is the...",
-  ///   "descriptionRuns": [
-  ///     {"text": "Revival is the..."},
-  ///   ],
-  ///   "artists": [
-  ///     {
-  ///       "name": "Eminem",
-  ///       "id": "UCedvOgsKFzcK3hA5taf3KoQ"
-  ///     }
-  ///   ],
-  ///   "year": "2017",
-  ///   "trackCount": 19,
-  ///   "duration": "1 hour, 17 minutes",
-  ///   "audioPlaylistId": "OLAK5uy_nMr9h2VlS-2PULNz3M3XVXQj_P3C2bqaY",
-  ///   "tracks": [
-  ///     {
-  ///       "videoId": "iKLU7z_xdYQ",
-  ///       "title": "Walk On Water (feat. Beyoncé)",
-  ///       "artists": [
-  ///         {
-  ///           "name": "Eminem",
-  ///           "id": "UCedvOgsKFzcK3hA5taf3KoQ"
-  ///         }
-  ///       ],
-  ///       "album": "Revival",
-  ///       "likeStatus": "INDIFFERENT",
-  ///       "thumbnails": null,
-  ///       "isAvailable": true,
-  ///       "isExplicit": true,
-  ///       "duration": "5:03",
-  ///       "duration_seconds": 303,
-  ///       "trackNumber": 0,
-  ///       "inLibrary": false,
-  ///       "feedbackTokens": {
-  ///         "add": "AB9zfpK...",
-  ///         "remove": "AB9zfpK..."
-  ///       },
-  ///                   "pinnedToListenAgain": false,
-  ///      "listenAgainFeedbackTokens": {
-  ///        "pin": "AB9zfpJ...",
-  ///        "unpin": "AB9zfpL..."
-  ///      },
-  ///      "creditsBrowseId": "MPTCiKLU7z_xdYQ"
-  ///      }
-  ///     }
-  ///   ],
-  ///   "other_versions": [
-  ///     {
-  ///       "title": "Revival",
-  ///       "year": "Eminem",
-  ///       "browseId": "MPREb_fefKFOTEZSp",
-  ///       "thumbnails": [...],
-  ///       "isExplicit": false
-  ///     }
-  ///   ],
-  ///   "duration_seconds": 4657
-  /// }
-
   /// For the distinction between description and descriptionRuns please refer to getArtist.
-  /// ```
-  Future<JsonMap> getAlbum(String browseId, {JsonMap? requestData}) async {
+  Future<YtAlbum> getAlbum(String browseId, {JsonMap? requestData}) async {
     if (browseId.isEmpty || !browseId.startsWith('MPRE')) {
       throw Exception('Invalid album browseId provided, must start with MPRE.');
     }
@@ -689,7 +465,7 @@ mixin BrowsingMixin on MixinProtocol {
           ])
           as Map,
     );
-    album['tracks'] = parsePlaylistItems(
+    album.tracks = parsePlaylistItems(
       List<JsonMap>.from(results['contents'] as List),
       isAlbum: true,
     );
@@ -709,22 +485,30 @@ mixin BrowsingMixin on MixinProtocol {
             'COLLECTION_STYLE_ITEM_SIZE_SMALL': 'related_recommendations',
             'COLLECTION_STYLE_ITEM_SIZE_MEDIUM': 'other_versions',
           }[carousel['itemSize']]!;
-      album[key] = await parseContentList(
-        List<JsonMap>.from(carousel['contents'] as List),
-        parseAlbum,
-      );
+      if (key == 'related_recommendations') {
+        album.relatedRecommendations = await parseContentList(
+          List<JsonMap>.from(carousel['contents'] as List),
+          parseAlbum,
+        );
+      } else if (key == 'other_versions') {
+        album.otherVersions = await parseContentList(
+          List<JsonMap>.from(carousel['contents'] as List),
+          parseAlbum,
+        );
+      }
     }
 
-    album['duration_seconds'] = sumTotalDuration(album);
-    for (var i = 0; i < (album['tracks'] as List).length; i++) {
-      List<JsonMap>.from(album['tracks'] as List)[i]['album'] = album['title'];
-      List<JsonMap>.from(album['tracks'] as List)[i]['artists'] =
-          (List<JsonMap>.from(album['tracks'] as List)[i]['artists'] != null &&
-                  (List<JsonMap>.from(album['tracks'] as List)[i]['artists']
-                          as List)
-                      .isNotEmpty)
-              ? List<JsonMap>.from(album['tracks'] as List)[i]['artists']
-              : album['artists'];
+    album.duration = Duration(seconds: sumTotalDurationAlbum(album));
+    for (var i = 0; i < album.tracks.length; i++) {
+      album.tracks[i].album = YtBaseObject(
+        id: album.id,
+        name: album.name,
+        type: YtObjectType.OBJECT,
+      );
+      album.tracks[i].artists =
+          album.tracks[i].artists.isNotEmpty
+              ? album.tracks[i].artists
+              : album.artists;
     }
     return album;
   }
@@ -1013,78 +797,7 @@ mixin BrowsingMixin on MixinProtocol {
   /// shown in the "Related" tab of the watch panel.
   ///
   /// - [browseId] The `related` key  in the [WatchMixin.getWatchPlaylist] response.
-  ///
-  /// Example:
-  /// ```json
-  /// [
-  ///   {
-  ///     "title": "You might also like",
-  ///     "contents": [
-  ///       {
-  ///         "title": "High And Dry",
-  ///         "videoId": "7fv84nPfTH0",
-  ///         "artists": [
-  ///           {
-  ///             "name": "Radiohead",
-  ///             "id": "UCr_iyUANcn9OX_yy9piYoLw"
-  ///           }
-  ///         ],
-  ///         "thumbnails": [
-  ///           {
-  ///             "url": "https://lh3.googleusercontent.com/TWWT47cHLv3yAugk4h9eOzQ46FHmXc_g-KmBVy2d4sbg_F-Gv6xrPglztRVzp8D_l-yzOnvh-QToM8s=w60-h60-l90-rj",
-  ///             "width": 60,
-  ///             "height": 60
-  ///           }
-  ///         ],
-  ///         "isExplicit": false,
-  ///         "album": {
-  ///           "name": "The Bends",
-  ///           "id": "MPREb_xsmDKhqhQrG"
-  ///         }
-  ///       }
-  ///     ]
-  ///   },
-  ///   {
-  ///     "title": "Recommended playlists",
-  ///     "contents": [
-  ///       {
-  ///         "title": "'90s Alternative Rock Hits",
-  ///         "playlistId": "RDCLAK5uy_m_h-nx7OCFaq9AlyXv78lG0AuloqW_NUA",
-  ///         "thumbnails": [...],
-  ///         "description": "Playlist • YouTube Music"
-  ///       }
-  ///     ]
-  ///   },
-  ///   {
-  ///     "title": "Similar artists",
-  ///     "contents": [
-  ///       {
-  ///         "title": "Noel Gallagher",
-  ///         "browseId": "UCu7yYcX_wIZgG9azR3PqrxA",
-  ///         "subscribers": "302K",
-  ///         "thumbnails": [...]
-  ///       }
-  ///     ]
-  ///   },
-  ///   {
-  ///     "title": "Oasis",
-  ///     "contents": [
-  ///       {
-  ///         "title": "Shakermaker",
-  ///         "year": "2014",
-  ///         "browseId": "MPREb_WNGQWp5czjD",
-  ///         "thumbnails": [...]
-  ///       }
-  ///     ]
-  ///   },
-  ///   {
-  ///     "title": "About the artist",
-  ///     "contents": "Oasis were a rock band consisting of Liam Gallagher, Paul ... (full description shortened for documentation)"
-  ///   }
-  /// ]
-  ///
-  /// ```
-  Future<List> getSongRelated(String browseId) async {
+  Future<List<YtNamedRow>> getSongRelated(String browseId) async {
     if (browseId.isEmpty) throw Exception('Invalid browseId provided.');
     final response = await sendRequest('browse', {'browseId': browseId});
     final sections = nav(response, ['contents', ...SECTION_LIST]);
@@ -1239,7 +952,7 @@ mixin BrowsingMixin on MixinProtocol {
             List<JsonMap>.from(
               nav(item['tastebuilderItemRenderer'], TASTE_PROFILE_ARTIST)
                   as List,
-            )[0]['text'];
+            ).first['text'];
         tasteProfiles[artist as String] = {
           'selectionValue':
               (item['tastebuilderItemRenderer']

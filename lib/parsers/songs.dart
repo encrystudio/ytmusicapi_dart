@@ -1,15 +1,16 @@
 import 'dart:core';
 
+import 'package:ytmusicapi_dart/enums.dart';
+import 'package:ytmusicapi_dart/models/content/enums.dart';
+import 'package:ytmusicapi_dart/models/objects/base.dart';
 import 'package:ytmusicapi_dart/navigation.dart';
 import 'package:ytmusicapi_dart/parsers/artists.dart';
-import 'package:ytmusicapi_dart/parsers/constants.dart';
-import 'package:ytmusicapi_dart/parsers/search.dart';
 import 'package:ytmusicapi_dart/parsers/utils.dart';
 import 'package:ytmusicapi_dart/type_alias.dart';
 import 'package:ytmusicapi_dart/utils.dart';
 
 /// Parses artists of a song.
-List<JsonMap> parseSongArtists(JsonMap data, int index) {
+List<YtBaseObject> parseSongArtists(JsonMap data, int index) {
   final flexItem = getFlexColumnItem(data, index);
 
   if (flexItem == null || flexItem.isEmpty) {
@@ -49,7 +50,7 @@ String? parseViews(String text) {
 
   // note: \xa0 glues number and magnitude ("1,7\xa0Mrd. Aufrufe"), but some locales use
   // it before the views word too ("88\xa0k\xa0vues"); CJK has no separator ("3406万回視聴")
-  final head = localText.split(' ')[0].split('\xa0');
+  final head = localText.split(' ').first.split('\xa0');
 
   return head.take(2).join('\xa0');
 }
@@ -87,12 +88,14 @@ JsonMap parseSongRun(JsonMap run) {
     final yearReg = RegExp(r'^\d{4}$');
 
     if (durationReg.hasMatch(text as String)) {
-      return {'type': 'duration', 'data': text};
+      return {'type': 'durationRaw', 'data': text};
     } else if (yearReg.hasMatch(text)) {
       return {'type': 'year', 'data': text};
     } else if (parseViews(text) != null) {
       return {'type': 'views', 'data': parseViews(text)};
-    } else if (!API_RESULT_TYPES.contains(text.toLowerCase())) {
+    } else if (!YtResultType.values.any(
+      (type) => type.name == text.toLowerCase(),
+    )) {
       return {
         'type': 'artist',
         'data': {'name': text, 'id': null},
@@ -104,14 +107,17 @@ JsonMap parseSongRun(JsonMap run) {
 }
 
 /// Parses song [runs].
-JsonMap parseSongRuns(List runs, {bool skipTypeSpec = false}) {
-  final parsed = <String, dynamic>{};
+List<(SongRunsItemType, dynamic)> parseSongRuns(
+  List runs, {
+  bool skipTypeSpec = false,
+}) {
+  final parsed = <(SongRunsItemType, dynamic)>[];
 
   final List realRuns;
   if (skipTypeSpec &&
       runs.length > 2 &&
       !(runs.first as JsonMap).containsKey('navigationEndpoint') &&
-      parseSongRun(runs[0] as JsonMap)['type'] == 'artist' &&
+      parseSongRun(runs.first as JsonMap)['type'] == 'artist' &&
       runs[1] == DOT_SEPARATOR_RUN &&
       [
         'artist',
@@ -130,17 +136,35 @@ JsonMap parseSongRuns(List runs, {bool skipTypeSpec = false}) {
     final data = parsedRun['data'];
     switch (parsedRun['type']) {
       case 'album':
-        parsed['album'] = data;
+        parsed.add((
+          SongRunsItemType.ALBUM,
+          YtBaseObject(
+            id: (data as JsonMap)['id'] as String?,
+            name: data['name'] as String,
+            type: YtObjectType.OBJECT,
+          ),
+        ));
       case 'artist':
-        parsed['artists'] ??= <JsonMap>[];
-        (parsed['artists'] as List).add(data);
+        parsed.add((
+          SongRunsItemType.ARTISTS,
+          [
+            YtBaseObject(
+              id: (data as JsonMap)['id'] as String?,
+              name: data['name'] as String,
+              type: YtObjectType.OBJECT,
+            ),
+          ],
+        ));
       case 'views':
-        parsed['views'] = data;
-      case 'duration':
-        parsed['duration'] = data;
-        parsed['duration_seconds'] = parseDuration(data as String?);
+        parsed.add((SongRunsItemType.VIEWS, data as String?));
+      case 'durationRaw':
+        parsed.add((
+          SongRunsItemType.DURATION_SECONDS,
+          parseDuration(data as String?),
+        ));
+        parsed.add((SongRunsItemType.DURATION_RAW, data));
       case 'year':
-        parsed['year'] = data;
+        parsed.add((SongRunsItemType.YEAR, int.tryParse(data as String)));
     }
   }
 
@@ -148,14 +172,17 @@ JsonMap parseSongRuns(List runs, {bool skipTypeSpec = false}) {
 }
 
 /// Parses album of a song.
-JsonMap? parseSongAlbum(JsonMap data, int index) {
+YtBaseObject? parseSongAlbum(JsonMap data, int index) {
   final flexItem = getFlexColumnItem(data, index);
   if (flexItem == null) return null;
-  final browseId = nav(flexItem, [
-    ...TEXT_RUN,
-    NAVIGATION_BROWSE_ID,
-  ], nullIfAbsent: true);
-  return {'name': getItemText(data, index), 'id': browseId};
+  final browseId =
+      nav(flexItem, [...TEXT_RUN, NAVIGATION_BROWSE_ID], nullIfAbsent: true)
+          as String?;
+  return YtBaseObject(
+    id: browseId,
+    name: getItemText(data, index)!,
+    type: YtObjectType.OBJECT,
+  );
 }
 
 /// Returns a map with data from the provided song's context menu.
@@ -173,12 +200,11 @@ JsonMap? parseSongAlbum(JsonMap data, int index) {
 ///         "unpin": "..."
 ///       }
 ///     }
-JsonMap parseSongMenuData(JsonMap data) {
+SongMenuData parseSongMenuData(JsonMap data) {
+  final songData = SongMenuData();
   if (!data.containsKey('menu')) {
-    return {};
+    return songData;
   }
-
-  final songData = <String, dynamic>{};
 
   for (final item in nav(data, MENU_ITEMS) as List) {
     final menuItem =
@@ -190,8 +216,8 @@ JsonMap parseSongMenuData(JsonMap data) {
       continue;
     }
 
-    songData['inLibrary'] ??= false;
-    songData['pinnedToListenAgain'] ??= false;
+    songData.inLibrary ??= false;
+    songData.pinnedToListenAgain ??= false;
 
     final currentIconType =
         nav(menuItem, ['defaultIcon', 'iconType'], nullIfAbsent: true) ??
@@ -210,35 +236,35 @@ JsonMap parseSongMenuData(JsonMap data) {
 
     switch (currentIconType) {
       case 'KEEP': // pin to listen again
-        songData['pinnedToListenAgain'] = isToggled;
-        songData['listenAgainFeedbackTokens'] = {
-          'pin': feedbackToken('defaultServiceEndpoint'),
-          'unpin': feedbackToken('toggledServiceEndpoint'),
-        };
+        songData.pinnedToListenAgain = isToggled;
+        songData.listenAgainFeedbackTokenPin = feedbackToken(
+          'defaultServiceEndpoint',
+        );
+        songData.listenAgainFeedbackTokenUnpin = feedbackToken(
+          'toggledServiceEndpoint',
+        );
 
       case 'KEEP_OFF': // unpin from listen again
-        songData['pinnedToListenAgain'] = true;
-        songData['listenAgainFeedbackTokens'] = {
-          'pin': feedbackToken('toggledServiceEndpoint'),
-          'unpin': feedbackToken('defaultServiceEndpoint'),
-        };
+        songData.pinnedToListenAgain = true;
+        songData.listenAgainFeedbackTokenPin = feedbackToken(
+          'toggledServiceEndpoint',
+        );
+        songData.listenAgainFeedbackTokenUnpin = feedbackToken(
+          'defaultServiceEndpoint',
+        );
 
       case 'BOOKMARK_BORDER': // add to library
-        songData['inLibrary'] = isToggled;
-        songData['feedbackTokens'] = {
-          'add': feedbackToken('defaultServiceEndpoint'),
-          'remove': feedbackToken('toggledServiceEndpoint'),
-        };
+        songData.inLibrary = isToggled;
+        songData.feedbackTokenAdd = feedbackToken('defaultServiceEndpoint');
+        songData.feedbackTokenRemove = feedbackToken('toggledServiceEndpoint');
 
       case 'BOOKMARK': // remove from library
-        songData['inLibrary'] = true;
-        songData['feedbackTokens'] = {
-          'add': feedbackToken('toggledServiceEndpoint'),
-          'remove': feedbackToken('defaultServiceEndpoint'),
-        };
+        songData.inLibrary = true;
+        songData.feedbackTokenAdd = feedbackToken('toggledServiceEndpoint');
+        songData.feedbackTokenRemove = feedbackToken('defaultServiceEndpoint');
 
       case 'REMOVE_FROM_HISTORY':
-        songData['feedbackToken'] = feedbackToken('serviceEndpoint');
+        songData.feedbackToken = feedbackToken('serviceEndpoint');
     }
   }
 
@@ -246,10 +272,10 @@ JsonMap parseSongMenuData(JsonMap data) {
 }
 
 /// Parses like status.
-String parseLikeStatus(JsonMap service) {
+LikeStatus parseLikeStatus(JsonMap service) {
   final status = ['LIKE', 'INDIFFERENT'];
   final idx =
       status.indexOf((service['likeEndpoint'] as JsonMap)['status'] as String) -
       1;
-  return status[idx < 0 ? 0 : idx];
+  return LikeStatus.fromValue(status[idx < 0 ? 0 : idx]);
 }

@@ -1,5 +1,17 @@
 # Changelog
 
+## 3.0.0-rc.1
+
+- Added `YtAlbumType`, `YtPlaylistType`, `YtObjectType`, `YtResultType`, and `SongRunsItemType` enums (including `fromName` / `tryFromName` helpers) in `lib/enums.dart`.
+- Added `sumTotalDurationPlaylist` and `sumTotalDurationAlbum` helpers in `lib/helpers.dart` using typed `YtPlaylist` and `YtAlbum` models.
+- **Breaking:** Typed continuation helpers (`getContinuations2025`, `getReloadableContinuations`, `getContinuations`, `getValidatedContinuations`, `getParsedContinuationItems`, `getContinuationContents`) with generic `<T>` and `FutureOr<List<T>> Function(List<JsonMap>)` callbacks in `lib/continuations.dart`.
+- **Breaking:** Updated `BrowsingMixin` methods in `lib/mixins/browsing.dart` (`getHome`, `getArtist`, `getArtistAlbums`, `getUser`, `getUserPlaylists`, `getUserVideos`) to return strongly typed models (`YtNamedRow`, `YtBrowsedArtist`, `YtAlbum`, `YtPlaylist`, `YtVideo`) instead of untyped `List` or `JsonMap` structures.
+- Replaced `sumTotalDuration` in `lib/helpers.dart` with `sumTotalDurationPlaylist` and `sumTotalDurationAlbum` reading `duration?.inSeconds` from typed track items.
+- Updated `lib/auth/auth_parse.dart` to import `models/content/enums.dart` instead of `auth/types.dart`.
+- Standardized list/header indexing in `lib/auth/browser.dart` and `lib/helpers.dart` to use `.first` where appropriate.
+- Suppressed `public_member_api_docs` lints in `lib/enums.dart`.
+- **Breaking:** Deleted `lib/auth/types.dart` and the `AuthType` enum.
+
 ## 2.4.1
 
 - Removed `print` statement in `YtSong`

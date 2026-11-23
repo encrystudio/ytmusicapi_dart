@@ -1,4 +1,8 @@
 import 'package:ytmusicapi_dart/continuations.dart';
+import 'package:ytmusicapi_dart/enums.dart';
+import 'package:ytmusicapi_dart/models/objects/album.dart';
+import 'package:ytmusicapi_dart/models/objects/artist.dart';
+import 'package:ytmusicapi_dart/models/objects/base.dart';
 import 'package:ytmusicapi_dart/navigation.dart';
 import 'package:ytmusicapi_dart/parsers/browsing.dart';
 import 'package:ytmusicapi_dart/parsers/playlists.dart';
@@ -8,41 +12,28 @@ import 'package:ytmusicapi_dart/parsers/utils.dart';
 import 'package:ytmusicapi_dart/type_alias.dart';
 
 /// Parses artist from [results].
-List parseArtists(List<JsonMap> results, {bool uploaded = false}) {
-  final List artists = [];
+List<YtArtist> parseArtists(List<JsonMap> results, {bool uploaded = false}) {
+  final artists = <YtArtist>[];
 
   for (final result in results) {
-    final data = result[MRLIR];
-    final artist = <String, dynamic>{};
-    artist['browseId'] = nav(data, NAVIGATION_BROWSE_ID);
-    artist['artist'] = getItemText(data as JsonMap, 0);
-    final pageType = nav(
-      data,
-      NAVIGATION_BROWSE + PAGE_TYPE,
-      nullIfAbsent: true,
+    final data = result[MRLIR] as JsonMap;
+    final menuPlaylists = parseMenuPlaylists(data);
+    final thumbnailsRaw = nav(data, THUMBNAILS, nullIfAbsent: true);
+    final subtitle = getItemText(data, 1);
+    final artist = YtArtist(
+      name: getItemText(data, 0)!,
+      id: nav(data, NAVIGATION_BROWSE_ID) as String,
+      shuffleId: menuPlaylists.shuffleId,
+      radioId: menuPlaylists.radioId,
+      thumbnails: YtThumbnails.fromJson(
+        List<JsonMap>.from(thumbnailsRaw as List),
+      ),
+      subscribers:
+          subtitle != null && !uploaded ? subtitle.split(' ').first : null,
     );
 
-    if (pageType == 'MUSIC_PAGE_TYPE_USER_CHANNEL') {
-      artist['type'] = 'channel';
-    } else if (pageType == 'MUSIC_PAGE_TYPE_ARTIST') {
-      artist['type'] = 'artist';
-    }
-
-    parseMenuPlaylists(data, artist);
-
-    if (uploaded) {
-      artist['songs'] = (getItemText(data, 1) ?? '').split(' ')[0];
-    } else {
-      final subtitle = getItemText(data, 1);
-      if (subtitle != null) {
-        artist['subscribers'] = subtitle.split(' ')[0];
-      }
-    }
-
-    artist['thumbnails'] = nav(data, THUMBNAILS, nullIfAbsent: true);
     artists.add(artist);
   }
-
   return artists;
 }
 
@@ -58,7 +49,7 @@ Future<List> parseLibraryAlbums(
   final albums = parseAlbums(List<JsonMap>.from(results['items'] as List));
 
   if (results.containsKey('continuations')) {
-    List parseFunc(List<JsonMap> contents) => parseAlbums(contents);
+    List<YtAlbum> parseFunc(List<JsonMap> contents) => parseAlbums(contents);
     final remainingLimit = limit == null ? null : limit - albums.length;
     albums.addAll(
       await getContinuations(
@@ -75,27 +66,53 @@ Future<List> parseLibraryAlbums(
 }
 
 /// Parses albums from [results].
-List parseAlbums(List<JsonMap> results) {
-  final List albums = [];
+List<YtAlbum> parseAlbums(List<JsonMap> results) {
+  final List<YtAlbum> albums = [];
 
   for (final result in results) {
     final data = result[MTRIR] as JsonMap;
-    final album = <String, dynamic>{};
-    album['browseId'] = nav(data, TITLE + NAVIGATION_BROWSE_ID);
-    album['playlistId'] = nav(data, MENU_PLAYLIST_ID, nullIfAbsent: true);
-    album['title'] = nav(data, TITLE_TEXT);
-    album['thumbnails'] = nav(data, THUMBNAIL_RENDERER);
-    album['isExplicit'] =
-        nav(data, SUBTITLE_BADGE_LABEL, nullIfAbsent: true) != null;
+    final album = YtAlbum(
+      name: nav(data, TITLE_TEXT) as String,
+      id: nav(data, TITLE + NAVIGATION_BROWSE_ID) as String,
+      playlistId: nav(data, MENU_PLAYLIST_ID, nullIfAbsent: true) as String?,
+      albumType: null,
+      thumbnails: YtThumbnails.fromJson(
+        List<JsonMap>.from(nav(data, THUMBNAIL_RENDERER) as List),
+      ),
+      artists: [],
+      tracks: [],
+      durationRaw: null,
+      duration: null,
+      isExplicit: nav(data, SUBTITLE_BADGE_LABEL, nullIfAbsent: true) != null,
+      year: null,
+      trackCount: null,
+      description: null,
+      likeStatus: null,
+      relatedRecommendations: [],
+      otherVersions: [],
+    );
 
     if (data['subtitle'] != null &&
         (data['subtitle'] as JsonMap).containsKey('runs')) {
-      album['type'] = nav(data, SUBTITLE);
-      album.addAll(
-        parseSongRuns(
-          ((data['subtitle'] as JsonMap)['runs'] as List).sublist(2),
-        ),
-      );
+      album.albumType = YtAlbumType.tryFromName(nav(data, SUBTITLE) as String);
+      for (final (songRunsItemType, value) in parseSongRuns(
+        ((data['subtitle'] as JsonMap)['runs'] as List).sublist(2),
+      )) {
+        switch (songRunsItemType) {
+          case SongRunsItemType.ARTISTS:
+            album.artists = value as List<YtBaseObject>;
+          case SongRunsItemType.DURATION_RAW:
+            album.durationRaw = value as String?;
+          case SongRunsItemType.DURATION_SECONDS:
+            album.duration = value as Duration?;
+          case SongRunsItemType.VIEWS:
+            continue; // TODO
+          case SongRunsItemType.YEAR:
+            album.year = value as int?;
+          case SongRunsItemType.ALBUM:
+            continue;
+        }
+      }
     }
 
     albums.add(album);
@@ -136,7 +153,7 @@ Future<List> parseLibraryPodcasts(
 }
 
 /// Parses artists from library.
-Future<List> parseLibraryArtists(
+Future<List<YtArtist>> parseLibraryArtists(
   JsonMap response,
   RequestFuncType requestFunc,
   int? limit,
@@ -147,7 +164,7 @@ Future<List> parseLibraryArtists(
   final artists = parseArtists(List<JsonMap>.from(results['contents'] as List));
 
   if (results.containsKey('continuations')) {
-    List parseFunc(List<JsonMap> contents) => parseArtists(contents);
+    List<YtArtist> parseFunc(List<JsonMap> contents) => parseArtists(contents);
     final remainingLimit = limit == null ? null : limit - artists.length;
     artists.addAll(
       await getContinuations(

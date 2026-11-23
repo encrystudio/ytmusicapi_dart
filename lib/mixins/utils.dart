@@ -39,7 +39,7 @@ void validateOrderParameter(LibraryOrderType? order) {
 /// Returns request params belonging to a specific sorting [order].
 String prepareOrderParams(LibraryOrderType order) {
   final orders = ['a_to_z', 'z_to_a', 'recently_added'];
-  // determine orderParams via `.contents.singleColumnBrowseResultsRenderer.tabs[0].tabRenderer.content.sectionListRenderer.contents[1].itemSectionRenderer.header.itemSectionTabbedHeaderRenderer.endItems[1].dropdownRenderer.entries[].dropdownItemRenderer.onSelectCommand.browseEndpoint.params` of `/youtubei/v1/browse` response
+  // determine orderParams via `.contents.singleColumnBrowseResultsRenderer.tabs.first.tabRenderer.content.sectionListRenderer.contents[1].itemSectionRenderer.header.itemSectionTabbedHeaderRenderer.endItems[1].dropdownRenderer.entries[].dropdownItemRenderer.onSelectCommand.browseEndpoint.params` of `/youtubei/v1/browse` response
   final orderParams = ['ggMGKgQIARAA', 'ggMGKgQIARAB', 'ggMGKgQIABAB'];
   return orderParams[orders.indexOf(order)];
 }

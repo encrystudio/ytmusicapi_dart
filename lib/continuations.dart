@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:ytmusicapi_dart/navigation.dart';
 import 'package:ytmusicapi_dart/type_alias.dart';
 
@@ -50,13 +52,13 @@ String? getContinuationToken(List results) {
 }
 
 /// Get the continuations in the format of 2025.
-Future<List> getContinuations2025(
+Future<List<T>> getContinuations2025<T>(
   JsonMap results,
   int? limit,
   RequestFuncBodyType requestFunc,
-  ParseFuncType parseFunc,
+  FutureOr<List<T>> Function(List<JsonMap>) parseFunc,
 ) async {
-  final List items = [];
+  final List<T> items = [];
   String? continuationToken = getContinuationToken(results['contents'] as List);
 
   while (continuationToken != null && (limit == null || items.length < limit)) {
@@ -83,12 +85,12 @@ Future<List> getContinuations2025(
 }
 
 /// Reloadable continuations are a special case that only exists on the playlists page (suggestions).
-Future<List> getReloadableContinuations(
+Future<List<T>> getReloadableContinuations<T>(
   JsonMap results,
   String continuationType,
   int? limit,
   RequestFuncType requestFunc,
-  ParseFuncType parseFunc,
+  FutureOr<List<T>> Function(List<JsonMap>) parseFunc,
 ) async {
   final additionalParams = getReloadableContinuationParams(results);
   return await getContinuations(
@@ -114,16 +116,16 @@ Future<List> getReloadableContinuations(
 ///                ctoken ("next&lt;ctoken_path&gt;ContinuationData"). (Default: empty String).
 /// - [additionalParams] Optional additional params to pass to the [requestFunc].
 ///                      (Default: use [getContinuationParams]).
-Future<List> getContinuations(
+Future<List<T>> getContinuations<T>(
   JsonMap results,
   String continuationType,
   int? limit,
   RequestFuncType requestFunc,
-  ParseFuncType parseFunc, {
+  FutureOr<List<T>> Function(List<JsonMap>) parseFunc, {
   String ctokenPath = '',
   String? additionalParams,
 }) async {
-  final List items = [];
+  final List<T> items = [];
   JsonMap realResults = results;
 
   while (realResults.containsKey('continuations') &&
@@ -152,16 +154,16 @@ Future<List> getContinuations(
 }
 
 /// Returns validated continuations.
-Future<List> getValidatedContinuations(
+Future<List<T>> getValidatedContinuations<T>(
   JsonMap results,
   String continuationType,
   int limit,
   int perPage,
   RequestFuncType requestFunc,
-  ParseFuncType parseFunc, {
+  FutureOr<List<T>> Function(List<JsonMap>) parseFunc, {
   String ctokenPath = '',
 }) async {
-  final List items = [];
+  final List<T> items = [];
   JsonMap realResults = results;
 
   while (realResults.containsKey('continuations') && items.length < limit) {
@@ -180,16 +182,16 @@ Future<List> getValidatedContinuations(
       3,
     );
     realResults = response['results'] as JsonMap;
-    items.addAll(response['parsed'] as List);
+    items.addAll(response['parsed'] as List<T>);
   }
 
   return items;
 }
 
 /// Returns parsed continuation items.
-JsonMap getParsedContinuationItems(
+JsonMap getParsedContinuationItems<T>(
   JsonMap response,
-  ParseFuncType parseFunc,
+  FutureOr<List<T>> Function(List<JsonMap>) parseFunc,
   String continuationType,
 ) {
   final results =
@@ -234,9 +236,9 @@ String getContinuationString(String ctoken) =>
     '&ctoken=$ctoken&continuation=$ctoken';
 
 /// Returns continuation contents.
-Future<List> getContinuationContents(
+Future<List<T>> getContinuationContents<T>(
   JsonMap continuation,
-  ParseFuncType parseFunc,
+  FutureOr<List<T>> Function(List<JsonMap>) parseFunc,
 ) async {
   for (final term in ['contents', 'items']) {
     if (continuation.containsKey(term)) {

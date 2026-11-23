@@ -1,4 +1,5 @@
 import 'package:ytmusicapi_dart/mixins/protocol.dart';
+import 'package:ytmusicapi_dart/models/objects/playlist.dart';
 import 'package:ytmusicapi_dart/navigation.dart';
 import 'package:ytmusicapi_dart/parsers/browsing.dart';
 import 'package:ytmusicapi_dart/parsers/explore.dart';
@@ -76,10 +77,9 @@ mixin ExploreMixin on MixinProtocol {
   /// Retrieve a list of playlists for a given "Moods & Genres" category.
   ///
   /// - [params] params obtained by [getMoodCategories].
-  ///
-  /// Returns List of playlists in the format of [getLibraryPlaylists]. // TODO getLibraryPlaylists is currently missing
-  Future<List> getMoodPlaylists(String params) async {
-    final playlists = <dynamic>[];
+  // TODO getLibraryPlaylists is currently missing
+  Future<List<YtPlaylist>> getMoodPlaylists(String params) async {
+    final playlists = <YtPlaylist>[];
     final response = await sendRequest('browse', {
       'browseId': 'FEmusic_moods_and_genres_category',
       'params': params,
